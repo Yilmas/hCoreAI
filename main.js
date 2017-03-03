@@ -1,5 +1,7 @@
 require('require');
 
+// test besked
+
 if(config.profiler.enabled) {
 	try {
 		var profiler = require('screeps-profiler');
