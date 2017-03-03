@@ -46,8 +46,6 @@ brain.special.roleManager = function () {
                 }
             } else if (!task.hasResource) {
                 // TODO: If the room has lost all creeps, line 49 will cause an error that can only be solved by killing the prospector causing the error.
-                // Perhaps we could fix this, by giving the creep a memory.room, so it can always find the room, after which Game.getObjectById() will be able to pickup the corresponding object.
-                // I'm thinking this error, will not be addressed until we create the new memory module
                 if (creep.room.name != Game.getObjectById(task.endPoint.id).room.name) {
                     creep.moveTo(Game.getObjectById(task.endPoint.id));
                 } else {
@@ -145,48 +143,69 @@ brain.special.roleManager = function () {
         if (task.role == 'attacker') {
             let squad = Memory.squads[creep.memory.task.squad];
 
-            if (!squad.attacking && creep.room.name != task.startPoint.room.name) {
-                // move to rendevour point
-                creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name));
-            } else if (squad.attacking) {
-                // start the attack
+            if (squad.squadType == 'attack') {
+                if (!squad.attacking && creep.room.name != task.startPoint.room.name) {
+                    // move to rendevour point
+                    creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name));
+                } else if (squad.attacking) {
+                    // start the attack
 
-                // avoid room changing
-                utils.avoidRoomEdge(creep);
+                    // avoid room changing
+                    utils.avoidRoomEdge(creep);
 
-                if (creep.room.name != task.endPoint.roomName) {
-                    creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName));
-                } else {
+                    if (creep.room.name != task.endPoint.roomName) {
+                        creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName));
+                    } else {
 
-                    // start the actual attack
-                    let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
-                    let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                        filter: (s) =>
-                            s.structureType == STRUCTURE_TOWER ||
-                            s.structureType == STRUCTURE_SPAWN ||
-                            s.structureType == STRUCTURE_EXTENSION ||
-                            s.structureType == STRUCTURE_TOWER
+                        // start the actual attack
+                        let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+                        let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                            filter: (s) =>
+                                s.structureType == STRUCTURE_TOWER ||
+                                s.structureType == STRUCTURE_SPAWN ||
+                                s.structureType == STRUCTURE_EXTENSION ||
+                                s.structureType == STRUCTURE_TOWER
                         }
-                    );
+                        );
+
+                        if (hostiles) {
+                            config.log(3, 'attacker debug, attack creep');
+                            creep.rangedMassAttack();
+                            if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(hostiles);
+                            }
+                        } else if (hostilesStructures) {
+                            config.log(3, 'attacker debug, attack structures');
+                            creep.rangedMassAttack();
+                            if (creep.attack(hostilesStructures) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(hostilesStructures);
+                            }
+                        }
+                    }
+                } else if (!squad.attacking && creep.room.name == task.startPoint.room.name && creep.pos != task.startPoint.pos) {
+                    // move closer to rendevour point
+                    config.log(3, 'attacker debug, move to flag');
+                    creep.moveTo(new RoomPosition(task.startPoint.pos.x, task.startPoint.pos.y, task.startPoint.pos.roomName));
+                }
+            } else if (squad.squadType == 'defend') {
+                if (creep.room.name != task.startPoint.room.name) {
+                    creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name));
+                } else if (creep.room.name == task.startPoint.room.name && squad.attacking) {
+                    // attack if hostile creeps exist
+                    let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
                     if (hostiles) {
-                        config.log(3, 'attacker debug, attack creep');
+                        config.log(3, 'Room: ' + creep.room.name + ' Defender: ' + creep.id + ' is attacking the enemy creep');
+
                         creep.rangedMassAttack();
                         if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
                             creep.moveTo(hostiles);
                         }
-                    } else if (hostilesStructures) {
-                        config.log(3, 'attacker debug, attack structures');
-                        creep.rangedMassAttack();
-                        if (creep.attack(hostilesStructures) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(hostilesStructures);
-                        }
+                    } else {
+                        // go to defensive station
+                        creep.moveTo(new RoomPosition(task.startPoint.pos.x, task.startPoint.pos.y, task.startPoint.pos.roomName));
                     }
                 }
-            } else if (!squad.attacking && creep.room.name == task.startPoint.room.name && creep.pos != task.startPoint.pos) {
-                // move closer to rendevour point
-                config.log(3, 'attacker debug, move to flag');
-                creep.moveTo(new RoomPosition(task.startPoint.pos.x, task.startPoint.pos.y, task.startPoint.pos.roomName));
             }
         }
     }
