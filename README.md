@@ -1,0 +1,2 @@
+# hCoreAI
+Screeps AI
