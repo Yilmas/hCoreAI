@@ -450,9 +450,8 @@ brain.memory = {
         for (let squadName in Memory.squads) {
             let squad = Memory.squads[squadName];
             let squadMembers = _.filter(Game.creeps, (c) => c.memory.task.squad == squadName);
-            if (squadMembers.length == squad.squadSize) {
-                squad.squadHasSpawned = true;
-            }
+
+            squad.squadHasSpawned = squadMembers.length == squad.squadSize;
 
             if (!squad.attacking) {
                 let forwardBase = Game.flags[squadName];
