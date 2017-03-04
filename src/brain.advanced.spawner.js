@@ -1,5 +1,3 @@
-﻿"use strict";
-
 config.energyCapacityAvailable = [
     0,
     300,
