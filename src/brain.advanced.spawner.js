@@ -17,7 +17,7 @@ global.config.getBodyParts = (roomName, role) => {
 };
 
 config.findOperationLevel = (operationLevel, room, role) => {
-	config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel);
+	config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel);
 	let currentOperationLevel = operationLevel - 1;
 
 	// If the currentOperationLevel is less than zero, something is wrong.
@@ -25,15 +25,15 @@ config.findOperationLevel = (operationLevel, room, role) => {
 	if (currentOperationLevel === -1) return undefined;
 
 	let energyCapacityAvailable = config.energyCapacityAvailable[currentOperationLevel];
-	if (room.controller.level === operationLevel) {
-	    config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel + ' equal room level='+room.controller.level);
-		if (room.energyCapacityAvailable === energyCapacityAvailable) {
-		    config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel + ' equal room level='+room.controller.level+' and equal capacity');
-		    
+	if (room.controller.level >= operationLevel) {
+		config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level);
+		if (room.energyCapacityAvailable >= energyCapacityAvailable) {
+			config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity');
+
 			let bodyParts = config.roleBodyParts(role, operationLevel);
-			config.log(3, 'debug scope: role: '+role+' operationLevel: '+operationLevel+' body: ' + bodyParts);
-		    let bodyPartsCost = getBodyCost(bodyParts);
-		    config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel + ' equal room level='+room.controller.level+' and equal capacity'+' and cost: '+ bodyPartsCost);
+			config.log(3, 'debug scope: role: ' + role + ' operationLevel: ' + operationLevel + ' body: ' + bodyParts);
+			let bodyPartsCost = getBodyCost(bodyParts);
+			config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity' + ' and cost: ' + bodyPartsCost);
 			if (config.isEnergyCostPlausible(room, bodyPartsCost)) {
 				config.log(3, 'debug scope: Room: ' + room.name + ' Cost: ' + bodyPartsCost + ' Energy ' + energyCapacityAvailable);
 				return bodyParts;
@@ -41,11 +41,11 @@ config.findOperationLevel = (operationLevel, room, role) => {
 				return config.findOperationLevel(currentOperationLevel, room, role);
 			}
 		} else {
-		    config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel + ' equal room level and NOT equal capacity');
+			config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level and NOT equal capacity');
 			return config.findOperationLevel(currentOperationLevel, room, role);
 		}
 	} else {
-	    config.log(3, 'debug scope: '+room.name+' Operation Level ' + operationLevel + ' NOT equal room level');
+		config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' NOT equal room level');
 		return config.findOperationLevel(currentOperationLevel, room, role);
 	}
 };
