@@ -1,5 +1,4 @@
 config.energyCapacityAvailable = [
-    0,
     300,
     550,
     800,
