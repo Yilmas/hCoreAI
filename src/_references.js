@@ -1,5 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="alliance.js" />
+/// <reference path="brain.advanced.spawner.js" />
 /// <reference path="brain.creepSpawner.js" />
 /// <reference path="brain.memory.js" />
 /// <reference path="brain.roleManager.js" />
