@@ -1,9 +1,9 @@
-﻿global.alliance = {
+global.alliance = {
     enabled: true
 }
 
 global.alliance.memberList = function () {
-    var originalAttack = Creep.prototype.attack; // Så er referencen gemt
+    var originalAttack = Creep.prototype.attack; // S� er referencen gemt
     Creep.prototype.attack = function (presumedAllyCreep) {
         if (!presumedAllyCreep.isAlly) {
             originalAttack();

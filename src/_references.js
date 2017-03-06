@@ -1,4 +1,4 @@
-﻿/// <autosync enabled="true" />
+/// <autosync enabled="true" />
 /// <reference path="alliance.js" />
 /// <reference path="brain.advanced.spawner.js" />
 /// <reference path="brain.creepSpawner.js" />
