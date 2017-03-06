@@ -438,16 +438,17 @@ brain.memory = {
                 claim.task.collectorCount = _.sum(Game.creeps, (c) => c.memory.task.role == 'collector' && c.memory.task.startPoint.roomName == claimName);
                 claim.task.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role == 'claimer' && c.memory.task.endPoint.roomName == claimName) == 1;
                 
+                if (Memory.rooms[claimName]) {
+                    Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && !isNullOrUndefined(Game.getObjectById(c.memory.task.endPoint.id)) && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
+                    for (let source in Memory.rooms[claimName].sources) {
 
-                Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && !isNullOrUndefined(Game.getObjectById(c.memory.task.endPoint.id)) && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
-                for (let source in Memory.rooms[claimName].sources) {
+                        if (Game.getObjectById(source)) {
+                            let amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && c.memory.task.endPoint.id == source);
 
-                    if (Game.getObjectById(source)) {
-                        let amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && c.memory.task.endPoint.id == source);
-
-                        let remainingSpots = Memory.rooms[claimName].sources[Game.getObjectById(source).id].totalSpots - amountOfProspectors;
-                        Memory.rooms[claimName].sources[Game.getObjectById(source).id].openSpots = remainingSpots;
-                        Memory.rooms[claimName].sources[Game.getObjectById(source).id].harvesters = amountOfProspectors;
+                            let remainingSpots = Memory.rooms[claimName].sources[Game.getObjectById(source).id].totalSpots - amountOfProspectors;
+                            Memory.rooms[claimName].sources[Game.getObjectById(source).id].openSpots = remainingSpots;
+                            Memory.rooms[claimName].sources[Game.getObjectById(source).id].harvesters = amountOfProspectors;
+                        }
                     }
                 }
             }
