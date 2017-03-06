@@ -337,30 +337,30 @@ brain.memory = {
                 }
             }
         }
+        
+        //if (!Memory.claimList['E25S83']) {
+        //    Memory.claimList['E25S83'] = {
+        //        roomType: 'Mine',
+        //        parentRoom: 'E26S83',
+        //        task: {
+        //            useCollectors: false,
+        //            collectorCount: 0,
+        //            hasReserver: false
+        //        }
+        //    }
+        //}
 
-        if (!Memory.claimList['E25S83']) {
-            Memory.claimList['E25S83'] = {
-                roomType: 'Mine',
-                parentRoom: 'E26S83',
-                task: {
-                    useCollectors: false,
-                    collectorCount: 0,
-                    hasReserver: false
-                }
-            }
-        }
-
-        if (!Memory.claimList['E27S85']) {
-            Memory.claimList['E27S85'] = {
-                roomType: 'Mine',
-                parentRoom: 'E27S83',
-                task: {
-                    useCollectors: false,
-                    collectorCount: 0,
-                    hasReserver: false
-                }
-            }
-        }
+        //if (!Memory.claimList['E27S85']) {
+        //    Memory.claimList['E27S85'] = {
+        //        roomType: 'Mine',
+        //        parentRoom: 'E27S83',
+        //        task: {
+        //            useCollectors: false,
+        //            collectorCount: 0,
+        //            hasReserver: false
+        //        }
+        //    }
+        //}
 
 
         // Squad System
