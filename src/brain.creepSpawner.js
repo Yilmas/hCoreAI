@@ -212,6 +212,9 @@ brain.creepSpawner = function () {
                 // Spawn bridge
                 config.log(3, 'debug scope: Room: ' + roomName + ' bridge');
 
+                let containerBodyPart = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]; //900
+                let linkBodyPart = [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE]; //600
+
                 let startPoint = spawn.room.storage; // set startPoint to storage
                 let endPoint = undefined;
 
@@ -224,8 +227,8 @@ brain.creepSpawner = function () {
                 }
 
                 if (endPoint) {
-                    if (spawn.canCreateCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID) == OK) {
-                        spawn.createCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID, {
+                    if (spawn.canCreateCreep((!isNullOrUndefined(link) ? linkBodyPart : containerBodyPart), roles.roleBridge.id + uniqueNameID) == OK) {
+                        spawn.createCreep((!isNullOrUndefined(link) ? linkBodyPart: containerBodyPart), roles.roleBridge.id +uniqueNameID, {
                             task: {
                                 role: roles.roleBridge.id,
                                 hasResource: false,
