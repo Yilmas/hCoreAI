@@ -6,6 +6,8 @@ brain.memory = {
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
 
+            if(!room.controller) continue;
+
             // Start Script for setting all role information
             if (!room.memory.roles) {
                 config.log(2, 'Start Script for setting role information for room: ' + roomName);
@@ -338,24 +340,48 @@ brain.memory = {
             }
         }
 
-        //if (!Memory.claimList['E25S83']) {
-        //    Memory.claimList['E25S83'] = {
-        //        roomType: 'Mine',
-        //        parentRoom: 'E26S83',
-        //        task: {
-        //            useCollectors: false,
-        //            collectorCount: 0,
-        //            hasReserver: false
-        //        }
-        //    }
-        //}
+        if (!Memory.claimList['E25S83']) {
+            Memory.claimList['E25S83'] = {
+                roomType: 'Mine',
+                parentRoom: 'E26S83',
+                task: {
+                    useCollectors: true,
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
 
-        //if (!Memory.claimList['E27S85']) {
-        //    Memory.claimList['E27S85'] = {
-        //        roomType: 'Mine',
-        //        parentRoom: 'E27S83',
+        if (!Memory.claimList['E27S85']) {
+            Memory.claimList['E27S85'] = {
+                roomType: 'Mine',
+                parentRoom: 'E27S83',
+                task: {
+                    useCollectors: true,
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
+        if (!Memory.claimList['E26S81']) {
+            Memory.claimList['E26S81'] = {
+                roomType: 'Mine',
+                parentRoom: 'E27S81',
+                task: {
+                    useCollectors: false,
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
+        //if (!Memory.claimList['targetRoom']) {
+        //    Memory.claimList['targetRoom'] = {
+        //        roomType: 'type', // outpost, mine, base
+        //        parentRoom: 'parentRoom',
         //        task: {
-        //            useCollectors: false,
+        //            useCollectors: false, // start with false, once all constructions are complete change to true
         //            collectorCount: 0,
         //            hasReserver: false
         //        }
@@ -410,6 +436,20 @@ brain.memory = {
             }
         }
 
+        if (!Memory.squads['E26S81']) {
+            Memory.squads['E26S81'] = {
+                squadBase: 'E27S81',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
         //if (!Memory.squads['targetRoom']) {
         //    Memory.squads['targetRoom'] = {
         //        squadBase: 'spawnRoom',
@@ -436,6 +476,8 @@ brain.memory = {
 
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
+
+            if (!room.controller) continue;
 
             for (let source in Memory.rooms[roomName].sources) {
                 let amountOfHarvesters = _.sum(Game.creeps, (c) => c.room.name == roomName && c.memory.task.role == 'harvester' && c.memory.task.startPoint.id == source);
