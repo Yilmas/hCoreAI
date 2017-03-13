@@ -185,17 +185,17 @@ brain.creepSpawner = function () {
 
                 if (spawn.canCreateCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID) == OK) {
                     spawn.createCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID, {
-                            task: {
-                                role: roles.roleBridge.id,
-                                hasResource: false,
-                                startPoint: startPoint,
-                                endPoint: endPoint
-                            }
-                        });
+                        task: {
+                            role: roles.roleBridge.id,
+                            hasResource: false,
+                            startPoint: startPoint,
+                            endPoint: endPoint
+                        }
+                    });
                     break;
                 }
             }
-            else if (!isNullOrUndefined(mineral) && mineral.mineralAmount < 70000 && roles.roleMiner.amountOfMiners < roles.roleMiner.operation[operationSize].minimumOfMiners) {
+            else if (!isNullOrUndefined(mineral) && mineral.mineralAmount > 0 && roles.roleMiner.amountOfMiners < roles.roleMiner.operation[operationSize].minimumOfMiners) {
                 // Spawn miner
                 config.log(3, 'debug scope: Room: ' + roomName + ' miner');
 

@@ -1,47 +1,71 @@
 require('require');
 
-if(config.profiler.enabled) {
-	try {
-		var profiler = require('screeps-profiler');
-		profiler.enable();
-	} catch (e) {
-		console.log('screeps-profiler not found');
-		config.profiler.enabled = false;
-	}
+if (config.profiler.enabled) {
+    try {
+        var profiler = require('screeps-profiler');
+        profiler.enable();
+    } catch (e) {
+        console.log('screeps-profiler not found');
+        config.profiler.enabled = false;
+    }
 }
 
 
-var main = function() {
-	if(Game.cpu.bucket < Game.cpu.tickLimit) {
-		console.log('Skipping tick ' + Game.time + ' due to lack of CPU.');
-		return;
-	}
-	
+var main = function () {
+    if (Game.cpu.bucket < Game.cpu.tickLimit) {
+        console.log('Skipping tick ' + Game.time + ' due to lack of CPU.');
+        return;
+    }
+
     // Memory
-	brain.memory.prepareMemory();
-	brain.memory.refreshMemory();
+    try {
+        brain.memory.prepareMemory();
+    }
+    catch (ex) {
+        console.log('<font color=red>Memory.prePareMemory: ' + ex + '</font>');
+    }
+
+    try {
+        brain.memory.refreshMemory();
+    }
+    catch (ex) {
+        console.log('<font color=red>Memory.refreshMemory: ' + ex + '</font>');
+    }
 
     // Role Managers
-	brain.special.roleManager();
-	brain.roleManager();
-
+    brain.roleManager();
+    brain.special.roleManager();
 
     // Spawners
-	brain.special.creepSpawner();
-	brain.creepSpawner();
-
+    try {
+        brain.special.creepSpawner();
+    }
+    catch (ex) {
+        console.log('<font color=red>Special.CreepSpawner: ' + ex + '</font>');
+    }
+    try {
+        brain.creepSpawner();
+    }
+    catch (ex) {
+        console.log('<font color=red>CreepSpawner: ' + ex + '</font>');
+    }
 
     // Structures
-    brain.structureManager();
+    try {
+        brain.structureManager();
+    }
+    catch (ex) {
+        console.log('<font color=red>StructureManager: ' + ex + '</font>');
+    }
 };
 
 module.exports.loop = function () {
-	if(config.profiler.enabled) {
-		profiler.wrap(function() {
-			main();
-		});
-	}
-	else {
-	    main();
-	}
+    if (config.profiler.enabled) {
+        profiler.wrap(function () {
+            main();
+        });
+    }
+    else {
+        main();
+    }
 }

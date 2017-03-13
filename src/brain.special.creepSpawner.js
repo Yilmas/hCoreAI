@@ -16,7 +16,7 @@ brain.special.creepSpawner = function () {
 
             let uniqueNameId = Math.floor((Math.random() * 1000) + 1);
             let operationSize = config.operationSize(spawn.room.name);
-            
+
             for (let claimName in Memory.claimList) {
                 let roles = Memory.rooms[claimName].roles;
                 let claim = Memory.claimList[claimName];
@@ -51,7 +51,7 @@ brain.special.creepSpawner = function () {
                             // Spawn prospector
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' prospector (mine) for claim ' + claimName);
 
-                            let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
+                            let startPoint = new RoomPosition(25, 25, claimName); // Set startPoint to target room
                             let endPoint = undefined;
 
                             let source = _.filter(Memory.rooms[claimName].sources, (s) => s.openSpots > 0);
@@ -89,13 +89,13 @@ brain.special.creepSpawner = function () {
 
                                 if (spawn.canCreateCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId) == OK) {
                                     spawn.createCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId, {
-                                            task: {
-                                                role: roles.roleCollector.id,
-                                                hasResource: false,
-                                                startPoint: startPoint,
-                                                endPoint: endPoint
-                                            }
-                                        });
+                                        task: {
+                                            role: roles.roleCollector.id,
+                                            hasResource: false,
+                                            startPoint: startPoint,
+                                            endPoint: endPoint
+                                        }
+                                    });
                                     //break;
                                 }
                             }
@@ -129,7 +129,7 @@ brain.special.creepSpawner = function () {
                             // Spawn prospector to create the spawn in the outpost
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' prospector (create spawn in ' + claimName + ')');
 
-                            let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
+                            let startPoint = new RoomPosition(25, 25, claimName); // Set startPoint to target room
                             let endPoint = undefined;
 
                             let source = _.filter(Memory.rooms[claimName].sources, (s) => s.openSpots > 0);

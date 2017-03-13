@@ -79,7 +79,7 @@ brain.memory = {
                             },
                             large: {
                                 minimumOfBuilders: 1, //2
-                                bodyParts: [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY] //1300
+                                bodyParts: [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY] //1700
                             }
                         }
                     },
@@ -337,7 +337,7 @@ brain.memory = {
                 }
             }
         }
-        
+
         //if (!Memory.claimList['E25S83']) {
         //    Memory.claimList['E25S83'] = {
         //        roomType: 'Mine',
@@ -369,7 +369,7 @@ brain.memory = {
         }
 
         if (!Memory.squads['E27S84']) {
-            Memory.squads["E27S84"] = {
+            Memory.squads['E27S84'] = {
                 squadBase: 'E27S83',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
@@ -382,8 +382,36 @@ brain.memory = {
             }
         }
 
+        if (!Memory.squads['E27S85']) {
+            Memory.squads['E27S85'] = {
+                squadBase: 'E27S83',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
+        if (!Memory.squads['E25S83']) {
+            Memory.squads['E25S83'] = {
+                squadBase: 'E26S83',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
         //if (!Memory.squads['targetRoom']) {
-        //    Memory.squads["targetRoom"] = {
+        //    Memory.squads['targetRoom'] = {
         //        squadBase: 'spawnRoom',
         //        squadType: 'type', //attack, defend
         //        squadHasSpawned: false,
@@ -402,7 +430,7 @@ brain.memory = {
         for (let name in Memory.creeps) {
             if (!Game.creeps[name]) {
                 delete Memory.creeps[name];
-                config.log(2, 'Clearing non-existing creep memory: '+ name);
+                config.log(2, 'Clearing non-existing creep memory: ' + name);
             }
         }
 
@@ -437,7 +465,7 @@ brain.memory = {
             if (claim.roomType == 'Mine') {
                 claim.task.collectorCount = _.sum(Game.creeps, (c) => c.memory.task.role == 'collector' && c.memory.task.startPoint.roomName == claimName);
                 claim.task.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role == 'claimer' && c.memory.task.endPoint.roomName == claimName) == 1;
-                
+
                 if (Memory.rooms[claimName]) {
                     Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && !isNullOrUndefined(Game.getObjectById(c.memory.task.endPoint.id)) && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
                     for (let source in Memory.rooms[claimName].sources) {

@@ -21,7 +21,7 @@ brain.structureManager = function () {
                     }
                 }
             }
-            
+
             if (hostileHealer) {
                 // TODO: Does the tower not focus healers ?
                 towers.forEach(tower => tower.attack(hostileHealer));
@@ -72,6 +72,6 @@ brain.structureManager = function () {
                 }
             }
         }
-        
+
     }
 }
