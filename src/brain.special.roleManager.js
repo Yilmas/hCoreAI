@@ -35,7 +35,7 @@ brain.special.roleManager = function () {
                                 creep.moveTo(container);
                             }
                         } else {
-                            let repairSite = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_ROAD && s.hits < s.hitsMax && s.hits < 25000 });
+                            let repairSite = creep.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.hits < s.hitsMax && s.hits <= 200000 }, 3);
                             if (creep.ticksToLive < 200 && repairSite) {
                                 // start repairing what can be repaired
                                 if (creep.repair(repairSite) == ERR_NOT_IN_RANGE) {
@@ -95,7 +95,7 @@ brain.special.roleManager = function () {
                         let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy > 1200 });
 
                         if (creep.room.storage) {
-                            if (creep.room.storage.store.energy > 1200) {
+                            if (creep.room.storage.store.energy > 100000) {
                                 if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(creep.room.storage);
                                 }
