@@ -195,7 +195,7 @@ brain.special.roleManager = function () {
 
                     if (creep.room.name != task.endPoint.roomName) {
                         creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName));
-                    } else if (creep.room.name == task.startPoint.room.name) {
+                    } else if (creep.room.name == task.startPoint.name) {
                         // attack if hostile creeps exist
                         let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
