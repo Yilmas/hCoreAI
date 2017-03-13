@@ -17,15 +17,24 @@ brain.creepSpawner = function () {
         if (!spawn.spawning) {
             let uniqueNameID = Math.floor((Math.random() * 1000) + 1);
 
-            var containers = spawn.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
-            var link = spawn.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
+            let controllerContainer = undefined;
+
+            if (spawn.room.controller.level >= 3 && spawn.room.controller.level <= 5) {
+                controllerContainer = spawn.room.controller.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 3);
+            }
+
+            let containers = spawn.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 3); // Used while there is no storage
+            let link = undefined;
+            if (spawn.room.storage) {
+                link = spawn.room.storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK }, 3);
+            }
 
 
-            var mineral = undefined;
-            var mineralContainer = undefined;
+            let mineral = undefined;
+            let mineralContainer = undefined;
 
             if (spawn.room.controller.level >= 6) {
-                var extractor = spawn.room.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_EXTRACTOR });
+                let extractor = spawn.room.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_EXTRACTOR });
                 mineral = extractor[0].pos.findClosestByRange(FIND_MINERALS);
                 mineralContainer = mineral.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
             }
@@ -118,7 +127,31 @@ brain.creepSpawner = function () {
                 // Spawn upgrader
                 config.log(3, 'debug scope: Room: ' + roomName + ' upgrader');
 
-                let startPoint = spawn.room.storage; // Set startPoint to the storage
+                let startPoint = undefined; // Set startPoint to either a null, container, storage or link
+                
+                // Defined startpoint by what should exist at a given controller level
+                if (spawn.room.controller.level >= 3 && spawn.room.controller.level <= 5) {
+                    // Use container > storage > link
+                    let link = spawn.room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK }, 3);
+                    let storage = spawn.room.storage;
+                    let container = spawn.room.controller.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 5);
+
+                    
+                    if (!isNullOrUndefined(link)) {
+                        startPoint = link;
+                    }
+                    if (!isNullOrUndefined(storage)) {
+                        startPoint = storage;
+                    }
+                    if (!isNullOrUndefined(container)) {
+                        startPoint = container;
+                    }
+
+                } else if (spawn.room.controller.level >= 6) {
+                    // Use link
+                    startPoint = spawn.room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK }, 3);
+                }
+
                 let endPoint = spawn.room.controller; // Set endPoint to the controller
 
                 if (spawn.canCreateCreep(roles.roleUpgrader.operation[operationSize].bodyParts, roles.roleUpgrader.id + uniqueNameID) == OK) {
@@ -175,24 +208,33 @@ brain.creepSpawner = function () {
                     }
                 }
 
-            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && link && spawn.room.storage && containers) {
+            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage || containers) && (link || controllerContainer)) {
                 // Spawn bridge
                 config.log(3, 'debug scope: Room: ' + roomName + ' bridge');
 
                 let startPoint = spawn.room.storage; // set startPoint to storage
-                let endPoint = startPoint.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
-                // Set endpoint to the link
+                let endPoint = undefined;
 
-                if (spawn.canCreateCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID, {
-                        task: {
-                            role: roles.roleBridge.id,
-                            hasResource: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
-                    break;
+                if (!isNullOrUndefined(controllerContainer)) {
+                    // Set endpoint to the controllers container
+                    endPoint = controllerContainer;
+                } else if (!isNullOrUndefined(link)) {
+                    // Set endpoint to the link
+                    endPoint = startPoint.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
+                }
+
+                if (endPoint) {
+                    if (spawn.canCreateCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID) == OK) {
+                        spawn.createCreep(roles.roleBridge.operation[operationSize].bodyParts, roles.roleBridge.id + uniqueNameID, {
+                            task: {
+                                role: roles.roleBridge.id,
+                                hasResource: false,
+                                startPoint: startPoint,
+                                endPoint: endPoint
+                            }
+                        });
+                        break;
+                    }
                 }
             }
             else if (!isNullOrUndefined(mineral) && mineral.mineralAmount > 0 && roles.roleMiner.amountOfMiners < roles.roleMiner.operation[operationSize].minimumOfMiners) {
