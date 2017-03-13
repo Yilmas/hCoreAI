@@ -23,6 +23,7 @@ brain.roleManager = function () {
                     let spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
 
                     if (creep.room.memory.roles.roleDistributor.amountOfDistributors == 0) {
+                        // If no distributors exists, start filling spawn and extensions, so that we may spawn a new distributor --- This is a failsafe
                         let spawnOrExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                             filter: (s) =>  (s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity) ||
                                             (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
@@ -34,33 +35,31 @@ brain.roleManager = function () {
                             }
                         }
                     } else {
+                        // Distributors exists, start filling container
                         if (task.endPoint) {
-                            // TODO: Prevent harvester from trying to deposit in a container when primary is full and distributors/carriers exist
+                            // TODO: Prevent harvester from trying to deposit in a container when primary is full
 
-                            if (Game.getObjectById(task.endPoint.id).store.energy < 2000) {
+                            //if (Game.getObjectById(task.endPoint.id).store.energy < 2000) {
                                 if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(Game.getObjectById(task.endPoint.id));
                                 }
-                            } else {
-                                let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < 2000
-                                });
+                            //} else {
+                            //    let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            //        filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < 2000
+                            //    });
 
-                                if (container) {
-                                    if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                        creep.moveTo(container);
-                                    }
-                                } else if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                    creep.moveTo(spawn);
-                                } else if (creep.room.storage) {
-                                    if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                        creep.moveTo(creep.room.storage);
-                                    }
-                                }
-                            }
+                            //    if (container) {
+                            //        if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            //            creep.moveTo(container);
+                            //        }
+                            //    } else if (creep.room.storage) {
+                            //        if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            //            creep.moveTo(creep.room.storage);
+                            //        }
+                            //    }
+                            //}
                         } else {
-                            let container = creep.pos
-                                .findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
+                            let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
 
                             if (container) {
                                 if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
