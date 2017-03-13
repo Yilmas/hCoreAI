@@ -36,11 +36,11 @@ brain.structureManager = function () {
                     });
 
                     let closestDamagedRampart = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < 30000 && s.structureType == STRUCTURE_RAMPART
+                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_RAMPART
                     });
 
                     let closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < 30000 && s.structureType == STRUCTURE_WALL
+                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_WALL
                     });
 
                     if (!isNullOrUndefined(closestDamagedStructure)) {
