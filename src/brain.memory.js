@@ -9,7 +9,7 @@ brain.memory = {
             // Start Script for setting all role information
             if (!room.memory.roles) {
                 config.log(2, 'Start Script for setting role information for room: ' + roomName);
-                //room.memory.roles = {};
+
                 room.memory.roles = {
                     roleHarvester: {
                         id: 'harvester',
@@ -111,11 +111,11 @@ brain.memory = {
                             },
                             medium: {
                                 minimumOfCollectors: 2,
-                                bodyParts: [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE] //600
+                                bodyParts: [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE] //650
                             },
                             large: {
                                 minimumOfCollectors: 2,
-                                bodyParts: [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE] //600
+                                bodyParts: [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE] //800
                             }
                         }
                     },
