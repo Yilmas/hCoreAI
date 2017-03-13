@@ -265,8 +265,8 @@ brain.creepSpawner = function () {
                 let startPoint = mineralContainer; // Set startPoint to nearby container
                 let endPoint = spawn.room.storage; // set endPoint to the storage
 
-                if (spawn.canCreateCreep(roles.roleCollector.operation[operationSize].bodyParts, 'mineralCollector' + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleCollector.operation[operationSize].bodyParts, 'mineralCollector' + uniqueNameID, {
+                if (spawn.canCreateCreep([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mineralCollector' + uniqueNameID) == OK) {
+                    spawn.createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mineralCollector' + uniqueNameID, {
                         name: 'mineralCollector' + uniqueNameID,
                         task: {
                             role: 'mineralCollector',
