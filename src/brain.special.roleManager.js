@@ -66,6 +66,10 @@ brain.special.roleManager = function () {
             // A prospector moves to an adjacent room, that has no owner, harvests the nearest source and returns to a controlled rooms storage
             if (task.role == 'collector') {
                 if (task.hasResource) {
+
+                    let repairVicinity = creep.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_ROAD && s.hits < s.hitsMax && s.hits < 25000 },3);
+                    creep.repair(repairVicinity);
+
                     if (creep.room.name != task.endPoint.roomName) {
                         creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName), { reusePath: 50 });
                     } else {
@@ -172,13 +176,11 @@ brain.special.roleManager = function () {
                             );
 
                             if (hostiles) {
-                                config.log(3, 'attacker debug, attack creep');
                                 creep.rangedMassAttack();
                                 if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(hostiles);
                                 }
                             } else if (hostilesStructures) {
-                                config.log(3, 'attacker debug, attack structures');
                                 creep.rangedMassAttack();
                                 if (creep.attack(hostilesStructures) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(hostilesStructures);
@@ -187,10 +189,10 @@ brain.special.roleManager = function () {
                         }
                     } else if (!squad.attacking && creep.room.name == task.startPoint.room.name && creep.pos != task.startPoint.pos) {
                         // move closer to rendevour point
-                        config.log(3, 'attacker debug, move to flag');
                         creep.moveTo(new RoomPosition(task.startPoint.pos.x, task.startPoint.pos.y, task.startPoint.pos.roomName));
                     }
                 } else if (squad.squadType == 'defend') {
+
                     if (creep.room.name != task.startPoint.room.name) {
                         creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name));
                     } else if (creep.room.name == task.startPoint.room.name) {
@@ -198,7 +200,6 @@ brain.special.roleManager = function () {
                         let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
                         if (hostiles) {
-                            config.log(3, 'Room: ' + creep.room.name + ' Defender: ' + creep.id + ' is attacking the enemy creep');
 
                             creep.rangedMassAttack();
                             if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
