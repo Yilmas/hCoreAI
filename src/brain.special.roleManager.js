@@ -92,7 +92,7 @@ brain.special.roleManager = function () {
                     } else {
                         let droppedEnergy = _.max(creep.room.find(FIND_DROPPED_ENERGY), (r) => r.amount);
 
-                        let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy > 1200 });
+                        let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy > creep.carryCapacity });
 
                         if (creep.room.storage) {
                             if (creep.room.storage.store.energy > 100000) {
@@ -193,8 +193,8 @@ brain.special.roleManager = function () {
                     }
                 } else if (squad.squadType == 'defend') {
 
-                    if (creep.room.name != task.startPoint.room.name) {
-                        creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name));
+                    if (creep.room.name != task.endPoint.roomName) {
+                        creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName));
                     } else if (creep.room.name == task.startPoint.room.name) {
                         // attack if hostile creeps exist
                         let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);

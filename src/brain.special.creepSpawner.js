@@ -197,16 +197,13 @@ brain.special.creepSpawner = function () {
                             // Spawn attacker for squad
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' attacker for squad ' + squadName);
 
-                            let forwardBase = Game.flags[squadName];
-                            let target = new RoomPosition(25, 25, squadName);
-
-                            let startPoint = forwardBase; // Set startPoint to flag for rendevour
-                            let endPoint = target; // Set endPoint to the room of the attack
+                            let startPoint = Game.flags[squadName]; // Set startPoint to flag for rendevour
+                            let endPoint = new RoomPosition(25, 25, squadName); // Set endPoint to the room of the attack
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(roles.roleAttacker.operation[operationSize].bodyParts, roles.roleAttacker.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleAttacker.operation[operationSize].bodyParts, roles.roleAttacker.id + uniqueNameId, {
+                                if (spawn.canCreateCreep(roles.roleAttacker.operation[operationSize].bodyParts, squad.squadType + uniqueNameId) == OK) {
+                                    spawn.createCreep(roles.roleAttacker.operation[operationSize].bodyParts, squad.squadType + uniqueNameId, {
                                         task: {
                                             role: roles.roleAttacker.id,
                                             hasResource: false,
