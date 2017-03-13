@@ -120,8 +120,9 @@ config.partsForCarrier = level => {
 };
 
 config.partsForBridge = level => {
-	if (level <= 3) return undefined;
-	if (level >= 4) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level <= 2) return undefined;
+    if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+	if (level >= 5) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
 };
 
 config.partsForClaimer = level => {
