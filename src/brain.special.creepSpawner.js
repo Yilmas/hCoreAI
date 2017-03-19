@@ -87,8 +87,8 @@ brain.special.creepSpawner = function () {
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId, {
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId, {
                                         task: {
                                             role: roles.roleCollector.id,
                                             hasResource: false,
@@ -167,8 +167,8 @@ brain.special.creepSpawner = function () {
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleCollector.operation[operationSize].bodyParts, roles.roleCollector.id + uniqueNameId, {
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId, {
                                         task: {
                                             role: roles.roleCollector.id,
                                             hasResource: false,
