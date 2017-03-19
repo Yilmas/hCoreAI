@@ -7,7 +7,7 @@ brain.special.creepSpawner = function () {
         if (Memory.claimList[roomName].roomType == 'Mine') continue;
 
 
-        let spawn = Game.rooms[roomName].find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_SPAWN })[0];
+        let spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS, { filter: (s) => !s.spawning })[0];
         if (!spawn) continue;
 
 

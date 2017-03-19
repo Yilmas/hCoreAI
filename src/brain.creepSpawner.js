@@ -6,8 +6,7 @@ brain.creepSpawner = function () {
         if (Memory.claimList[roomName] == undefined) continue;
         if (Memory.claimList[roomName].roomType == 'Mine') continue;
 
-        //TODO: This will raise a problem once we get more than one spawn in each room.
-        let spawn = Game.rooms[roomName].find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_SPAWN })[0];
+        let spawn = Game.rooms[roomName].find(FIND_MY_SPAWNS, { filter: (s) => !s.spawning })[0];
         let roles = Game.rooms[roomName].memory.roles;
         let operationSize = config.operationSize(roomName);
 
