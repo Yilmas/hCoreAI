@@ -66,15 +66,15 @@ config.wallOrRampartTargetHitPoints = roomName => {
         case 3:
             return 20000;
         case 4:
-            return 30000;
+            return 25000;
         case 5:
-            return 40000;
-        case 6:
             return 50000;
+        case 6:
+            return 75000;
         case 7:
-            return 60000;
+            return 100000;
         case 8:
-            return 70000;
+            return 250000;
     }
 
     // TODO: Use the following values once the code is implemented and has updated across all rooms
