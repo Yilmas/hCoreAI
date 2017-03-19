@@ -113,3 +113,5 @@ global.getBodyCost = function (theBody) {
     }
     return cost;
 }
+
+export const WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing'];

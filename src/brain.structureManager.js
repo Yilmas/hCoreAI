@@ -8,25 +8,27 @@ brain.structureManager = function () {
         });
 
         let hostiles = room.find(FIND_HOSTILE_CREEPS);
+
         if (hostiles.length) {
-            //Game.notify('User ' + hostiles[0].owner.username + ' spotted');
+            var userName = hostiles[0].owner.username;
+            if (!_.contains(config.WHITE_LIST, userName) && userName != 'Drxx') {
+                let hostileHealer;
 
-            let hostileHealer;
-
-            for (var hostile in hostiles) {
-                for (var item in hostile.body) {
-                    var part = hostile.body[item];
-                    if (part.type === 'heal') {
-                        hostileHealer = hostile;
+                for (var hostile in hostiles) {
+                    for (var item in hostile.body) {
+                        var part = hostile.body[item];
+                        if (part.type === 'heal') {
+                            hostileHealer = hostile;
+                        }
                     }
                 }
-            }
 
-            if (hostileHealer) {
-                // TODO: Does the tower not focus healers ?
-                towers.forEach(tower => tower.attack(hostileHealer));
-            } else {
-                towers.forEach(tower => tower.attack(hostiles[0]));
+                if (hostileHealer) {
+                    // TODO: Does the tower not focus healers ?
+                    towers.forEach(tower => tower.attack(hostileHealer));
+                } else {
+                    towers.forEach(tower => tower.attack(hostiles[0]));
+                }
             }
         } else {
             for (let tower of towers) {
