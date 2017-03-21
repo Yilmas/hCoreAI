@@ -135,15 +135,15 @@ brain.creepSpawner = function () {
                     let storage = spawn.room.storage;
                     let container = spawn.room.controller.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 5);
 
-                    
-                    if (!isNullOrUndefined(link)) {
-                        startPoint = link;
+
+                    if (!isNullOrUndefined(container)) {
+                        startPoint = container;
                     }
                     if (!isNullOrUndefined(storage)) {
                         startPoint = storage;
                     }
-                    if (!isNullOrUndefined(container)) {
-                        startPoint = container;
+                    if (!isNullOrUndefined(link)) {
+                        startPoint = link;
                     }
 
                 } else if (spawn.room.controller.level >= 6) {
@@ -220,7 +220,8 @@ brain.creepSpawner = function () {
                 if (!isNullOrUndefined(controllerContainer)) {
                     // Set endpoint to the controllers container
                     endPoint = controllerContainer;
-                } else if (!isNullOrUndefined(link)) {
+                }
+                if (!isNullOrUndefined(link)) {
                     // Set endpoint to the link
                     endPoint = startPoint.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
                 }
