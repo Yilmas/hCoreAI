@@ -283,7 +283,7 @@ brain.memory = {
                 roomType: 'Outpost',
                 parentRoom: 'E27S83',
                 task: {
-                    useCollectors: true,
+                    useCollectors: false,
                     collectorCount: 0,
                     isClaimed: true,
                     hasClaimer: true
@@ -376,6 +376,19 @@ brain.memory = {
             }
         }
 
+        if (!Memory.claimList['E29S85']) {
+            Memory.claimList['E29S85'] = {
+                roomType: 'Outpost',
+                parentRoom: 'E27S83',
+                task: {
+                    useCollectors: false,
+                    collectorCount: 0,
+                    isClaimed: false,
+                    hasClaimer: false
+                }
+            }
+        }
+
         //if (!Memory.claimList['targetRoom']) {
         //    Memory.claimList['targetRoom'] = {
         //        roomType: 'type', // outpost, mine, base
@@ -439,6 +452,20 @@ brain.memory = {
         if (!Memory.squads['E26S81']) {
             Memory.squads['E26S81'] = {
                 squadBase: 'E27S81',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
+        if (!Memory.squads['E29S85']) {
+            Memory.squads['E29S85'] = {
+                squadBase: 'E27S83',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,
