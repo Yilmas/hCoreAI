@@ -114,4 +114,6 @@ global.getBodyCost = function (theBody) {
     return cost;
 }
 
-export const WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing'];
+config.WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing'];
+
+config.SIGN_MESSAGE = "[Ypsilon Pact] Sector Claimed, unauthorized claims may result in war declarations!";
