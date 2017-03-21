@@ -29,9 +29,22 @@ brain.roleManager = function () {
                                             (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
                         });
 
+                        let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
+
                         if (spawnOrExtension) {
                             if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(spawnOrExtension);
+                            }
+                        } else if (spawn.energy == 300) {
+                            let constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+                            if (constructionSite) {
+                                if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
+                                    creep.moveTo(constructionSite);
+                                }
+                            }
+                        } else if (container) {
+                            if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(container);
                             }
                         }
                     } else {
@@ -146,7 +159,7 @@ brain.roleManager = function () {
                         if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                             creep.moveTo(tower);
                         }
-                    } else if (creep.room.storage.store.energy > 100000) {
+                    } else if (creep.room.storage && creep.room.storage.store.energy > 100000) {
                         let tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity });
                         if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                             creep.moveTo(tower);
@@ -257,6 +270,12 @@ brain.roleManager = function () {
                 if (task.hasResource) {
                     if (task.startPoint) {
                         creep.withdraw(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY);
+                    }
+
+                    if (isNullOrUndefined(creep.room.controller.sign)) {
+                        if (creep.signController(creep.room.controller, config.SIGN_MESSAGE) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(creep.room.controller);
+                        }
                     }
 
                     if (creep.upgradeController(Game.getObjectById(task.endPoint.id)) == ERR_NOT_IN_RANGE) {
