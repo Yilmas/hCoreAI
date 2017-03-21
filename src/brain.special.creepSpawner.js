@@ -33,8 +33,8 @@ brain.special.creepSpawner = function () {
                             let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
                             let endPoint = new RoomPosition(25, 25, claimName); // Set endPoint to target claimName
 
-                            if (spawn.canCreateCreep(roles.roleClaimer.operation[operationSize].bodyParts, roles.roleClaimer.id + uniqueNameId) == OK) {
-                                spawn.createCreep(roles.roleClaimer.operation[operationSize].bodyParts,
+                            if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleClaimer.id), roles.roleClaimer.id + uniqueNameId) == OK) {
+                                spawn.createCreep(config.getBodyParts(roomName, roles.roleClaimer.id),
                                     roles.roleClaimer.id + uniqueNameId,
                                     {
                                         task: {
@@ -64,8 +64,8 @@ brain.special.creepSpawner = function () {
                             }
 
                             if (startPoint && endPoint) {
-                                if (spawn.canCreateCreep(roles.roleProspector.operation[operationSize].bodyParts, roles.roleProspector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleProspector.operation[operationSize].bodyParts,
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleProspector.id), roles.roleProspector.id + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, roles.roleProspector.id),
                                         roles.roleProspector.id + uniqueNameId,
                                         {
                                             task: {
@@ -87,8 +87,8 @@ brain.special.creepSpawner = function () {
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId, {
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCollector.id), roles.roleCollector.id + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, roles.roleCollector.id), roles.roleCollector.id + uniqueNameId, {
                                         task: {
                                             role: roles.roleCollector.id,
                                             hasResource: false,
@@ -113,7 +113,7 @@ brain.special.creepSpawner = function () {
                             let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
                             let endPoint = new RoomPosition(25, 25, claimName); // Set endPoint to target claimName
 
-                            if (spawn.canCreateCreep(roles.roleClaimer.operation[operationSize].bodyParts, roles.roleClaimer.id + uniqueNameId) == OK) {
+                            if (spawn.canCreateCreep([CLAIM, MOVE, MOVE, MOVE], roles.roleClaimer.id + uniqueNameId) == OK) {
                                 spawn.createCreep([CLAIM, MOVE, MOVE, MOVE], roles.roleClaimer.id + uniqueNameId, {
                                     task: {
                                         role: roles.roleClaimer.id,
@@ -142,8 +142,8 @@ brain.special.creepSpawner = function () {
                             }
 
                             if (startPoint && endPoint) {
-                                if (spawn.canCreateCreep(roles.roleProspector.operation[operationSize].bodyParts, roles.roleProspector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleProspector.operation[operationSize].bodyParts,
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleProspector.id), roles.roleProspector.id + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, roles.roleProspector.id),
                                         roles.roleProspector.id + uniqueNameId,
                                         {
                                             task: {
@@ -202,8 +202,8 @@ brain.special.creepSpawner = function () {
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(roles.roleAttacker.operation[operationSize].bodyParts, squad.squadType + uniqueNameId) == OK) {
-                                    spawn.createCreep(roles.roleAttacker.operation[operationSize].bodyParts, squad.squadType + uniqueNameId, {
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleAttacker.id), squad.squadType + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, roles.roleAttacker.id), squad.squadType + uniqueNameId, {
                                         task: {
                                             role: roles.roleAttacker.id,
                                             hasResource: false,
