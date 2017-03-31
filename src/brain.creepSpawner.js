@@ -127,7 +127,7 @@ brain.creepSpawner = function () {
                 config.log(3, 'debug scope: Room: ' + roomName + ' upgrader');
 
                 let startPoint = undefined; // Set startPoint to either a null, container, storage or link
-                
+
                 // Defined startpoint by what should exist at a given controller level
                 if (spawn.room.controller.level >= 3 && spawn.room.controller.level <= 5) {
                     // Use container > storage > link
@@ -136,11 +136,11 @@ brain.creepSpawner = function () {
                     let container = spawn.room.controller.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 5);
 
 
-                    if (!isNullOrUndefined(container)) {
-                        startPoint = container;
-                    }
                     if (!isNullOrUndefined(storage)) {
                         startPoint = storage;
+                    }
+                    if (!isNullOrUndefined(container)) {
+                        startPoint = container;
                     }
                     if (!isNullOrUndefined(link)) {
                         startPoint = link;
@@ -207,7 +207,7 @@ brain.creepSpawner = function () {
                     }
                 }
 
-            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage || containers) && (link || controllerContainer)) {
+            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage) && (link || controllerContainer)) {
                 // Spawn bridge
                 config.log(3, 'debug scope: Room: ' + roomName + ' bridge');
 
