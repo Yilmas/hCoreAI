@@ -50,12 +50,11 @@ brain.roleManager = function () {
                     } else {
                         // Distributors exists, start filling container
                         if (task.endPoint) {
-                            // TODO: Prevent harvester from trying to deposit in a container when primary is full
-
                             //if (Game.getObjectById(task.endPoint.id).store.energy < 2000) {
                                 if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(Game.getObjectById(task.endPoint.id));
                                 }
+
                             //} else {
                             //    let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                             //        filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < 2000
