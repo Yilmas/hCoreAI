@@ -389,6 +389,30 @@ brain.memory = {
             }
         }
 
+        if (!Memory.claimList['E25S82']) {
+            Memory.claimList['E25S82'] = {
+                roomType: 'Mine', // outpost, mine, base
+                parentRoom: 'E26S83',
+                task: {
+                    useCollectors: true, // start with false, once all constructions are complete change to true
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
+        if (!Memory.claimList['E29S84']) {
+            Memory.claimList['E29S84'] = {
+                roomType: 'Mine', // outpost, mine, base
+                parentRoom: 'E29S85',
+                task: {
+                    useCollectors: false, // start with false, once all constructions are complete change to true
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
         //if (!Memory.claimList['targetRoom']) {
         //    Memory.claimList['targetRoom'] = {
         //        roomType: 'type', // outpost, mine, base
@@ -463,9 +487,9 @@ brain.memory = {
             }
         }
 
-        if (!Memory.squads['E29S85']) {
-            Memory.squads['E29S85'] = {
-                squadBase: 'E27S83',
+        if (!Memory.squads['E29S84']) {
+            Memory.squads['E29S84'] = {
+                squadBase: 'E29S85',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,
