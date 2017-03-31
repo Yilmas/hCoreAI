@@ -37,13 +37,17 @@ brain.special.roleManager = function () {
                             if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(container);
                             }
+
+                            if (container.store.energy > 1600) {
+                                // TODO: Request haul, unless already requested
+                            }
+
                         } else {
                             // drop energy
                             creep.drop(RESOURCE_ENERGY);
                         }
                     }
                 } else if (!task.hasResource) {
-                    // TODO: If the room has lost all creeps, line 49 will cause an error that can only be solved by killing the prospector causing the error.
                     if (creep.room.name != task.startPoint.roomName) {
                         creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
                     } else {
@@ -82,6 +86,9 @@ brain.special.roleManager = function () {
                         }
                     }
                 } else if (!task.hasResource) {
+                    // TODO: Find haul request by range to target and reserve it, add its own estimated arrival time to the job
+                    // If another reservation is in place, determine if new creep is faster than the current reservation.
+
                     if (creep.room.name != task.startPoint.roomName) {
                         creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: 50 });
                     } else {
@@ -103,6 +110,9 @@ brain.special.roleManager = function () {
                             if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(container);
                             }
+
+                            // TODO: delete haul request
+
                         } else if (droppedEnergy) {
                             if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(droppedEnergy);
