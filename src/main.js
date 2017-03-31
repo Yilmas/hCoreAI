@@ -1,15 +1,5 @@
 require('require');
 
-if (config.profiler.enabled) {
-    try {
-        var profiler = require('screeps-profiler');
-        profiler.enable();
-    } catch (e) {
-        console.log('screeps-profiler not found');
-        config.profiler.enabled = false;
-    }
-}
-
 
 var main = function () {
     if (Game.cpu.bucket < Game.cpu.tickLimit) {
@@ -60,12 +50,5 @@ var main = function () {
 };
 
 module.exports.loop = function () {
-    if (config.profiler.enabled) {
-        profiler.wrap(function () {
-            main();
-        });
-    }
-    else {
-        main();
-    }
+    main();
 }

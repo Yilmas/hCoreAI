@@ -9,9 +9,6 @@ global.brain = {
 * Configuration paramaters
 */
 global.config = {
-    profiler: {
-        enabled: false
-    },
     debug: {
         enabled: true,
         debugLevel: 2 // 0: all, 1: general, 2: warning, 3: debug
@@ -58,7 +55,7 @@ global.config.operationSize = function (roomName) {
 config.wallOrRampartTargetHitPoints = roomName => {
     let room = Game.rooms[roomName];
 
-    switch(room.controller.level) {
+    switch (room.controller.level) {
         case 1:
             return 10000;
         case 2:

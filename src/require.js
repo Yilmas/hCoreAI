@@ -1,5 +1,4 @@
 require('config');
-require('logging');
 require('utils');
 
 // load configs
