@@ -72,6 +72,20 @@ brain.structureManager = function () {
                         storageLink.transferEnergy(controllerLink);
                     }
                 }
+
+                if (room.controller.level >= 7) {
+                    // Code to start deliver harvested resources to controller link then base link
+                    for (let source of room.find(FIND_SOURCES)) {
+                        let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
+                        if (sourceLink) {
+                            if (controllerLink.energy < 600) {
+                                sourceLink.transferEnergy(controllerLink);
+                            } else {
+                                sourceLink.transferEnergy(storageLink);
+                            }
+                        }
+                    }
+                }
             }
         }
 
