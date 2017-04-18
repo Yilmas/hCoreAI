@@ -311,8 +311,18 @@ brain.roleManager = function () {
                     task.hasResource = true;
                 }
                 if (task.hasResource) {
-                    if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(Game.getObjectById(task.endPoint.id));
+                    if (Game.getObjectById(task.endPoint.id).energy < 800) {  //link
+                        if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(Game.getObjectById(task.endPoint.id));
+                        }
+                    } else if (Game.getObjectById(task.endPoint.id).store && Game.getObjectById(task.endPoint.id).store.energy < 2000) { //container
+                        if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(Game.getObjectById(task.endPoint.id));
+                        }
+                    } else if (creep.room.terminal && creep.room.terminal.store.energy < 20000) {
+                        if (creep.transfer(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(creep.room.terminal);
+                        }
                     }
                 } else if (!task.hasResource) {
                     if (creep.room.storage.store.energy > 800) {

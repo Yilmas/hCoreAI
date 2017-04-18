@@ -47,6 +47,15 @@ var main = function () {
     catch (ex) {
         console.log('<font color=red>StructureManager: ' + ex + '</font>');
     }
+
+
+    // Lab Manager
+    try {
+        brain.labManager.start();
+    }
+    catch (ex) {
+        console.log('<font color=red>Lab Manager: ' + ex.stack + '</font>');
+    }
 };
 
 module.exports.loop = function () {

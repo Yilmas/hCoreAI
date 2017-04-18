@@ -61,8 +61,8 @@ brain.creepSpawner = function () {
                     filter: (s) => s.structureType == STRUCTURE_CONTAINER
                 }); // Set endPoint to container
 
-                if (spawn.canCreateCreep(roles.roleHarvester.operation[operationSize].bodyParts, roles.roleHarvester.id + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleHarvester.operation[operationSize].bodyParts, roles.roleHarvester.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleHarvester.id), roles.roleHarvester.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, role.roleHarvester.id), roles.roleHarvester.id + uniqueNameID, {
                         name: roles.roleHarvester.id + uniqueNameID,
                         task: {
                             role: roles.roleHarvester.id,
@@ -82,8 +82,8 @@ brain.creepSpawner = function () {
 
                 let endPoint = spawn; // set endPoint to spawn!/extensions/towers
 
-                if (spawn.canCreateCreep(roles.roleDistributor.operation[operationSize].bodyParts, roles.roleDistributor.id + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleDistributor.operation[operationSize].bodyParts, roles.roleDistributor.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleDistributor.id), roles.roleDistributor.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, role.roleDistributor.id), roles.roleDistributor.id + uniqueNameID, {
                         task: {
                             role: roles.roleDistributor.id,
                             hasResource: false,
@@ -110,8 +110,8 @@ brain.creepSpawner = function () {
                 let startPoint = spawn.room.storage; // Set startPoint to the storage
                 let endPoint; // not used!!!
 
-                if (spawn.canCreateCreep(roles.roleBuilder.operation[operationSize].bodyParts, roles.roleBuilder.id + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleBuilder.operation[operationSize].bodyParts, roles.roleBuilder.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleBuilder.id), roles.roleBuilder.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, role.roleBuilder.id), roles.roleBuilder.id + uniqueNameID, {
                         task: {
                             role: roles.roleBuilder.id,
                             hasResource: false,
@@ -153,8 +153,8 @@ brain.creepSpawner = function () {
 
                 let endPoint = spawn.room.controller; // Set endPoint to the controller
 
-                if (spawn.canCreateCreep(roles.roleUpgrader.operation[operationSize].bodyParts, roles.roleUpgrader.id + uniqueNameID) == OK) {
-                    spawn.createCreep(roles.roleUpgrader.operation[operationSize].bodyParts, roles.roleUpgrader.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, role.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID, {
                         task: {
                             role: roles.roleUpgrader.id,
                             hasResource: false,
@@ -194,8 +194,8 @@ brain.creepSpawner = function () {
                 }
 
                 if (startPoint && endPoint) {
-                    if (spawn.canCreateCreep(roles.roleCarrier.operation[operationSize].bodyParts, roles.roleCarrier.id + uniqueNameID) == OK) {
-                        spawn.createCreep(roles.roleCarrier.operation[operationSize].bodyParts, roles.roleCarrier.id + uniqueNameID, {
+                    if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleCarrier.id), roles.roleCarrier.id + uniqueNameID) == OK) {
+                        spawn.createCreep(config.getBodyParts(roomName, role.roleCarrier.id), roles.roleCarrier.id + uniqueNameID, {
                             task: {
                                 role: roles.roleCarrier.id,
                                 hasResource: false,
@@ -207,7 +207,7 @@ brain.creepSpawner = function () {
                     }
                 }
 
-            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage) && (link || controllerContainer)) {
+            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage) && (link || controllerContainer) && spawn.room.controller.level >= 4) {
                 // Spawn bridge
                 config.log(3, 'debug scope: Room: ' + roomName + ' bridge');
 
@@ -268,8 +268,8 @@ brain.creepSpawner = function () {
                 let startPoint = mineralContainer; // Set startPoint to nearby container
                 let endPoint = spawn.room.storage; // set endPoint to the storage
 
-                if (spawn.canCreateCreep([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mineralCollector' + uniqueNameID) == OK) {
-                    spawn.createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mineralCollector' + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleCollector.id), 'mineralCollector' + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, role.roleCollector.id), 'mineralCollector' + uniqueNameID, {
                         name: 'mineralCollector' + uniqueNameID,
                         task: {
                             role: 'mineralCollector',
@@ -281,6 +281,27 @@ brain.creepSpawner = function () {
                     break;
                 }
 
+            }
+            else if ((spawn.room.memory.reactions && spawn.room.memory.reactions['UH']) && _.sum(Game.creeps, (c) => c.room.name == roomName && c.memory.task.role == 'laborant') < 1) {
+                // Spawn Laborant
+                config.log(3, 'debug scope: Room: ' + roomName + ' laborant');
+
+                let startPoint = spawn.room.terminal;
+                let endPoint = undefined;
+
+                if (spawn.canCreateCreep([MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], 'laborant' + uniqueNameID) == OK) {
+                    console.log('test laborant');
+                    spawn.createCreep([MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], 'laborant' + uniqueNameID, {
+                        name: 'laborant' + uniqueNameID,
+                        task: {
+                            role: 'laborant',
+                            hasResource: false,
+                            startPoint: startPoint,
+                            endPoint: endPoint
+                        }
+                    });
+                    break;
+                }
             }
         }
     }
