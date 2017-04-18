@@ -1,3 +1,42 @@
+brain.spawner.config.buildNext = roomName => {
+
+    let roomMemory = Memory.rooms[roomName];
+
+    if (roomMemory.roomType == 'base') {
+        return 'base';
+    } else if (roomMemory.roomType == 'mine') {
+        return 'mine';
+    } else if (roomMemory.roomType == 'outpost') {
+        return 'outpost';
+    }
+}
+
+brain.spawner.config.buildMineNext = roomName => {
+    
+}
+
+brain.spawner.config.buildOutpostNext = roomName => {
+
+}
+
+brain.spawner.config.creepPriority = role => {
+    if (role == 'harvester') return 1;
+    if (role == 'distributor') return 2;
+    if (role == 'carrier') return 3;
+    if (role == 'upgrader') return 4;
+    if (role == 'bridge') return 5;
+    if (role == 'builder') return 6;
+    if (role == 'miner') return 6;
+    if (role == 'mineralCollector') return 3;
+    if (role == 'reserver') return 4;
+    if (role == 'prospector') return 5;
+    if (role == 'collector') return 6;
+    if (role == 'claimer') return 1;
+    if (role == 'offSiteBuilder') return 3;
+}
+
+
+
 config.energyCapacityAvailable = [
     300,  // 1
     550,  // 2
@@ -91,56 +130,57 @@ config.roleBodyParts = (role, level) => {
 
 // Harvester
 config.partsForHarvester = level => {
-  if (level == 1) return [WORK, WORK, CARRY, MOVE];
-  if (level == 2) return [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
-  if (level >= 3) return [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
+    if (level == 1) return [WORK, WORK, CARRY, MOVE];
+    if (level == 2) return [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
+    if (level >= 3) return [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE];
 };
 
 // Distributor
 config.partsForDistributor = level => {
-  if (level == 1) return undefined;
-  if (level >= 2 && level <= 3) return [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
-  if (level >= 4 && level <= 5) return [WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
-  if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level == 1) return undefined;
+    if (level == 2) return [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
+    if (level >= 3) return [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Upgrader
 config.partsForUpgrader = level => {
-  if (level >= 1 && level <= 2) return [WORK, WORK, CARRY, MOVE];
-  if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
-  if (level >= 5) return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level >= 1 && level <= 2) return [WORK, WORK, CARRY, MOVE];
+    if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
+    if (level >= 5) return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
 };
 
 // Builder
 config.partsForBuilder = level => {
-  if (level >= 1 && level <= 2) return [WORK, CARRY, CARRY, MOVE, MOVE];
-  if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
-  if (level >= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 1 && level <= 2) return [WORK, CARRY, CARRY, MOVE, MOVE];
+    if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
+    if (level == 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Carrier
 config.partsForCarrier = level => {
-  if (level <= 3) return undefined;
-  if (level >= 4) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level <= 2) return undefined;
+    if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 5) return [MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Bridge
 config.partsForBridge = level => {
-  if (level <= 2) return undefined;
-  if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
-  if (level >= 5) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level <= 2) return undefined;
+    if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 5) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
 };
 
 // Claimer
 config.partsForClaimer = level => {
-  if (level <= 3) return undefined;
-  if (level >= 4) return [CLAIM, CLAIM, MOVE, MOVE];
+    if (level <= 3) return undefined;
+    if (level >= 4) return [CLAIM, CLAIM, MOVE, MOVE];
 };
 
 // Prospector
 config.partsForProspector = level => {
-  if (level <= 3) return undefined;
-  if (level >= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
+    if (level <= 3) return undefined;
+    if (level >= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
 };
 
 // Collector
@@ -153,14 +193,21 @@ config.partsForCollector = level => {
 
 // Attacker
 config.partsForAttacker = level => {
-  if (level <= 2) return undefined;
-  if (level >= 3 && level <= 4) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK];
-  if (level >= 5) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK];
+    if (level <= 2) return undefined;
+    if (level >= 3 && level <= 4) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK];
+    if (level >= 5) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK];
 };
 
 // Healer
 config.partsForHealer = level => {
-  if (level <= 2) return undefined;
-  if (level >= 3 && level <= 4) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL];
-  if (level >= 5) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
+    if (level <= 2) return undefined;
+    if (level >= 3 && level <= 4) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL];
+    if (level >= 5) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
 };
+
+
+brain.spawner.config.checkCreepSpawnForRoom = targetRoom => {
+    let room = Game.rooms[targetRoom];
+
+
+}
