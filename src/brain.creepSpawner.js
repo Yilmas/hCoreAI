@@ -303,6 +303,33 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
+            else if ((spawn.room.name == 'E24S81' || spawn.room.name == 'E27S83') && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
+                // Spawn Pillager
+                config.log(3, 'debug scope: Room: ' + roomName + ' pillager');
+
+                let startPoint = spawn.room.storage;
+                let endPoint = undefined;
+
+                if (roomName == 'E24S81') {
+                    endPoint = new RoomPosition(25, 25, 'E23S81');
+                } else if (roomName == 'E27S83') {
+                    endPoint = new RoomPosition(25, 25, 'E28S83');
+                }
+
+
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'pillager' + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'pillager' + uniqueNameID, {
+                        name: 'pillager' + uniqueNameID,
+                        task: {
+                            role: 'pillager',
+                            hasResource: false,
+                            startPoint: startPoint,
+                            endPoint: endPoint
+                        }
+                    });
+                    break;
+                }
+            }
         }
     }
 }

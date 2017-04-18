@@ -378,6 +378,62 @@ brain.roleManager = function () {
                 }
             }
 
+            /************************/
+            /******* PILLAGER *******/
+            /************************/
+
+            // A miner takes mineral from extractor and transfers it to a container
+            if (task.role == 'pillager') {
+                if (task.hasResource) {
+                    if (creep.room.name != task.startPoint.room.name) {
+                        creep.moveTo(new RoomPosition(25, 25, task.startPoint.room.name), { reusePath: 50 });
+                    } else {
+                        let mineralType = undefined;
+
+                        for (let item in creep.carry) {
+                            mineralType = item;
+                        }
+
+                        if (creep.transfer(Game.getObjectById(task.startPoint.id), mineralType) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(Game.getObjectById(task.startPoint.id));
+                        }
+                    }
+                } else if (!task.hasResource) {
+                    // Pillage room
+                    if (creep.room.name != task.endPoint.roomName) {
+                        creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName), { reusePath: 50 });
+                    } else {
+                        let storage = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_STORAGE });
+
+                        if (storage && _.sum(storage.store) > 0) {
+                            let mineralType = undefined;
+
+                            for (let item in storage.store) {
+                                mineralType = item;
+                            }
+
+                            if (creep.withdraw(storage, mineralType) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(storage);
+                            }
+                        }
+
+                        let spawnAndExtensions = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (s) =>
+                                (s.structureType == STRUCTURE_SPAWN && s.energy > 0) ||
+                                (s.structureType == STRUCTURE_EXTENSION && s.energy > 0)
+                        });
+
+                        if (spawnAndExtensions) {
+                            if (creep.withdraw(spawnAndExtensions, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(spawnAndExtensions);
+                            }
+                        }
+
+                        if (_.sum(creep.carry == creep.carryCapacity)) config.log(3, '[Pillage] Room: ' + creep.room.name + ' stole ' + creep.carryCapacity + ' of ' + creep.carry[0]);
+                    }
+                }
+            }
+
         }
         catch (ex) {
             console.log('<font color=red>RoleManager: ' + ex + '</font>');
