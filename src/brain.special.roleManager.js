@@ -185,7 +185,7 @@ brain.special.roleManager = function () {
                             );
 
                             if (hostiles) {
-                                creep.rangedMassAttack();
+                                creep.rangedAttack(hostiles);
                                 if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(hostiles);
                                 }
