@@ -262,9 +262,6 @@ brain.memory = {
             room.memory.roles.roleProspector.operation.small.minimumOfProspectors = sources;
             room.memory.roles.roleProspector.operation.medium.minimumOfProspectors = sources;
             room.memory.roles.roleProspector.operation.large.minimumOfProspectors = sources;
-
-
-
         }
 
         // Start script for room reservation and claims
@@ -364,18 +361,6 @@ brain.memory = {
             }
         }
 
-        if (!Memory.claimList['E26S81']) {
-            Memory.claimList['E26S81'] = {
-                roomType: 'Mine',
-                parentRoom: 'E27S81',
-                task: {
-                    useCollectors: false,
-                    collectorCount: 0,
-                    hasReserver: false
-                }
-            }
-        }
-
         if (!Memory.claimList['E29S85']) {
             Memory.claimList['E29S85'] = {
                 roomType: 'Outpost',
@@ -403,6 +388,30 @@ brain.memory = {
 
         if (!Memory.claimList['E29S84']) {
             Memory.claimList['E29S84'] = {
+                roomType: 'Mine', // outpost, mine, base
+                parentRoom: 'E29S85',
+                task: {
+                    useCollectors: false, // start with false, once all constructions are complete change to true
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
+        if (!Memory.claimList['E25S81']) {
+            Memory.claimList['E25S81'] = {
+                roomType: 'Mine', // outpost, mine, base
+                parentRoom: 'E24S81',
+                task: {
+                    useCollectors: false, // start with false, once all constructions are complete change to true
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
+        if (!Memory.claimList['E28S84']) {
+            Memory.claimList['E28S84'] = {
                 roomType: 'Mine', // outpost, mine, base
                 parentRoom: 'E29S85',
                 task: {
@@ -473,9 +482,24 @@ brain.memory = {
             }
         }
 
-        if (!Memory.squads['E26S81']) {
-            Memory.squads['E26S81'] = {
-                squadBase: 'E27S81',
+        // Room is being dismantled
+        //if (!Memory.squads['E26S81']) {
+        //    Memory.squads['E26S81'] = {
+        //        squadBase: 'E27S81',
+        //        squadType: 'defend', //attack, defend
+        //        squadHasSpawned: false,
+        //        attacking: false,
+        //        squadSize: 1,
+        //        attackers: 1,
+        //        healers: 0,
+        //        squadMembers: {
+        //        }
+        //    }
+        //}
+
+        if (!Memory.squads['E29S84']) {
+            Memory.squads['E29S84'] = {
+                squadBase: 'E29S85',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,
@@ -487,9 +511,23 @@ brain.memory = {
             }
         }
 
-        if (!Memory.squads['E29S84']) {
-            Memory.squads['E29S84'] = {
-                squadBase: 'E29S85',
+        if (!Memory.squads['E25S82']) {
+            Memory.squads['E25S82'] = {
+                squadBase: 'E26S83',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
+        if (!Memory.squads['E25S81']) {
+            Memory.squads['E25S81'] = {
+                squadBase: 'E24S81',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,

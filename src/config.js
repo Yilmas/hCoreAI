@@ -26,7 +26,7 @@ global.config.operationSize = function (roomName) {
 
     if (room.find(FIND_CREEPS, { filter: (c) => c.my == true }).length < 4) {
         // Initiate reboot process
-        config.log(2, 'Room: ' + roomName + ' Running reboot process of operations');
+        config.log(1, 'Room: ' + roomName + ' Running reboot process of operations');
         return 'small';
     } else {
         if (room.controller.level <= 2) {
@@ -56,22 +56,22 @@ config.wallOrRampartTargetHitPoints = roomName => {
     let room = Game.rooms[roomName];
 
     switch (room.controller.level) {
-        case 1:
-            return 10000;
-        case 2:
-            return 15000;
-        case 3:
-            return 20000;
-        case 4:
-            return 25000;
-        case 5:
-            return 50000;
-        case 6:
-            return 75000;
-        case 7:
-            return 100000;
-        case 8:
-            return 250000;
+    case 1:
+        return 10000;
+    case 2:
+        return 15000;
+    case 3:
+        return 20000;
+    case 4:
+        return 25000;
+    case 5:
+        return 50000;
+    case 6:
+        return 75000;
+    case 7:
+        return 100000;
+    case 8:
+        return 250000;
     }
 
     // TODO: Use the following values once the code is implemented and has updated across all rooms

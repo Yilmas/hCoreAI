@@ -178,12 +178,12 @@ brain.special.roleManager = function () {
                             // start the actual attack
                             let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
                             let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                                filter: (s) =>
-                                    s.structureType == STRUCTURE_TOWER ||
-                                    s.structureType == STRUCTURE_SPAWN ||
-                                    s.structureType == STRUCTURE_EXTENSION ||
-                                    s.structureType == STRUCTURE_TOWER
-                            }
+                                    filter: (s) =>
+                                        s.structureType == STRUCTURE_TOWER ||
+                                        s.structureType == STRUCTURE_SPAWN ||
+                                        s.structureType == STRUCTURE_EXTENSION ||
+                                        s.structureType == STRUCTURE_TOWER
+                                }
                             );
 
                             if (hostiles) {
