@@ -61,8 +61,8 @@ brain.creepSpawner = function () {
                     filter: (s) => s.structureType == STRUCTURE_CONTAINER
                 }); // Set endPoint to container
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleHarvester.id), roles.roleHarvester.id + uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, role.roleHarvester.id), roles.roleHarvester.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleHarvester.id), roles.roleHarvester.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleHarvester.id), roles.roleHarvester.id + uniqueNameID, {
                         name: roles.roleHarvester.id + uniqueNameID,
                         task: {
                             role: roles.roleHarvester.id,
@@ -82,8 +82,8 @@ brain.creepSpawner = function () {
 
                 let endPoint = spawn; // set endPoint to spawn!/extensions/towers
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleDistributor.id), roles.roleDistributor.id + uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, role.roleDistributor.id), roles.roleDistributor.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id +uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id +uniqueNameID, {
                         task: {
                             role: roles.roleDistributor.id,
                             hasResource: false,
@@ -153,8 +153,8 @@ brain.creepSpawner = function () {
 
                 let endPoint = spawn.room.controller; // Set endPoint to the controller
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, role.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID, {
                         task: {
                             role: roles.roleUpgrader.id,
                             hasResource: false,
@@ -194,8 +194,8 @@ brain.creepSpawner = function () {
                 }
 
                 if (startPoint && endPoint) {
-                    if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleCarrier.id), roles.roleCarrier.id + uniqueNameID) == OK) {
-                        spawn.createCreep(config.getBodyParts(roomName, role.roleCarrier.id), roles.roleCarrier.id + uniqueNameID, {
+                    if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCarrier.id), roles.roleCarrier.id + uniqueNameID) == OK) {
+                        spawn.createCreep(config.getBodyParts(roomName, roles.roleCarrier.id), roles.roleCarrier.id + uniqueNameID, {
                             task: {
                                 role: roles.roleCarrier.id,
                                 hasResource: false,
@@ -268,8 +268,8 @@ brain.creepSpawner = function () {
                 let startPoint = mineralContainer; // Set startPoint to nearby container
                 let endPoint = spawn.room.storage; // set endPoint to the storage
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleCollector.id), 'mineralCollector' + uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, role.roleCollector.id), 'mineralCollector' + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'mineralCollector' + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'mineralCollector' + uniqueNameID, {
                         name: 'mineralCollector' + uniqueNameID,
                         task: {
                             role: 'mineralCollector',

@@ -1,3 +1,6 @@
+brain.spawner = {};
+brain.spawner.config = {};
+
 brain.spawner.config.buildNext = roomName => {
 
     let roomMemory = Memory.rooms[roomName];
