@@ -110,8 +110,8 @@ brain.creepSpawner = function () {
                 let startPoint = spawn.room.storage; // Set startPoint to the storage
                 let endPoint; // not used!!!
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, role.roleBuilder.id), roles.roleBuilder.id + uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, role.roleBuilder.id), roles.roleBuilder.id + uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleBuilder.id), roles.roleBuilder.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleBuilder.id), roles.roleBuilder.id + uniqueNameID, {
                         task: {
                             role: roles.roleBuilder.id,
                             hasResource: false,
