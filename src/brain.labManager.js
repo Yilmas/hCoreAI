@@ -24,12 +24,12 @@ brain.labManager.start = function () {
 
             let reaction = creep.room.memory.reactions['UH'];
 
-            let lab1 = Game.getObjectById(reaction.labs.utriumLab);
-            let lab1Type = RESOURCE_UTRIUM;
-            let lab2 = Game.getObjectById(reaction.labs.hydrogenLab);
-            let lab2Type = RESOURCE_HYDROGEN;
-            let resultLab = Game.getObjectById(reaction.labs.utriumHydrideLab);
-            let resultLabType = RESOURCE_UTRIUM_HYDRIDE;
+            let lab1 = Game.getObjectById(reaction.lab1.id);
+            let lab1Type = reaction.lab1.resourceType;
+            let lab2 = Game.getObjectById(reaction.lab2.id);
+            let lab2Type = reaction.lab2.resourceType;
+            let resultLab = Game.getObjectById(reaction.resultLab.id);
+            let resultLabType = reaction.lab1.resourceType;
             let terminal = creep.room.terminal;
 
             if (resultLab.mineralAmount == resultLab.mineralCapacity) {
@@ -122,9 +122,9 @@ brain.labManager.runReactions = roomName => {
             let reactionType = reaction.longName;
 
             if (reactionType == 'utriumHydride') {
-                let utriumLab = Game.getObjectById(reaction.labs.utriumLab);
-                let hydrogenLab = Game.getObjectById(reaction.labs.hydrogenLab);
-                let utriumHydrideLab = Game.getObjectById(reaction.labs.utriumHydrideLab);
+                let utriumLab = Game.getObjectById(reaction.lab1.id);
+                let hydrogenLab = Game.getObjectById(reaction.lab2.id);
+                let utriumHydrideLab = Game.getObjectById(reaction.resultLab.id);
 
                 if ((utriumLab.mineralAmount >= hydrogenLab.mineralAmount && hydrogenLab.mineralAmount >= utriumLab.mineralAmount) || reaction.isRunning) {
                     // run reaction
@@ -149,62 +149,20 @@ brain.memory.setupReaction = function () {
             UH: {
                 longName: 'utriumHydride',
                 isRunning: false,
-                labs: {
-                    utriumLab: '58c6f3acdb541b3ef7ebb703',
-                    hydrogenLab: '58c6e5cd1016063aefbde12a',
-                    utriumHydrideLab: '58c7079fccd761eb2cc8e764'
+                lab1: {
+                    id: '58c6f3acdb541b3ef7ebb703',
+                    resourceType: RESOURCE_UTRIUM
+                },
+                lab2: {
+                    id: '58c6e5cd1016063aefbde12a',
+                    resourceType: RESOURCE_HYDROGEN
+                },
+                resultLab: {
+                    id: '58c7079fccd761eb2cc8e764',
+                    resourceType: RESOURCE_UTRIUM_HYDRIDE
                 }
             }
         }
     }
 
 };
-
-brain.labManager.roleManager = creep => {
-    let task = creep.memory.task;
-    if (task.role == 'laborant') {
-
-        // get the reactions for the room where the creep is located
-        let reactions = creep.room.memory.reactions;
-
-
-        if (task.hasResource) {
-            // end product should be stored in terminal
-            // base mineral should be delivered to the appropriate lab
-
-        } else if (!task.hasResource) {
-            // decide what to do
-
-            if (roomHasActiveReaction(creep.room.name)) {
-                // collect end product
-                for (let reaction of reactions) {
-                    if (reaction.isRunning) {
-                        let resultLab = undefined;
-                        if (reaction.longName == 'utriumHydride') {
-                            resultLab = reaction.utriumHydrideLab;
-                        }
-
-                        if (resultLab) {
-                            if (creep.withdraw(resultLab, resultLab.mineralType) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(resultLab);
-                            }
-                        }
-                    }
-                }
-            } else {
-                // collect base minerals
-            }
-
-        }
-    }
-}
-
-brain.labManager.utils = {
-    roomHasActiveReaction: function (roomName) {
-        for (let reaction in Game.rooms[roomName].memory.reactions) {
-            if (reaction.isRunning) {
-                return true;
-            }
-        }
-    }
-}
