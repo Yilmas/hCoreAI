@@ -449,7 +449,7 @@ brain.roleManager = function () {
                             }
 
                             if (creep.withdraw(structureWithResources, mineralType) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(storage);
+                                creep.moveTo(structureWithResources);
                             }
                         }
 
