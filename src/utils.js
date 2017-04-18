@@ -110,5 +110,9 @@ global.utils = {
                 // If I have forgotton a structure, or a new one is added
                 return 5000;
         }
+    },
+
+    sendMinerals: function(fromRoom, toRoom, resourceType, amount) {
+        return Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
     }
 }
