@@ -180,9 +180,7 @@ brain.special.roleManager = function () {
                             let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                                     filter: (s) =>
                                         s.structureType == STRUCTURE_TOWER ||
-                                        s.structureType == STRUCTURE_SPAWN ||
-                                        s.structureType == STRUCTURE_EXTENSION ||
-                                        s.structureType == STRUCTURE_TOWER
+                                        s.structureType == STRUCTURE_SPAWN
                                 }
                             );
 
@@ -192,7 +190,7 @@ brain.special.roleManager = function () {
                                     creep.moveTo(hostiles);
                                 }
                             } else if (hostilesStructures) {
-                                creep.rangedMassAttack();
+                                creep.rangedAttack(hostilesStructures);
                                 if (creep.attack(hostilesStructures) == ERR_NOT_IN_RANGE) {
                                     creep.moveTo(hostilesStructures);
                                 }
