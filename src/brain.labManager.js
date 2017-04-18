@@ -98,7 +98,7 @@ brain.labManager.start = function () {
                         creep.moveTo(terminal);
                     }
                 } else {
-                    if (creep.withdraw(resultLab, resultLabType) == ERR_NOT_IN_RANGE) {
+                    if (creep.withdraw(resultLab, resultLab.mineralType) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(resultLab);
                     }
                 }
