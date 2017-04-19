@@ -38,7 +38,14 @@ brain.creepSpawner = function () {
                 mineralContainer = mineral.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
             }
 
+            let sourceHasLinks = false;
 
+            for (let source of spawn.room.find(FIND_SOURCES)) {
+                let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
+                if (sourceLink) {
+                    sourceHasLinks = true;
+                }
+            }
 
             if (roles.roleHarvester.amountOfHarvesters < roles.roleHarvester.operation[operationSize].minimumOfHarvesters) {
                 // Spawn harvester
@@ -164,7 +171,7 @@ brain.creepSpawner = function () {
                     });
                     break;
                 }
-            } else if (roles.roleCarrier.amountOfCarriers < roles.roleCarrier.operation[operationSize].minimumOfCarriers && spawn.room.storage && containers) {
+            } else if (roles.roleCarrier.amountOfCarriers < roles.roleCarrier.operation[operationSize].minimumOfCarriers && spawn.room.storage && containers && !sourceHasLinks) {
                 // Spawn carrier
                 config.log(3, 'debug scope: Room: ' + roomName + ' carrier');
 
