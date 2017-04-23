@@ -158,7 +158,7 @@ brain.special.creepSpawner = function () {
                             }
 
 
-                        } else if (claim.task.useBooster && _.sum(Game.creeps, (c) => c.room.name == claimName && c.memory.task.role == 'roomBoster') < 2) {
+                        } else if (claim.task.isClaimed && claim.task.useBooster && _.sum(Game.creeps, (c) => c.room.name == claimName && c.memory.task.role == 'roomBoster') < 2) {
                             // Spawn room booster if claim requires it
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' roomBooster for ' + claimName);
 
