@@ -377,18 +377,6 @@ brain.memory = {
             }
         }
 
-        if (!Memory.claimList['E25S82']) {
-            Memory.claimList['E25S82'] = {
-                roomType: 'Mine', // outpost, mine, base
-                parentRoom: 'E26S83',
-                task: {
-                    useCollectors: true, // start with false, once all constructions are complete change to true
-                    collectorCount: 0,
-                    hasReserver: false
-                }
-            }
-        }
-
         if (!Memory.claimList['E29S84']) {
             Memory.claimList['E29S84'] = {
                 roomType: 'Mine', // outpost, mine, base
@@ -485,38 +473,9 @@ brain.memory = {
             }
         }
 
-        // Room is being dismantled
-        //if (!Memory.squads['E26S81']) {
-        //    Memory.squads['E26S81'] = {
-        //        squadBase: 'E27S81',
-        //        squadType: 'defend', //attack, defend
-        //        squadHasSpawned: false,
-        //        attacking: false,
-        //        squadSize: 1,
-        //        attackers: 1,
-        //        healers: 0,
-        //        squadMembers: {
-        //        }
-        //    }
-        //}
-
         if (!Memory.squads['E29S84']) {
             Memory.squads['E29S84'] = {
                 squadBase: 'E29S85',
-                squadType: 'defend', //attack, defend
-                squadHasSpawned: false,
-                attacking: false,
-                squadSize: 1,
-                attackers: 1,
-                healers: 0,
-                squadMembers: {
-                }
-            }
-        }
-
-        if (!Memory.squads['E25S82']) {
-            Memory.squads['E25S82'] = {
-                squadBase: 'E26S83',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,
