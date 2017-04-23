@@ -283,7 +283,8 @@ brain.memory = {
                     useCollectors: false,
                     collectorCount: 0,
                     isClaimed: true,
-                    hasClaimer: true
+                    hasClaimer: true,
+                    useBooster: false
                 }
             }
         }
@@ -320,7 +321,8 @@ brain.memory = {
                     useCollectors: false,
                     collectorCount: 0,
                     isClaimed: false,
-                    hasClaimer: false
+                    hasClaimer: false,
+                    useBooster: false
                 }
             }
         }
@@ -369,7 +371,8 @@ brain.memory = {
                     useCollectors: false,
                     collectorCount: 0,
                     isClaimed: false,
-                    hasClaimer: false
+                    hasClaimer: false,
+                    useBooster: false
                 }
             }
         }

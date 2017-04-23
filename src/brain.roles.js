@@ -28,6 +28,7 @@ brain.roles.manager = function () {
             if (task.role == 'prospector') roles.roleProspector(creep, task);
             if (task.role == 'collector') roles.roleCollector(creep, task);
             if (task.role == 'claimer') roles.roleClaimer(creep, task);
+            if (task.role == 'roomBooster') roles.roleRoomBooster(creep, task);
             if (task.role == 'attacker') roles.roleAttacker(creep, task);
             if (task.role == 'specialCreep') roles.roleSpecialCreep(creep, task);
         }
@@ -670,6 +671,30 @@ brain.roles.roleClaimer = function (creep, task) {
             }
         }
 
+    }
+}
+
+/****************************/
+/******* ROOM BOOSTER *******/
+/****************************/
+
+brain.roles.roleRoomBooster = function (creep, task) {
+    if (task.hasResource) {
+        if (creep.room.name != task.startPoint.roomName) {
+            creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
+        } else {
+            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
+            }
+        }
+    } else {
+        if (creep.room.name != task.startPoint.roomName) {
+            creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
+        } else {
+            if (creep.harvest(Game.getObjectById(task.endPoint.id)) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(Game.getObjectById(task.endPoint.id));
+            }
+        }
     }
 }
 

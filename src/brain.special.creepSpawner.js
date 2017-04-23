@@ -158,24 +158,33 @@ brain.special.creepSpawner = function () {
                             }
 
 
-                        } else if (claim.task.isClaimed && claim.task.useCollectors && claim.task.collectorCount < 1) {
-                            // Spawn collector for outpost
-                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' collector for claim ' + claimName);
+                        } else if (claim.task.useBooster && _.sum(Game.creeps, (c) => c.room.name == claimName && c.memory.task.role == 'roomBoster') < 2) {
+                            // Spawn room booster if claim requires it
+                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' roomBooster for ' + claimName);
 
-                            let startPoint = new RoomPosition(25, 25, claimName); // Set startPoint to the room with overflow
-                            let endPoint = new RoomPosition(25, 25, claim.parentRoom);; // Set endPoint to the room to deliver the energy
+                            let startPoint = new RoomPosition(25, 25, claimName);
+                            let endPoint = undefined;
+
+                            let source = _.filter(Memory.rooms[claimName].sources, (s) => s.openSpots > 0);
+                            if (source[0].openSpots > 0) {
+                                endPoint = Game.getObjectById(source[0].source);
+                            }
+
+                            if (!endPoint) {
+                                continue;
+                            }
 
                             if (startPoint && endPoint) {
-
-                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId) == OK) {
-                                    spawn.createCreep(config.getBodyParts(roomName, 'collector'), roles.roleCollector.id + uniqueNameId, {
-                                        task: {
-                                            role: roles.roleCollector.id,
-                                            hasResource: false,
-                                            startPoint: startPoint,
-                                            endPoint: endPoint
-                                        }
-                                    });
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'roomBooster'), 'roomBooster' + uniqueNameId) == OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, 'roomBooster'), 'roomBooster' + uniqueNameId, {
+                                            task: {
+                                                role: 'roomBooster',
+                                                hasResource: false,
+                                                startPoint: startPoint,
+                                                endPoint: endPoint
+                                            }
+                                        });
+                                    break;
                                 }
                             }
                         }

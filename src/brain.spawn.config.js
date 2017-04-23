@@ -36,6 +36,7 @@ brain.spawner.config.creepPriority = role => {
     if (role == 'collector') return 6;
     if (role == 'claimer') return 1;
     if (role == 'offSiteBuilder') return 3;
+    if (role == 'roomBooster') return 7;
 }
 
 
@@ -124,6 +125,8 @@ config.roleBodyParts = (role, level) => {
         return config.partsForProspector(level);
     case 'collector':
         return config.partsForCollector(level);
+    case 'roomBooster':
+        return config.partsForRoomBooster(level);
     case 'attacker':
         return config.partsForAttacker(level);
     case 'healer':
@@ -179,6 +182,17 @@ config.partsForClaimer = level => {
     if (level <= 3) return undefined;
     if (level >= 4) return [CLAIM, CLAIM, MOVE, MOVE];
 };
+
+// RoomBooster
+config.partsForRoomBooster = level => {
+    if (level <= 6) return undefined;
+    if (level >= 7)
+        return [
+            MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK,
+            WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY,
+            CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY
+        ];
+}
 
 // Prospector
 config.partsForProspector = level => {
