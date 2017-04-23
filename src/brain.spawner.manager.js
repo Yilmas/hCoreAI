@@ -11,7 +11,7 @@ brain.spawner.manager = () => {
             let uniqueId = Math.floor((Math.random() * 1000) + 1);
             let startPoint = undefined;
             let endPoint = undefined;
-            
+
             let buildNext = configSpawn.buildNext(roomName);
 
             // Base
@@ -167,7 +167,7 @@ brain.spawner.manager = () => {
                     endPoint = storageLink;
                 } else {
                     endPoint = spawn.room.controller.pos.findInRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 5);
-                    if(endPoint == undefined) continue;
+                    if (endPoint == undefined) continue;
                 }
 
                 if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'bridge'), 'bridge' + uniqueId) == OK) {
@@ -218,7 +218,7 @@ brain.spawner.manager = () => {
                 if (!isNullOrUndefined(extractor)) {
                     startPoint = extractor[0].pos.findInRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
                 }
-                
+
                 // Set endPoint to Storage
                 endPoint = spawn.room.storage;
 

@@ -23,12 +23,19 @@ brain.structureManager = function () {
                     }
                 }
 
+                // TODO: Remove this clause once the room is empty of hostiles. And figure out a way to combat those creeps.
+                //if(roomName == 'E29S85') {
+                //    towers.forEach(tower => tower.repair(Game.getObjectById('58d1a4460551b0282bafcc89')));
+                //} else {
                 if (hostileHealer) {
                     // TODO: Does the tower not focus healers ?
                     towers.forEach(tower => tower.attack(hostileHealer));
                 } else {
                     towers.forEach(tower => tower.attack(hostiles[0]));
                 }
+                //}
+
+
             }
         } else {
             for (let tower of towers) {
@@ -84,6 +91,10 @@ brain.structureManager = function () {
                                 sourceLink.transferEnergy(storageLink);
                             }
                         }
+                    }
+
+                    if (storageLink.energy > 200 && controllerLink.energy < 400) {
+                        storageLink.transferEnergy(controllerLink);
                     }
                 }
             }

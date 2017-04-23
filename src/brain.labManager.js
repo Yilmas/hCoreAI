@@ -22,7 +22,7 @@ brain.labManager.start = function () {
             }
 
 
-            let reaction = creep.room.memory.reactions['UH'];
+            let reaction = creep.room.memory.reactions['UO'];
 
             let lab1 = Game.getObjectById(reaction.lab1.id);
             let lab1Type = reaction.lab1.resourceType;
@@ -121,12 +121,12 @@ brain.labManager.runReactions = roomName => {
             let reaction = room.memory.reactions[reactionId];
             let reactionType = reaction.longName;
 
-            if (reactionType == 'utriumHydride') {
+            if (reactionType == 'utriumOxide') {
                 let utriumLab = Game.getObjectById(reaction.lab1.id);
                 let hydrogenLab = Game.getObjectById(reaction.lab2.id);
                 let utriumHydrideLab = Game.getObjectById(reaction.resultLab.id);
 
-                if ((utriumLab.mineralAmount >= hydrogenLab.mineralAmount && hydrogenLab.mineralAmount >= utriumLab.mineralAmount) || reaction.isRunning) {
+                if ((utriumLab.mineralAmount > 0 && hydrogenLab.mineralAmount > 0) && ((utriumLab.mineralAmount >= hydrogenLab.mineralAmount || hydrogenLab.mineralAmount >= utriumLab.mineralAmount) || reaction.isRunning)) {
                     // run reaction
                     reaction.isRunning = true;
 
@@ -146,8 +146,8 @@ brain.memory.setupReaction = function () {
 
     if (!Memory.rooms['E27S83'].reactions) {
         Memory.rooms['E27S83'].reactions = {
-            UH: {
-                longName: 'utriumHydride',
+            UO: {
+                longName: 'utriumOxide',
                 isRunning: false,
                 lab1: {
                     id: '58c6f3acdb541b3ef7ebb703',
@@ -155,11 +155,11 @@ brain.memory.setupReaction = function () {
                 },
                 lab2: {
                     id: '58c6e5cd1016063aefbde12a',
-                    resourceType: RESOURCE_HYDROGEN
+                    resourceType: RESOURCE_OXYGEN
                 },
                 resultLab: {
                     id: '58c7079fccd761eb2cc8e764',
-                    resourceType: RESOURCE_UTRIUM_HYDRIDE
+                    resourceType: RESOURCE_UTRIUM_OXIDE
                 }
             }
         }

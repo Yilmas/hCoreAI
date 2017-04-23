@@ -71,48 +71,48 @@ global.utils = {
 
     getRepairQuota: function (type) {
         switch (type) {
-            case STRUCTURE_CONTAINER:
-                // max 250.000
-                return 100000;
-            case STRUCTURE_EXTRACTOR:
-            case STRUCTURE_LAB:
-            case STRUCTURE_OBSERVER:
-                // max 500
-                return 500;
-            case STRUCTURE_TOWER:
-            case STRUCTURE_TERMINAL:
-            case STRUCTURE_EXTENSION:
-                // max 3.000
-                return 3000;
-            case STRUCTURE_LINK:
-            case STRUCTURE_NUKER:
-                // max 1.000
-                return 1000;
-            case STRUCTURE_POWER_BANK:
-                // max 2.000.000
-                return 200000;
-            case STRUCTURE_POWER_SPAWN:
-                // max 5.000
-                return 5000;
-            case STRUCTURE_RAMPART:
-                // max defined by controller level
-                return 50.000;
-            case STRUCTURE_ROAD:
-                // max 5.000
-                return 5000;
-            case STRUCTURE_STORAGE:
-                // max 10.000
-                return 10000;
-            case STRUCTURE_WALL:
-                // max 300.000.000
-                return 50000;
-            default:
-                // If I have forgotton a structure, or a new one is added
-                return 5000;
+        case STRUCTURE_CONTAINER:
+            // max 250.000
+            return 100000;
+        case STRUCTURE_EXTRACTOR:
+        case STRUCTURE_LAB:
+        case STRUCTURE_OBSERVER:
+            // max 500
+            return 500;
+        case STRUCTURE_TOWER:
+        case STRUCTURE_TERMINAL:
+        case STRUCTURE_EXTENSION:
+            // max 3.000
+            return 3000;
+        case STRUCTURE_LINK:
+        case STRUCTURE_NUKER:
+            // max 1.000
+            return 1000;
+        case STRUCTURE_POWER_BANK:
+            // max 2.000.000
+            return 200000;
+        case STRUCTURE_POWER_SPAWN:
+            // max 5.000
+            return 5000;
+        case STRUCTURE_RAMPART:
+            // max defined by controller level
+            return 50.000;
+        case STRUCTURE_ROAD:
+            // max 5.000
+            return 5000;
+        case STRUCTURE_STORAGE:
+            // max 10.000
+            return 10000;
+        case STRUCTURE_WALL:
+            // max 300.000.000
+            return 50000;
+        default:
+            // If I have forgotton a structure, or a new one is added
+            return 5000;
         }
     },
 
-    sendMinerals: function(fromRoom, toRoom, resourceType, amount) {
+    sendMinerals: function (fromRoom, toRoom, resourceType, amount) {
         return Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
     }
 }

@@ -69,9 +69,11 @@ config.wallOrRampartTargetHitPoints = roomName => {
     case 6:
         return 75000;
     case 7:
-        return 100000;
+        if (roomName == 'E27S83' || roomName == 'E26S83') return 500000;
+        else return 100000;
     case 8:
-        return 250000;
+        if (roomName == 'E27S83' || roomName == 'E26S83') return 750000;
+        else return 250000;
     }
 
     // TODO: Use the following values once the code is implemented and has updated across all rooms

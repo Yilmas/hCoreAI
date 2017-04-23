@@ -32,7 +32,7 @@ brain.creepSpawner = function () {
             let mineral = undefined;
             let mineralContainer = undefined;
 
-            if (spawn.room.controller.level >= 6) {
+            if (spawn.room.controller.level >= 6 && spawn.room.name != 'E27S81') {
                 let extractor = spawn.room.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_EXTRACTOR });
                 mineral = extractor[0].pos.findClosestByRange(FIND_MINERALS);
                 mineralContainer = mineral.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
@@ -64,9 +64,9 @@ brain.creepSpawner = function () {
                 }
 
                 let endPoint = startPoint.pos.findClosestByRange(FIND_STRUCTURES,
-                {
-                    filter: (s) => s.structureType == STRUCTURE_CONTAINER
-                }); // Set endPoint to container
+                    {
+                        filter: (s) => s.structureType == STRUCTURE_CONTAINER
+                    }); // Set endPoint to container
 
                 if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleHarvester.id), roles.roleHarvester.id + uniqueNameID) == OK) {
                     spawn.createCreep(config.getBodyParts(roomName, roles.roleHarvester.id), roles.roleHarvester.id + uniqueNameID, {
@@ -89,8 +89,8 @@ brain.creepSpawner = function () {
 
                 let endPoint = spawn; // set endPoint to spawn!/extensions/towers
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id +uniqueNameID) == OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id +uniqueNameID, {
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleDistributor.id), roles.roleDistributor.id + uniqueNameID, {
                         task: {
                             role: roles.roleDistributor.id,
                             hasResource: false,
@@ -235,7 +235,7 @@ brain.creepSpawner = function () {
 
                 if (endPoint) {
                     if (spawn.canCreateCreep((!isNullOrUndefined(link) ? linkBodyPart : containerBodyPart), roles.roleBridge.id + uniqueNameID) == OK) {
-                        spawn.createCreep((!isNullOrUndefined(link) ? linkBodyPart: containerBodyPart), roles.roleBridge.id +uniqueNameID, {
+                        spawn.createCreep((!isNullOrUndefined(link) ? linkBodyPart : containerBodyPart), roles.roleBridge.id + uniqueNameID, {
                             task: {
                                 role: roles.roleBridge.id,
                                 hasResource: false,
@@ -289,7 +289,7 @@ brain.creepSpawner = function () {
                 }
 
             }
-            else if ((spawn.room.memory.reactions && spawn.room.memory.reactions['UH']) && _.sum(Game.creeps, (c) => c.room.name == roomName && c.memory.task.role == 'laborant') < 1) {
+            else if ((spawn.room.memory.reactions && spawn.room.memory.reactions['UO']) && _.sum(Game.creeps, (c) => c.room.name == roomName && c.memory.task.role == 'laborant') < 1) {
                 // Spawn Laborant
                 config.log(3, 'debug scope: Room: ' + roomName + ' laborant');
 
@@ -310,17 +310,15 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
-            else if ((spawn.room.name == 'E24S81' || spawn.room.name == 'E27S83') && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
+            else if (false && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
                 // Spawn Pillager
                 config.log(3, 'debug scope: Room: ' + roomName + ' pillager');
 
                 let startPoint = spawn.room.storage;
                 let endPoint = undefined;
 
-                if (roomName == 'E24S81') {
-                    endPoint = new RoomPosition(25, 25, 'E23S81');
-                } else if (roomName == 'E27S83') {
-                    endPoint = new RoomPosition(25, 25, 'E28S83');
+                if (roomName == 'E27S83') {
+                    endPoint = new RoomPosition(25, 25, 'E27S81');
                 }
 
 
@@ -329,6 +327,26 @@ brain.creepSpawner = function () {
                         name: 'pillager' + uniqueNameID,
                         task: {
                             role: 'pillager',
+                            hasResource: false,
+                            startPoint: startPoint,
+                            endPoint: endPoint
+                        }
+                    });
+                    break;
+                }
+            }
+            else if (false && _.sum(Game.creeps, (c) => c.memory.task.role == 'specialCreep') < 1) {
+                // Spawn Special Creep
+                config.log(3, 'debug scope: Room: ' + roomName + ' specialCreep');
+
+                let startPoint = spawn.room.storage;
+                let endPoint = undefined;
+
+                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'specialCreep' + uniqueNameID) == OK) {
+                    spawn.createCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'specialCreep' + uniqueNameID, {
+                        name: 'specialCreep' + uniqueNameID,
+                        task: {
+                            role: 'specialCreep',
                             hasResource: false,
                             startPoint: startPoint,
                             endPoint: endPoint

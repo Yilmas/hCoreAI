@@ -15,7 +15,7 @@ brain.spawner.config.buildNext = roomName => {
 }
 
 brain.spawner.config.buildMineNext = roomName => {
-    
+
 }
 
 brain.spawner.config.buildOutpostNext = roomName => {
@@ -52,83 +52,83 @@ config.energyCapacityAvailable = [
 ];
 
 global.config.getBodyParts = (roomName, role) => {
-  //config.log(3, 'debug scope: Find Operation Level');
-  let room = Game.rooms[roomName];
-  if (!room) return undefined; // Room has no creeps or owned structures, and is therefor either neutral or a mine
-  return config.findOperationLevel(config.energyCapacityAvailable.length, room, role);
+    //config.log(3, 'debug scope: Find Operation Level');
+    let room = Game.rooms[roomName];
+    if (!room) return undefined; // Room has no creeps or owned structures, and is therefor either neutral or a mine
+    return config.findOperationLevel(config.energyCapacityAvailable.length, room, role);
 };
 
 config.findOperationLevel = (operationLevel, room, role) => {
-  //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel);
-  let currentOperationLevel = operationLevel - 1;
+    //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel);
+    let currentOperationLevel = operationLevel - 1;
 
-  // If the currentOperationLevel is less than zero, something is wrong.
-  // Delete this if-statement if this check is redundant.
-  if (currentOperationLevel === -1) return undefined;
+    // If the currentOperationLevel is less than zero, something is wrong.
+    // Delete this if-statement if this check is redundant.
+    if (currentOperationLevel === -1) return undefined;
 
-  let energyCapacityAvailable = config.energyCapacityAvailable[currentOperationLevel];
-  if (room.controller.level >= operationLevel) {
-    //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level);
-    if (room.energyCapacityAvailable >= energyCapacityAvailable) {
-      //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity');
+    let energyCapacityAvailable = config.energyCapacityAvailable[currentOperationLevel];
+    if (room.controller.level >= operationLevel) {
+        //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level);
+        if (room.energyCapacityAvailable >= energyCapacityAvailable) {
+            //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity');
 
-      let bodyParts = config.roleBodyParts(role, operationLevel);
-      //config.log(3, 'debug scope: role: ' + role + ' operationLevel: ' + operationLevel + ' body: ' + bodyParts);
-      let bodyPartsCost = getBodyCost(bodyParts);
-      //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity' + ' and cost: ' + bodyPartsCost);
+            let bodyParts = config.roleBodyParts(role, operationLevel);
+            //config.log(3, 'debug scope: role: ' + role + ' operationLevel: ' + operationLevel + ' body: ' + bodyParts);
+            let bodyPartsCost = getBodyCost(bodyParts);
+            //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level=' + room.controller.level + ' and equal capacity' + ' and cost: ' + bodyPartsCost);
 
-      if (config.isEnergyCostPlausible(room, bodyPartsCost)) {
-        //config.log(3, 'debug scope: Room: ' + room.name + ' Cost: ' + bodyPartsCost + ' Energy ' + energyCapacityAvailable);
-        return bodyParts;
-      } else {
-        //config.log(3, 'debug scope: Room: ' + room.name + ' Cost: ' + bodyPartsCost + ' is higher than Energy ' + energyCapacityAvailable);
-        return config.findOperationLevel(currentOperationLevel, room, role);
-      }
+            if (config.isEnergyCostPlausible(room, bodyPartsCost)) {
+                //config.log(3, 'debug scope: Room: ' + room.name + ' Cost: ' + bodyPartsCost + ' Energy ' + energyCapacityAvailable);
+                return bodyParts;
+            } else {
+                //config.log(3, 'debug scope: Room: ' + room.name + ' Cost: ' + bodyPartsCost + ' is higher than Energy ' + energyCapacityAvailable);
+                return config.findOperationLevel(currentOperationLevel, room, role);
+            }
+        } else {
+            //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level and NOT equal capacity');
+            return config.findOperationLevel(currentOperationLevel, room, role);
+        }
     } else {
-      //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' equal room level and NOT equal capacity');
-      return config.findOperationLevel(currentOperationLevel, room, role);
+        //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' NOT equal room level');
+        return config.findOperationLevel(currentOperationLevel, room, role);
     }
-  } else {
-    //config.log(3, 'debug scope: ' + room.name + ' Operation Level ' + operationLevel + ' NOT equal room level');
-    return config.findOperationLevel(currentOperationLevel, room, role);
-  }
 };
 
 config.isEnergyCostPlausible = (room, cost) => {
-  let energyAvailableInRoom = room.energyAvailable;
-  let storedEnergyAvailable = _.sum(room.find(FIND_STRUCTURES, { filter: s => s.structureType === STRUCTURE_CONTAINER }), c => c.store[RESOURCE_ENERGY]);
-  if (!isNullOrUndefined(room.storage)) {
-    storedEnergyAvailable = storedEnergyAvailable + room.storage.store[RESOURCE_ENERGY];
-  }
+    let energyAvailableInRoom = room.energyAvailable;
+    let storedEnergyAvailable = _.sum(room.find(FIND_STRUCTURES, { filter: s => s.structureType === STRUCTURE_CONTAINER }), c => c.store[RESOURCE_ENERGY]);
+    if (!isNullOrUndefined(room.storage)) {
+        storedEnergyAvailable = storedEnergyAvailable + room.storage.store[RESOURCE_ENERGY];
+    }
 
-  return energyAvailableInRoom >= cost || (storedEnergyAvailable >= cost && room.memory.roles.roleDistributor.amountOfDistributors > 0);
+    return energyAvailableInRoom >= cost || (storedEnergyAvailable >= cost && room.memory.roles.roleDistributor.amountOfDistributors > 0);
 };
 
 config.roleBodyParts = (role, level) => {
-  switch (role) {
+    switch (role) {
     case 'harvester':
-      return config.partsForHarvester(level);
+        return config.partsForHarvester(level);
     case 'distributor':
-      return config.partsForDistributor(level);
+        return config.partsForDistributor(level);
     case 'upgrader':
-      return config.partsForUpgrader(level);
+        return config.partsForUpgrader(level);
     case 'builder':
-      return config.partsForBuilder(level);
+        return config.partsForBuilder(level);
     case 'carrier':
-      return config.partsForCarrier(level);
+        return config.partsForCarrier(level);
     case 'bridge':
-      return config.partsForBridge(level);
+        return config.partsForBridge(level);
     case 'claimer':
-      return config.partsForClaimer(level);
+        return config.partsForClaimer(level);
     case 'prospector':
-      return config.partsForProspector(level);
+        return config.partsForProspector(level);
     case 'collector':
-      return config.partsForCollector(level);
+        return config.partsForCollector(level);
     case 'attacker':
-      return config.partsForAttacker(level);
+        return config.partsForAttacker(level);
     case 'healer':
-      return config.partsForHealer(level);
-  }
+        return config.partsForHealer(level);
+    }
 };
 
 // Harvester

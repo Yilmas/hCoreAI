@@ -103,7 +103,7 @@ brain.roleManager = function () {
                     if (creep.room.memory.roles.roleDistributor.amountOfDistributors == 0) {
                         let spawnOrExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                             filter: (s) =>  (s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity) ||
-                                            (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
+                                (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
                         });
 
                         if (spawnOrExtension) {
@@ -114,7 +114,7 @@ brain.roleManager = function () {
                     } else {
                         if (task.endPoint) {
                             if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(Game.getObjectById(task.endPoint.id), { reusePath: 50 });
+                                creep.moveTo(Game.getObjectById(task.endPoint.id), { reusePath: 10 });
                             }
                         } else {
                             if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < 801 })) != undefined) {
@@ -126,7 +126,7 @@ brain.roleManager = function () {
                     }
                 } else if (!task.hasResource) {
                     if (creep.withdraw(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(Game.getObjectById(task.startPoint.id), { reusePath: 50 });
+                        creep.moveTo(Game.getObjectById(task.startPoint.id), { reusePath: 10 });
                     }
                 }
             }
@@ -142,25 +142,37 @@ brain.roleManager = function () {
 
                     let spawnOrExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                         filter: (s) =>  (s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity) ||
-                                        (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
+                            (s.structureType == STRUCTURE_SPAWN && s.energy < s.energyCapacity)
                     });
 
-                    if (spawnOrExtension) {
-                        if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(spawnOrExtension);
+                    let hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+
+                    if (hostiles.length > 0) {
+                        // focus on refilling towers
+                        if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < 900 })) != undefined) {
+                            if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(tower);
+                            }
                         }
-                    } else if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < 801 })) != undefined) {
-                        if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(tower);
-                        }
-                    } else if (creep.room.storage && creep.room.storage.store.energy > 100000) {
-                        let tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity });
-                        if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(tower);
-                        }
-                    } else if (creep.room.storage) {
-                        if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(creep.room.storage);
+
+                    } else {
+                        if (spawnOrExtension) {
+                            if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(spawnOrExtension);
+                            }
+                        } else if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < 801 })) != undefined) {
+                            if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(tower);
+                            }
+                        } else if (creep.room.storage && creep.room.storage.store.energy > 100000) {
+                            let tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity });
+                            if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(tower);
+                            }
+                        } else if (creep.room.storage) {
+                            if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(creep.room.storage);
+                            }
                         }
                     }
                 } else if (!task.hasResource) {
@@ -176,6 +188,11 @@ brain.roleManager = function () {
                         if (Game.getObjectById(task.startPoint.id).store.energy > 0) {
                             if (creep.withdraw(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(Game.getObjectById(task.startPoint.id));
+                            }
+                        } else if (_.sum(Game.creeps, (c) => c.room.name == creep.room.name && c.memory.task.role == 'bridge') == 0) {
+                            let baseLink = creep.room.storage.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
+                            if (baseLink && creep.withdraw(baseLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(baseLink);
                             }
                         } else {
                             if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy > 0 })) != undefined) {
@@ -204,9 +221,9 @@ brain.roleManager = function () {
                     let constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 
                     let repairSite = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                    {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < 25000 && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
-                    });
+                        {
+                            filter: (s) => s.hits < s.hitsMax && s.hits < 25000 && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
+                        });
 
                     if (constructionSite) {
                         if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
@@ -262,11 +279,11 @@ brain.roleManager = function () {
             // An upgrader takes energy from link > storage > container and upgrades a controller
             if (task.role == 'upgrader') {
                 if (task.hasResource) {
-                    if (task.startPoint) {
+                    if (task.startPoint && Game.time % 2 === 0) {
                         creep.withdraw(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY);
                     }
 
-                    if (isNullOrUndefined(creep.room.controller.sign)) {
+                    if (creep.room.controller.sign == undefined || (creep.room.controller.sign && creep.room.controller.sign.username != 'Yilmas')) {
                         if (creep.signController(creep.room.controller, config.SIGN_MESSAGE) == ERR_NOT_IN_RANGE) {
                             creep.moveTo(creep.room.controller);
                         }
@@ -305,54 +322,76 @@ brain.roleManager = function () {
                 if (creep.carry.energy > 0) {
                     task.hasResource = true;
                 }
+
+                let startPoint = Game.getObjectById(task.startPoint.id);
+                let endPoint = Game.getObjectById(task.endPoint.id);
+                let sourceHasLinks = false;
+
+                for (let source of creep.room.find(FIND_SOURCES)) {
+                    let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
+                    if (sourceLink) {
+                        sourceHasLinks = true;
+                    }
+                }
+
                 if (task.hasResource) {
 
-                    let sourceHasLinks = false;
-
-                    for (let source of creep.room.find(FIND_SOURCES)) {
-                        let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
-                        if (sourceLink) {
-                            sourceHasLinks = true;
-                        }
-                    }
-
                     if (creep.room.controller.level >= 7 && sourceHasLinks) {
-                        // withdraw from link deposit in storage
-                        if (creep.transfer(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(Game.getObjectById(task.startPoint.id));
+                        if (endPoint.energy < 400) { //400
+                            if (creep.transfer(endPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(endPoint);
+                            }
+                        } else if (creep.room.terminal && creep.room.terminal.store.energy < 20000) {
+                            if (creep.transfer(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(creep.room.terminal);
+                            }
+                        } else {
+                            if (creep.transfer(startPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(startPoint);
+                            }
                         }
-                    } else if (Game.getObjectById(task.endPoint.id).energy < 800) {  //link
-                        if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(Game.getObjectById(task.endPoint.id));
-                        }
-                    } else if (Game.getObjectById(task.endPoint.id).store && Game.getObjectById(task.endPoint.id).store.energy < 2000) { //container
-                        if (creep.transfer(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(Game.getObjectById(task.endPoint.id));
-                        }
-                    } else if (creep.room.terminal && creep.room.terminal.store.energy < 20000) {
-                        if (creep.transfer(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(creep.room.terminal);
+                    } else {
+                        if (endPoint.energy < 800) {
+                            if (creep.transfer(endPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(endPoint);
+                            }
+                        } else if (endPoint.structureType == STRUCTURE_CONTAINER && endPoint.store.energy < 2000) {
+                            if (creep.transfer(endPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(endPoint, { reusePath: 50 });
+                            }
+                        } else if (creep.room.terminal && creep.room.terminal.store.energy < 20000) {
+                            if (creep.transfer(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(creep.room.terminal);
+                            }
                         }
                     }
                 } else if (!task.hasResource) {
 
-                    let sourceHasLinks = false;
-
-                    for (let source of creep.room.find(FIND_SOURCES)) {
-                        let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
-                        if (sourceLink) {
-                            sourceHasLinks = true;
-                        }
-                    }
-
                     if (creep.room.controller.level >= 7 && sourceHasLinks) {
-                        // withdraw from link deposit in storage
-                        if (creep.withdraw(Game.getObjectById(task.endPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(Game.getObjectById(task.endPoint.id));
+                        // withdraw from link and terminal
+                        if (endPoint.energy > 600) { //600
+                            if (creep.withdraw(endPoint, RESOURCE_ENERGY, endPoint.energy - 400) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(endPoint);
+                            }
+                        } else if (creep.room.terminal && creep.room.terminal.store.energy > 21000) {
+                            if (creep.withdraw(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(creep.room.terminal);
+                            }
+                        } else if ((creep.room.terminal && creep.room.terminal.store.energy < 20000) || endPoint.energy < 400) { //400
+                            if (creep.withdraw(startPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(startPoint);
+                            }
                         }
-                    } else if (creep.room.storage.store.energy > 800) {
-                        if (creep.withdraw(Game.getObjectById(task.startPoint.id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(Game.getObjectById(task.startPoint.id), { reusePath: 50 });
+                    } else {
+                        // withdraw from storage and terminal
+                        if (startPoint.store.energy > 800) {
+                            if (creep.withdraw(startPoint, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(startPoint, { reusePath: 50 });
+                            }
+                        } else if (creep.room.terminal && creep.room.terminal.store.energy > 20000) {
+                            if (creep.withdraw(creep.room.terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(creep.room.terminal);
+                            }
                         }
                     }
                 }
@@ -428,32 +467,61 @@ brain.roleManager = function () {
                     if (creep.room.name != task.endPoint.roomName) {
                         creep.moveTo(new RoomPosition(25, 25, task.endPoint.roomName), { reusePath: 50 });
                     } else {
-                        let structureWithResources = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) =>
-                                    (s.structureType == STRUCTURE_TOWER && s.energy > 0) ||
-                                    (s.structureType == STRUCTURE_EXTENSION && s.energy > 0) ||
-                                    (s.structureType == STRUCTURE_LINK && s.energy > 0) ||
-                                    (s.structureType == STRUCTURE_CONTAINER && _.sum(s.store) > 0) ||
-                                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) > 0)
-                            });
-
-                        //let storage = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_STORAGE });
-                        
+                        let structureWithResources = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (s) =>
+                                //(s.structureType == STRUCTURE_TOWER && s.energy > 0) ||
+                                //(s.structureType == STRUCTURE_EXTENSION && s.energy > 0) ||
+                                //(s.structureType == STRUCTURE_LINK && s.energy > 0) ||
+                                //(s.structureType == STRUCTURE_CONTAINER && _.sum(s.store) > 0) ||
+                                (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) > 0)
+                        });
 
                         if (structureWithResources) {
-                            let mineralType = RESOURCE_ENERGY;
+                            let mineralType = undefined;
 
                             if (structureWithResources.store) {
                                 for (let item in structureWithResources.store) {
-                                    mineralType = item;
+                                    if (item != RESOURCE_ENERGY) mineralType = item;
                                 }
                             }
 
-                            if (creep.withdraw(structureWithResources, mineralType) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(structureWithResources);
+                            if (mineralType) {
+                                if (creep.withdraw(structureWithResources, mineralType) == ERR_NOT_IN_RANGE) {
+                                    creep.moveTo(structureWithResources);
+                                }
                             }
                         }
 
                         if (_.sum(creep.carry == creep.carryCapacity)) config.log(3, '[Pillage] Room: ' + creep.room.name + ' stole ' + creep.carryCapacity + ' of ' + creep.carry[0]);
+                    }
+                }
+            }
+
+            /*****************************/
+            /******* SPECIAL CREEP *******/
+            /*****************************/
+
+            // A special creep that is manually activated.
+            if (task.role == 'specialCreep') {
+                if (_.sum(creep.carry) > 0) task.hasResource = true;
+                let mineralType = undefined;
+
+                if (task.hasResource) {
+                    for (let item in creep.carry) {
+                        if (item != RESOURCE_ENERGY) mineralType = item;
+                    }
+
+                    if (creep.transfer(creep.room.terminal, mineralType) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.terminal);
+                    }
+
+                } else if (!task.hasResource) {
+                    for (let item in creep.room.storage.store) {
+                        if (item != RESOURCE_ENERGY) mineralType = item;
+                    }
+
+                    if (creep.withdraw(creep.room.storage, mineralType) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.storage);
                     }
                 }
             }

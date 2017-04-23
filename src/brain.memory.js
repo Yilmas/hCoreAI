@@ -6,7 +6,7 @@ brain.memory = {
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
 
-            if(!room.controller) continue;
+            if (!room.controller) continue;
 
             // Start Script for setting all role information
             if (!room.memory.roles) {
@@ -233,7 +233,7 @@ brain.memory = {
                     let sourceId = source.id;
                     let pos = source.pos;
 
-                //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
+                    //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
 
                     room.memory.sources[sourceId] = {};
 
@@ -528,6 +528,20 @@ brain.memory = {
         if (!Memory.squads['E25S81']) {
             Memory.squads['E25S81'] = {
                 squadBase: 'E24S81',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
+        if (!Memory.squads['E28S83']) {
+            Memory.squads['E28S83'] = {
+                squadBase: 'E27S83',
                 squadType: 'defend', //attack, defend
                 squadHasSpawned: false,
                 attacking: false,

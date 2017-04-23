@@ -139,7 +139,7 @@ brain.special.roleManager = function () {
                         // set isClaimed to true in claimList
                     } else {
                         //reserve
-                        if (isNullOrUndefined(creep.room.controller.sign)) {
+                        if (creep.room.controller.sign == undefined || (creep.room.controller.sign && creep.room.controller.sign.username != 'Yilmas')) {
                             if (creep.signController(creep.room.controller, config.SIGN_MESSAGE) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(creep.room.controller);
                             }
@@ -207,12 +207,28 @@ brain.special.roleManager = function () {
                     } else if (creep.room.name == task.startPoint.name) {
                         // attack if hostile creeps exist
                         let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+                        let hostileStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                                filter: (s) =>
+                                    (s.structureType == STRUCTURE_TOWER && s.energy == 0) ||
+                                    (s.structureType == STRUCTURE_SPAWN && s.energy == 0) ||
+                                    (s.structureType == STRUCTURE_EXTENSION && s.energy == 0) ||
+                                    (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) == 0) ||
+                                    (s.structureType == STRUCTURE_LINK && s.energy == 0) ||
+                                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) == 0) ||
+                                    (s.structureType == STRUCTURE_EXTRACTOR)
+                            }
+                        );
 
                         if (hostiles) {
 
                             creep.rangedMassAttack();
                             if (creep.attack(hostiles) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(hostiles);
+                            }
+                        } else if (hostileStructures) {
+                            creep.rangedAttack(hostileStructures);
+                            if (creep.attack(hostileStructures) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(hostileStructures);
                             }
                         } else {
                             // go to defensive station
