@@ -23,8 +23,9 @@ var main = function () {
     }
 
     // Role Managers
-    brain.roleManager();
-    brain.special.roleManager();
+    //brain.roleManager();
+    //brain.special.roleManager();
+    brain.roles.manager();
 
     // Spawners
     try {
