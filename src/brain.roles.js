@@ -1,6 +1,8 @@
 brain.roles = {};
 
 brain.roles.manager = function () {
+    let roles = brain.roles;
+
     for (let creepName in Game.creeps) {
         let creep = Game.creeps[creepName];
         let task = creep.memory.task;
@@ -12,21 +14,22 @@ brain.roles.manager = function () {
             task.hasResource = true;
         }
 
+
         try {
-            if (task.role == 'harvester') roleHarvester(creep, task);
-            if (task.role == 'carrier') roleCarrier(creep, task);
-            if (task.role == 'distributor') roleDistributor(creep, task);
-            if (task.role == 'upgrader') roleUpgrader(creep, task);
-            if (task.role == 'builder') roleBuilder(creep, task);
-            if (task.role == 'bridge') roleBridge(creep, task);
-            if (task.role == 'miner') roleMiner(creep, task);
-            if (task.role == 'mineCollector') roleMineCollector(creep, task);
-            if (task.role == 'pillager') rolePillager(creep, task);
-            if (task.role == 'prospector') roleProspector(creep, task);
-            if (task.role == 'collector') roleCollector(creep, task);
-            if (task.role == 'claimer') roleClaimer(creep, task);
-            if (task.role == 'attacker') roleAttacker(creep, task);
-            if (task.role == 'specialCreep') roleSpecialCreep(creep, task);
+            if (task.role == 'harvester') roles.roleHarvester(creep, task);
+            if (task.role == 'carrier') roles.roleCarrier(creep, task);
+            if (task.role == 'distributor') roles.roleDistributor(creep, task);
+            if (task.role == 'upgrader') roles.roleUpgrader(creep, task);
+            if (task.role == 'builder') roles.roleBuilder(creep, task);
+            if (task.role == 'bridge') roles.roleBridge(creep, task);
+            if (task.role == 'miner') roles.roleMiner(creep, task);
+            if (task.role == 'mineCollector') roles.roleMineCollector(creep, task);
+            if (task.role == 'pillager') roles.rolePillager(creep, task);
+            if (task.role == 'prospector') roles.roleProspector(creep, task);
+            if (task.role == 'collector') roles.roleCollector(creep, task);
+            if (task.role == 'claimer') roles.roleClaimer(creep, task);
+            if (task.role == 'attacker') roles.roleAttacker(creep, task);
+            if (task.role == 'specialCreep') roles.roleSpecialCreep(creep, task);
         }
         catch (ex) {
             console.log('<font color=red>[Role Manager]: ' + ex + '</font>');
