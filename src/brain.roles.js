@@ -23,7 +23,7 @@ brain.roles.manager = function () {
             if (task.role == 'builder') roles.roleBuilder(creep, task);
             if (task.role == 'bridge') roles.roleBridge(creep, task);
             if (task.role == 'miner') roles.roleMiner(creep, task);
-            if (task.role == 'mineCollector') roles.roleMineCollector(creep, task);
+            if (task.role == 'mineralCollector') roles.roleMineralCollector(creep, task);
             if (task.role == 'pillager') roles.rolePillager(creep, task);
             if (task.role == 'prospector') roles.roleProspector(creep, task);
             if (task.role == 'collector') roles.roleCollector(creep, task);
@@ -443,11 +443,11 @@ brain.roles.roleMiner = function (creep, task) {
     }
 }
 
-/******************************/
-/******* MINE COLLECTOR *******/
-/******************************/
+/*********************************/
+/******* MINERAL COLLECTOR *******/
+/*********************************/
 
-brain.roles.roleMineCollector = function (creep, task) {
+brain.roles.roleMineralCollector = function (creep, task) {
 
     let container = Game.getObjectById(task.startPoint.id);
     let mineralType = undefined;
