@@ -14,3 +14,5 @@ require('brain.structureManager');
 require('brain.special.creepSpawner');
 
 require('brain.labManager');
+
+require('visualizer');

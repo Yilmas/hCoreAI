@@ -53,7 +53,15 @@ var main = function () {
         brain.labManager.start();
     }
     catch (ex) {
-        console.log('<font color=red>Lab Manager: ' + ex.stack + '</font>');
+        console.log('<font color=red>Lab Manager: ' + ex + '</font>');
+    }
+
+
+    // Visualizer
+    try {
+        visualizer.startRoomVisuals();
+    } catch (ex) {
+        console.log('<font color=red>Visualizer: ' + ex + '</font>');
     }
 };
 
