@@ -681,7 +681,13 @@ brain.roles.roleRoomBooster = function (creep, task) {
         if (creep.room.name != task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
         } else {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+            let constructionsite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+
+            if (constructionsite) {
+                if (creep.build(constructionsite) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(constructionsite);
+                }
+            } else if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
             }
         }
@@ -689,7 +695,12 @@ brain.roles.roleRoomBooster = function (creep, task) {
         if (creep.room.name != task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
         } else {
-            if (creep.harvest(Game.getObjectById(task.endPoint.id)) == ERR_NOT_IN_RANGE) {
+            let droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY);
+            if (droppedEnergy) {
+                if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(droppedEnergy);
+                }
+            } else if (creep.harvest(Game.getObjectById(task.endPoint.id)) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.getObjectById(task.endPoint.id));
             }
         }
@@ -721,10 +732,10 @@ brain.roles.roleAttacker = function (creep, task) {
                 // start the actual attack
                 let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
                 let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                    filter: (s) =>
-                        s.structureType == STRUCTURE_TOWER ||
-                        s.structureType == STRUCTURE_SPAWN
-                }
+                        filter: (s) =>
+                            s.structureType == STRUCTURE_TOWER ||
+                            s.structureType == STRUCTURE_SPAWN
+                    }
                 );
 
                 if (hostiles) {
@@ -751,15 +762,15 @@ brain.roles.roleAttacker = function (creep, task) {
             // attack if hostile creeps exist
             let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
             let hostileStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                filter: (s) =>
-                    (s.structureType == STRUCTURE_TOWER && s.energy == 0) ||
-                    (s.structureType == STRUCTURE_SPAWN && s.energy == 0) ||
-                    (s.structureType == STRUCTURE_EXTENSION && s.energy == 0) ||
-                    (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) == 0) ||
-                    (s.structureType == STRUCTURE_LINK && s.energy == 0) ||
-                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) == 0) ||
-                    (s.structureType == STRUCTURE_EXTRACTOR)
-            }
+                    filter: (s) =>
+                        (s.structureType == STRUCTURE_TOWER && s.energy == 0) ||
+                        (s.structureType == STRUCTURE_SPAWN && s.energy == 0) ||
+                        (s.structureType == STRUCTURE_EXTENSION && s.energy == 0) ||
+                        (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) == 0) ||
+                        (s.structureType == STRUCTURE_LINK && s.energy == 0) ||
+                        (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) == 0) ||
+                        (s.structureType == STRUCTURE_EXTRACTOR)
+                }
             );
 
             if (hostiles) {
