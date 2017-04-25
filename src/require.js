@@ -1,5 +1,6 @@
 require('config');
 require('utils');
+require('prototypes');
 
 // load configs
 require('brain.memory');

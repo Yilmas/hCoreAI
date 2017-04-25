@@ -1,5 +1,7 @@
 global.brain = {
-    stats: {},
+    stats: {
+        moveToCpu: 0
+    },
     special: {}
 };
 
