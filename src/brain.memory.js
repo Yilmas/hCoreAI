@@ -431,6 +431,18 @@ brain.memory = {
             }
         }
 
+        if (!Memory.claimList['E29S86']) {
+            Memory.claimList['E29S86'] = {
+                roomType: 'Mine', // outpost, mine, base
+                parentRoom: 'E28S86',
+                task: {
+                    useCollectors: false, // start with false, once all constructions are complete change to true
+                    collectorCount: 0,
+                    hasReserver: false
+                }
+            }
+        }
+
 
         //if (!Memory.claimList['targetRoom']) {
         //    Memory.claimList['targetRoom'] = {
@@ -548,6 +560,20 @@ brain.memory = {
             }
         }
 
+        if (!Memory.squads['E29S86']) {
+            Memory.squads['E29S86'] = {
+                squadBase: 'E28S86',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
         //if (!Memory.squads['targetRoom']) {
         //    Memory.squads['targetRoom'] = {
         //        squadBase: 'spawnRoom',
@@ -561,6 +587,18 @@ brain.memory = {
         //        }
         //    }
         //}
+
+        if (!Memory.scouts) {
+            Memory.scouts = {};
+        }
+
+        if (!Memory.scouts['E22S84']) {
+            Memory.scouts['E22S84'] = {
+                parentRoom: 'E24S81',
+                targetRoom: 'E22S84',
+                isScouted: false
+            }
+        }
     },
 
     refreshMemory: function () {
