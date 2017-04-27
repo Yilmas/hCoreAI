@@ -284,7 +284,8 @@ brain.memory = {
                     collectorCount: 0,
                     isClaimed: true,
                     hasClaimer: true,
-                    useBooster: false
+                    useBooster: false,
+                    useInterRoomTransport: false
                 }
             }
         }
@@ -322,7 +323,8 @@ brain.memory = {
                     collectorCount: 0,
                     isClaimed: false,
                     hasClaimer: false,
-                    useBooster: false
+                    useBooster: false,
+                    useInterRoomTransport: false
                 }
             }
         }
@@ -372,7 +374,8 @@ brain.memory = {
                     collectorCount: 0,
                     isClaimed: false,
                     hasClaimer: false,
-                    useBooster: false
+                    useBooster: false,
+                    useInterRoomTransport: false
                 }
             }
         }
@@ -422,7 +425,8 @@ brain.memory = {
                     collectorCount: 0,
                     isClaimed: false,
                     hasClaimer: false,
-                    useBooster: true
+                    useBooster: false,
+                    useInterRoomTransport: false
                 }
             }
         }
