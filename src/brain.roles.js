@@ -30,6 +30,7 @@ brain.roles.manager = function () {
             if (task.role == 'claimer') roles.roleClaimer(creep, task);
             if (task.role == 'roomBooster') roles.roleRoomBooster(creep, task);
             if (task.role == 'interRoomTransport') roles.roleInterRoomTransport(creep, task);
+            if (task.role == 'scout') roles.roleScout(creep, task);
             if (task.role == 'attacker') roles.roleAttacker(creep, task);
             if (task.role == 'specialCreep') roles.roleSpecialCreep(creep, task);
         }
@@ -735,6 +736,29 @@ brain.roles.roleInterRoomTransport = function (creep, task) {
             if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.storage);
             }
+        }
+    }
+}
+
+/*********************/
+/******* SCOUT *******/
+/*********************/
+
+brain.roles.roleScout = function (creep, task) {
+    let targetRoom = task.endPoint.roomName;
+
+    if (creep.room.name != targetRoom) {
+        creep.moveTo(new RoomPosition(25, 25, targetRoom));
+    } else {
+        if (creep.room.controller.sign == undefined ||
+            (creep.room.controller.sign && creep.room.controller.sign.username != 'Yilmas')) {
+            if (creep.signController(creep.room.controller, config.SIGN_MESSAGE) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
+            }
+        } else {
+            // suicide
+            Memory.scouts[targetRoom].isScouted = true;
+            creep.suicide();
         }
     }
 }

@@ -19,7 +19,7 @@ brain.creepSpawner = function () {
             let controllerContainer = undefined;
 
             if (spawn.room.controller.level >= 3 && spawn.room.controller.level <= 5) {
-                controllerContainer = spawn.room.controller.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 3);
+                controllerContainer = spawn.room.controller.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
             }
 
             let containers = spawn.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER }, 3); // Used while there is no storage
@@ -32,7 +32,7 @@ brain.creepSpawner = function () {
             let mineral = undefined;
             let mineralContainer = undefined;
 
-            if (spawn.room.controller.level >= 6 && spawn.room.name != 'E27S81') {
+            if (spawn.room.controller.level >= 6 && spawn.room.name != 'E27S81' && spawn.room.name != 'E28S86') {
                 let extractor = spawn.room.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_EXTRACTOR });
                 mineral = extractor[0].pos.findClosestByRange(FIND_MINERALS);
                 mineralContainer = mineral.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
@@ -46,6 +46,8 @@ brain.creepSpawner = function () {
                     sourceHasLinks = true;
                 }
             }
+
+            let scoutRoom = _.filter(Memory.scouts, (s) => s.parentRoom == roomName && !s.isScouted)[0];
 
             if (roles.roleHarvester.amountOfHarvesters < roles.roleHarvester.operation[operationSize].minimumOfHarvesters) {
                 // Spawn harvester
@@ -327,6 +329,26 @@ brain.creepSpawner = function () {
                         name: 'pillager' + uniqueNameID,
                         task: {
                             role: 'pillager',
+                            hasResource: false,
+                            startPoint: startPoint,
+                            endPoint: endPoint
+                        }
+                    });
+                    break;
+                }
+            }
+            else if (scoutRoom && _.sum(Game.creeps, (c) => c.memory.task.endPoint.roomName == scoutRoom.targetRoom && c.memory.task.role == 'scout') < 1) {
+                // Spawn Scout Creep
+                config.log(3, 'debug scope: Room: ' + roomName + ' scout');
+
+                let startPoint = undefined;
+                let endPoint = scoutRoom.targetRoom;
+
+                if (spawn.canCreateCreep([MOVE], 'scout' + uniqueNameID) == OK) {
+                    spawn.createCreep([MOVE], 'scout' + uniqueNameID, {
+                        name: 'scout' + uniqueNameID,
+                        task: {
+                            role: 'scout',
                             hasResource: false,
                             startPoint: startPoint,
                             endPoint: endPoint
