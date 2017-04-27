@@ -29,6 +29,7 @@ brain.roles.manager = function () {
             if (task.role == 'collector') roles.roleCollector(creep, task);
             if (task.role == 'claimer') roles.roleClaimer(creep, task);
             if (task.role == 'roomBooster') roles.roleRoomBooster(creep, task);
+            if (task.role == 'interRoomTransport') roles.roleInterRoomTransport(creep, task);
             if (task.role == 'attacker') roles.roleAttacker(creep, task);
             if (task.role == 'specialCreep') roles.roleSpecialCreep(creep, task);
         }
@@ -702,6 +703,37 @@ brain.roles.roleRoomBooster = function (creep, task) {
                 }
             } else if (creep.harvest(Game.getObjectById(task.endPoint.id)) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.getObjectById(task.endPoint.id));
+            }
+        }
+    }
+}
+
+/************************************/
+/******* INTER-ROOM TRANSPORT *******/
+/************************************/
+
+brain.roles.roleInterRoomTransport = function (creep, task) {
+    if (_.sum(creep.carry) > 0) task.hasResource = true;
+
+    let homeRoom = task.startPoint.roomName;
+    let endRoom = task.endPoint.roomName;
+
+    if (task.hasResource) {
+        if (creep.room.name != endRoom) {
+            creep.moveTo(new RoomPosition(25, 25, endRoom));
+        } else {
+            // is in endRoom, transfer energy to storage
+            if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.storage);
+            }
+        }
+    } else if (!task.hasResource) {
+        if (creep.room.name != homeRoom) {
+            creep.moveTo(new RoomPosition(25, 25, homeRoom));
+        } else {
+            // is in homeRoom, withdraw energy from storage
+            if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.storage);
             }
         }
     }

@@ -156,8 +156,6 @@ brain.special.creepSpawner = function () {
                                     break;
                                 }
                             }
-
-
                         } else if (claim.task.isClaimed && claim.task.useBooster && _.sum(Game.creeps, (c) => c.memory.task.role == 'roomBooster') < 1) {
                             // Spawn room booster if claim requires it
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' roomBooster for ' + claimName);
@@ -186,6 +184,31 @@ brain.special.creepSpawner = function () {
                                     });
                                     break;
                                 }
+                            }
+                        } else if (claim.task.isClaimed && Game.rooms[claimName].storage && claim.task.useInterRoomTransport && _.sum(Game.creeps, (c) => c.memory.task.role == 'interRoomTransport') < 1 && c.memory.task.endPoint.roomName == claimName) {
+                            // Spawn interRoomTransport if claim requires it
+                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' interRoomTransport for ' + claimName);
+
+                            let body = [
+                                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+                                MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY
+                            ];
+
+                            let startPoint = new RoomPosition(25, 25, roomName); // homeRoom - pickup energy
+                            let endPoint = new RoomPosition(25, 25, claimName); // endRoom - deliver energy
+
+                            if (spawn.canCreateCreep(body, 'interRoomTransport' + uniqueNameId) == OK) {
+                                spawn.createCreep(body, 'interRoomTransport' + uniqueNameId, {
+                                    task: {
+                                        role: 'interRoomTransport',
+                                        hasResource: false,
+                                        startPoint: startPoint,
+                                        endPoint: endPoint
+                                    }
+                                });
+                                break;
                             }
                         }
                     }
