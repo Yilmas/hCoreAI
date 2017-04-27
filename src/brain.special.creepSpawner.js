@@ -185,7 +185,7 @@ brain.special.creepSpawner = function () {
                                     break;
                                 }
                             }
-                        } else if (claim.task.isClaimed && Game.rooms[claimName].storage && claim.task.useInterRoomTransport && _.sum(Game.creeps, (c) => c.memory.task.role == 'interRoomTransport') < 1 && c.memory.task.endPoint.roomName == claimName) {
+                        } else if (claim.task.isClaimed && Game.rooms[claimName].storage && claim.task.useInterRoomTransport && _.sum(Game.creeps, (c) => c.memory.task.role == 'interRoomTransport' && c.memory.task.endPoint.roomName == claimName) < 1) {
                             // Spawn interRoomTransport if claim requires it
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' interRoomTransport for ' + claimName);
 
