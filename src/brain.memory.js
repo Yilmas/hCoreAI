@@ -314,21 +314,6 @@ brain.memory = {
             }
         }
 
-        if (!Memory.claimList['E27S81']) {
-            Memory.claimList['E27S81'] = {
-                roomType: 'Outpost',
-                parentRoom: 'E27S83',
-                task: {
-                    useCollectors: false,
-                    collectorCount: 0,
-                    isClaimed: false,
-                    hasClaimer: false,
-                    useBooster: false,
-                    useInterRoomTransport: false
-                }
-            }
-        }
-
         if (!Memory.claimList['E26S82']) {
             Memory.claimList['E26S82'] = {
                 roomType: 'Mine',
