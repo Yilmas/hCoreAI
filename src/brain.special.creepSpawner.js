@@ -78,7 +78,7 @@ brain.special.creepSpawner = function () {
                                     //break;
                                 }
                             }
-                        } else if (claim.task.useCollectors && (claim.task.collectorCount < 1 || (claim.task.collectorCount < 2 && spawn.room.controller.level <= 5))) {
+                        } else if (claim.task.useCollectors && claim.task.collectorCount < 2) {
                             // Spawn collector
                             config.log(3, 'debug scope: Room: ' + spawn.room.name + ' collector for claim ' + claimName);
 
