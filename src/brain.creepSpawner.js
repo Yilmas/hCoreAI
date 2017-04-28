@@ -83,7 +83,7 @@ brain.creepSpawner = function () {
                     break;
                 }
 
-            } else if (roles.roleDistributor.amountOfDistributors < roles.roleDistributor.operation[operationSize].minimumOfDistributors && containers) {
+            } else if (roles.roleDistributor.amountOfDistributors < 2 && containers) {
                 // Spawn distributor
                 config.log(3, 'debug scope: Room: ' + roomName + ' distributor');
 
@@ -112,7 +112,7 @@ brain.creepSpawner = function () {
                     break;
                 }
 
-            } else if (roles.roleBuilder.amountOfBuilders < roles.roleBuilder.operation[operationSize].minimumOfBuilders) {
+            } else if (roles.roleBuilder.amountOfBuilders < 1) {
                 // Spawn builder
                 config.log(3, 'debug scope: Room: ' + roomName + ' builder');
 
@@ -216,7 +216,7 @@ brain.creepSpawner = function () {
                     }
                 }
 
-            } else if (roles.roleBridge.amountOfBridges < roles.roleBridge.operation[operationSize].minimumOfBridges && (spawn.room.storage) && (link || controllerContainer) && spawn.room.controller.level >= 4) {
+            } else if (roles.roleBridge.amountOfBridges < 1 && spawn.room.storage && (link || controllerContainer)) {
                 // Spawn bridge
                 config.log(3, 'debug scope: Room: ' + roomName + ' bridge');
 
@@ -249,7 +249,7 @@ brain.creepSpawner = function () {
                     }
                 }
             }
-            else if (!isNullOrUndefined(mineral) && mineral.mineralAmount > 0 && roles.roleMiner.amountOfMiners < roles.roleMiner.operation[operationSize].minimumOfMiners) {
+            else if (!isNullOrUndefined(mineral) && mineral.mineralAmount > 0 && roles.roleMiner.amountOfMiners < 1) {
                 // Spawn miner
                 config.log(3, 'debug scope: Room: ' + roomName + ' miner');
 
@@ -312,7 +312,7 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
-            else if (false && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
+            else if (roomName == 'E27S83' && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
                 // Spawn Pillager
                 config.log(3, 'debug scope: Room: ' + roomName + ' pillager');
 
@@ -337,12 +337,12 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
-            else if (scoutRoom && _.sum(Game.creeps, (c) => c.memory.task.endPoint.roomName == scoutRoom.targetRoom && c.memory.task.role == 'scout') < 1) {
+            else if (scoutRoom && _.sum(Game.creeps, (c) => c.memory.task.endPoint.roomName && c.memory.task.endPoint.roomName == scoutRoom.targetRoom && c.memory.task.role == 'scout') < 1) {
                 // Spawn Scout Creep
                 config.log(3, 'debug scope: Room: ' + roomName + ' scout');
 
                 let startPoint = undefined;
-                let endPoint = scoutRoom.targetRoom;
+                let endPoint = new RoomPosition(25, 25, scoutRoom.targetRoom);
 
                 if (spawn.canCreateCreep([MOVE], 'scout' + uniqueNameID) == OK) {
                     spawn.createCreep([MOVE], 'scout' + uniqueNameID, {
