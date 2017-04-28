@@ -2,11 +2,7 @@ visualizer = {};
 
 visualizer.startRoomVisuals = function () {
     let firstVal = Game.cpu.getUsed();
-    for (let roomName in Game.rooms) {
-        let room = Game.rooms[roomName];
-
-        //room.visual.circle(10,15);
-    }
+    _.filter(Game.creeps);
     let secondVal = Game.cpu.getUsed();
     let visualCpuUsage = secondVal - firstVal;
 

@@ -503,7 +503,8 @@ brain.roles.rolePillager = function (creep, task) {
                     (s.structureType == STRUCTURE_EXTENSION && s.energy > 0 && s.owner != 'Yilmas') ||
                     (s.structureType == STRUCTURE_LINK && s.energy > 0 && s.owner != 'Yilmas') ||
                     (s.structureType == STRUCTURE_CONTAINER && _.sum(s.store) > 0 && s.owner != 'Yilmas') ||
-                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) > 0)
+                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) > 0) ||
+                    (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) > 0)
             });
 
             if (structureWithResources) {
@@ -584,6 +585,11 @@ brain.roles.roleProspector = function (creep, task) {
 /*************************/
 
 brain.roles.roleCollector = function (creep, task) {
+    let droppedEnergyOnTile = creep.pos.lookFor(LOOK_ENERGY);
+
+    if (droppedEnergyOnTile) {
+        creep.pickup(droppedEnergyOnTile, RESOURCE_ENERGY);
+    }
 
     if (task.hasResource) {
 

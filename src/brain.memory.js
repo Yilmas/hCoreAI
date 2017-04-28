@@ -233,7 +233,7 @@ brain.memory = {
                     let sourceId = source.id;
                     let pos = source.pos;
 
-                    //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
+                //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
 
                     room.memory.sources[sourceId] = {};
 
@@ -428,6 +428,21 @@ brain.memory = {
             }
         }
 
+        if (!Memory.claimList['E22S84']) {
+            Memory.claimList['E22S84'] = {
+                roomType: 'Outpost',
+                parentRoom: 'E24S81',
+                task: {
+                    useCollectors: false,
+                    collectorCount: 0,
+                    isClaimed: false,
+                    hasClaimer: false,
+                    useBooster: false,
+                    useInterRoomTransport: false
+                }
+            }
+        }
+
 
         //if (!Memory.claimList['targetRoom']) {
         //    Memory.claimList['targetRoom'] = {
@@ -576,14 +591,6 @@ brain.memory = {
         if (!Memory.scouts) {
             Memory.scouts = {};
         }
-
-        if (!Memory.scouts['E22S84']) {
-            Memory.scouts['E22S84'] = {
-                parentRoom: 'E24S81',
-                targetRoom: 'E22S84',
-                isScouted: false
-            }
-        }
     },
 
     refreshMemory: function () {
@@ -650,16 +657,19 @@ brain.memory = {
                 }
                 claim.task.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role == 'claimer' && c.memory.task.endPoint.roomName == claimName) > 0;
 
-                let outpostSpawn = Game.rooms[claimName].find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
-                if (outpostSpawn.length > 0) {
-                    Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
-                    for (let source in Memory.rooms[claimName].sources) {
-                        let amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && c.memory.task.endPoint.id == source);
-                        let remainingSpots = Memory.rooms[claimName].sources[Game.getObjectById(source).id].totalSpots - amountOfProspectors;
-                        Memory.rooms[claimName].sources[Game.getObjectById(source).id].openSpots = remainingSpots;
-                        Memory.rooms[claimName].sources[Game.getObjectById(source).id].harvesters = amountOfProspectors;
+                if (claim.task.isClaimed) {
+                    let outpostSpawn = Game.rooms[claimName].find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
+                    if (outpostSpawn.length > 0) {
+                        Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
+                        for (let source in Memory.rooms[claimName].sources) {
+                            let amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && c.memory.task.endPoint.id == source);
+                            let remainingSpots = Memory.rooms[claimName].sources[Game.getObjectById(source).id].totalSpots - amountOfProspectors;
+                            Memory.rooms[claimName].sources[Game.getObjectById(source).id].openSpots = remainingSpots;
+                            Memory.rooms[claimName].sources[Game.getObjectById(source).id].harvesters = amountOfProspectors;
+                        }
                     }
                 }
+                
             }
         }
 
