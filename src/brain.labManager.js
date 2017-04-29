@@ -11,7 +11,9 @@ brain.labManager.start = function () {
             task.focusReaction = '';
         }
 
-        for (let reaction in creep.room.memory.reactions) {
+        let reactions = _.filter(creep.room.memory.reactions, (r) => r.isActive);
+        for (let reaction in reactions) {
+
             let labInput1 = Game.getObjectById(reaction.lab1.id);
             let labInput2 = Game.getObjectById(reaction.lab2.id);
             let labOutput = Game.getObjectById(reaction.resultLab.id);
@@ -123,28 +125,6 @@ brain.labManager.start = function () {
     }
 };
 
-global.labManager.stopReaction = (roomName, reactionName) => {
-    let room = Game.rooms[roomName];
-
-    for (let reaction in room.memory.reactions) {
-        if (reaction.longName == reactionName) {
-            // Set reaction to empty
-            reaction.emptyFacilities = true;
-
-            // Set laborants to focus the reaction
-
-            const creeps = room.find(FIND_MY_CREEPS, { filter: (c) => c.memory.task.role === 'laborant' });
-            creeps.forEach((c) => {
-                c.memory.task.focusReaction = 'reaction name';
-
-                config.log(3, '[Lab Manager] Creep: ' + c.name + ' is focusing reaction: ' + reactionName);
-            });
-        } else {
-            config.log(3, '[Lab Manager] No reaction \' ' + reactionName + ' \' in room ' + roomName);
-        }
-    }
-}
-
 brain.labManager.runReactions = roomName => {
     let room = Game.rooms[roomName];
     if (room.memory.reactions) {
@@ -217,3 +197,25 @@ brain.memory.setupReaction = function () {
     }
 
 };
+
+global.brain.labManager.stopReaction = (roomName, reactionName) => {
+    let room = Game.rooms[roomName];
+
+    for (let reaction in room.memory.reactions) {
+        if (reaction.longName == reactionName) {
+            // Set reaction to empty
+            reaction.emptyFacilities = true;
+
+            // Set laborants to focus the reaction
+
+            const creeps = room.find(FIND_MY_CREEPS, { filter: (c) => c.memory.task.role === 'laborant' });
+            creeps.forEach((c) => {
+                c.memory.task.focusReaction = 'reaction name';
+
+                config.log(3, '[Lab Manager] Creep: ' + c.name + ' is focusing reaction: ' + reactionName);
+            });
+        } else {
+            config.log(3, '[Lab Manager] No reaction \' ' + reactionName + ' \' in room ' + roomName);
+        }
+    }
+}
