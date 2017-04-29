@@ -549,6 +549,15 @@ brain.roles.roleProspector = function (creep, task) {
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER });
             let repairSite = creep.pos.findClosestByRange(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.hits < s.hitsMax && s.hits <= 250000 }, 3);
 
+            if (creep.room.controller.my &&
+                creep.room.controller.level >= 1 &&
+                creep.room.controller.ticksToDowngrade < 5000) {
+                if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                }
+                return;
+            }
+
             if (constructionSite) {
                 if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructionSite);
@@ -794,10 +803,10 @@ brain.roles.roleAttacker = function (creep, task) {
                 // start the actual attack
                 let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
                 let hostilesStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                        filter: (s) =>
-                            s.structureType == STRUCTURE_TOWER ||
-                            s.structureType == STRUCTURE_SPAWN
-                    }
+                    filter: (s) =>
+                        s.structureType == STRUCTURE_TOWER ||
+                        s.structureType == STRUCTURE_SPAWN
+                }
                 );
 
                 if (hostiles) {
@@ -824,15 +833,15 @@ brain.roles.roleAttacker = function (creep, task) {
             // attack if hostile creeps exist
             let hostiles = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
             let hostileStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                    filter: (s) =>
-                        (s.structureType == STRUCTURE_TOWER && s.energy == 0) ||
-                        (s.structureType == STRUCTURE_SPAWN && s.energy == 0) ||
-                        (s.structureType == STRUCTURE_EXTENSION && s.energy == 0) ||
-                        (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) == 0) ||
-                        (s.structureType == STRUCTURE_LINK && s.energy == 0) ||
-                        (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) == 0) ||
-                        (s.structureType == STRUCTURE_EXTRACTOR)
-                }
+                filter: (s) =>
+                    (s.structureType == STRUCTURE_TOWER && s.energy == 0) ||
+                    (s.structureType == STRUCTURE_SPAWN && s.energy == 0) ||
+                    (s.structureType == STRUCTURE_EXTENSION && s.energy == 0) ||
+                    (s.structureType == STRUCTURE_TERMINAL && _.sum(s.store) == 0) ||
+                    (s.structureType == STRUCTURE_LINK && s.energy == 0) ||
+                    (s.structureType == STRUCTURE_STORAGE && _.sum(s.store) == 0) ||
+                    (s.structureType == STRUCTURE_EXTRACTOR)
+            }
             );
 
             if (hostiles) {
