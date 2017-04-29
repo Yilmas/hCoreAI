@@ -657,7 +657,7 @@ brain.memory = {
                 }
                 claim.task.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role == 'claimer' && c.memory.task.endPoint.roomName == claimName) > 0;
 
-                if (claim.task.isClaimed) {
+                if (Game.rooms[claimName]) {
                     let outpostSpawn = Game.rooms[claimName].find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
                     if (outpostSpawn.length > 0) {
                         Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
@@ -669,7 +669,6 @@ brain.memory = {
                         }
                     }
                 }
-                
             }
         }
 
