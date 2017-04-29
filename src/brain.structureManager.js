@@ -38,26 +38,28 @@ brain.structureManager = function () {
 
             }
         } else {
-            for (let tower of towers) {
-                if (tower.energy > 800) {
-                    let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < 100000 && s.structureType != STRUCTURE_ROAD && s.structureType != STRUCTURE_RAMPART && s.structureType != STRUCTURE_WALL
-                    });
+            if (room.storage && room.storage.store.energy > 20000) {
+                for (let tower of towers) {
+                    if (tower.energy > 800) {
+                        let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                            filter: (s) => s.hits < s.hitsMax && s.hits < 100000 && s.structureType != STRUCTURE_ROAD && s.structureType != STRUCTURE_RAMPART && s.structureType != STRUCTURE_WALL
+                        });
 
-                    let closestDamagedRampart = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_RAMPART
-                    });
+                        let closestDamagedRampart = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                            filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_RAMPART
+                        });
 
-                    let closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_WALL
-                    });
+                        let closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                            filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_WALL
+                        });
 
-                    if (!isNullOrUndefined(closestDamagedStructure)) {
-                        tower.repair(closestDamagedStructure);
-                    } else if (!isNullOrUndefined(closestDamagedRampart)) {
-                        tower.repair(closestDamagedRampart);
-                    } else if (!isNullOrUndefined(closestDamagedWall)) {
-                        tower.repair(closestDamagedWall);
+                        if (!isNullOrUndefined(closestDamagedStructure)) {
+                            tower.repair(closestDamagedStructure);
+                        } else if (!isNullOrUndefined(closestDamagedRampart)) {
+                            tower.repair(closestDamagedRampart);
+                        } else if (!isNullOrUndefined(closestDamagedWall)) {
+                            tower.repair(closestDamagedWall);
+                        }
                     }
                 }
             }
