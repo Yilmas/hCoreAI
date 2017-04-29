@@ -63,6 +63,14 @@ var main = function () {
     } catch (ex) {
         console.log('<font color=red>Visualizer: ' + ex + '</font>');
     }
+
+
+    // Debug New Memory Module
+    try {
+        brain.memory.manager();
+    } catch (ex) {
+        console.log('<font color=red>Memory Manager: ' + ex + '</font>');
+    }
 };
 
 module.exports.loop = function () {
