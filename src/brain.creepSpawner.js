@@ -312,7 +312,7 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
-            else if (roomName == 'E27S83' && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
+            else if (false && _.sum(Game.creeps, (c) => c.memory.task.startPoint.room != undefined && c.memory.task.startPoint.room.name == roomName && c.memory.task.role == 'pillager') < 1) {
                 // Spawn Pillager
                 config.log(3, 'debug scope: Room: ' + roomName + ' pillager');
 
