@@ -104,7 +104,10 @@ brain.special.creepSpawner = function () {
                 } else if (claim.roomType == 'Outpost') {
                     if (claim.parentRoom == spawn.room.name) {
 
-                        let outpostSpawn = Game.rooms[claimName].find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
+                        let outpostSpawn = undefined;
+                        if (Game.rooms[claimName]) {
+                            outpostSpawn = Game.rooms[claimName].find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
+                        }
 
                         if (!claim.task.isClaimed && !claim.task.hasClaimer) {
                             // Spawn claimer to claim outpost
