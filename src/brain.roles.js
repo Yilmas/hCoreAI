@@ -61,7 +61,7 @@ brain.roles.roleHarvester = (creep, task) => {
                 if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawnOrExtension);
                 }
-            } else if ((constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)) !== undefined) {
+            } else if ((constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES))) {
                 if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructionSite);
                 }
@@ -141,7 +141,7 @@ brain.roles.roleDistributor = (creep, task) => {
 
         if ((hostiles = creep.room.find(FIND_HOSTILE_CREEPS)).length && roomRoles.roleDistributor.count > 1) {
             // focus on refilling towers
-            if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_TOWER && s.energy < 900 })) !== undefined) {
+            if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_TOWER && s.energy < 900 }))) {
                 if (creep.transfer(tower, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(tower);
                 }
@@ -157,7 +157,7 @@ brain.roles.roleDistributor = (creep, task) => {
                 if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawnOrExtension);
                 }
-            } else if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_TOWER && s.energy < 900 })) !== undefined) {
+            } else if ((tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_TOWER && s.energy < 900 }))) {
                 if (creep.transfer(tower, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(tower);
                 }
@@ -173,13 +173,13 @@ brain.roles.roleDistributor = (creep, task) => {
                 if (creep.withdraw(baseLink, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(baseLink);
                 }
-            } else if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, { filter: (e) => e.amount >= 200 })) !== undefined) {
+            } else if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, { filter: (e) => e.amount >= 200 }))) {
                 if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedEnergy);
                 }
             }
         } else {
-            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy >= 200 })) !== undefined) {
+            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy >= 200 }))) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, { reusePath: 10 });
                 }
@@ -215,7 +215,7 @@ brain.roles.roleUpgrader = (creep, task) => {
                 creep.moveTo(Game.getObjectById(task.startPoint.id));
             }
         } else {
-            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })) !== undefined) {
+            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER }))) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container);
                 }
@@ -245,7 +245,7 @@ brain.roles.roleBuilder = (creep, task) => {
                 s.structureType !== STRUCTURE_RAMPART
         });
 
-        if ((constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)) !== undefined) {
+        if ((constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES))) {
             if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(constructionSite);
             }
@@ -257,7 +257,7 @@ brain.roles.roleBuilder = (creep, task) => {
             utils.takeRandomStep(creep);
         }
     } else if (!task.hasResource) {
-        if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, { filter: (e) => e.energy >= creep.carryCapacity / 2 })) !== undefined) {
+        if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, { filter: (e) => e.energy >= creep.carryCapacity / 2 }))) {
             if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedEnergy);
             }
@@ -265,7 +265,7 @@ brain.roles.roleBuilder = (creep, task) => {
             if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
             }
-        } else if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy > 200 })) !== undefined) {
+        } else if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy > 200 }))) {
             if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(container);
             }
@@ -493,13 +493,13 @@ brain.roles.roleProspector = (creep, task) => {
                     creep.moveTo(creep.room.controller);
                 }
             } else {
-                if ((constructionSite = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES)) !== undefined) {
+                if ((constructionSite = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES))) {
                     if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(constructionSite);
                     }
                 } else if ((repairSite = creep.pos.findInRange(FIND_STRUCTURES, 1, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.hits < s.hitsMax && s.hits <= 250000 })) !== undefined) {
                     creep.repair(repairSite);
-                } else if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })) !== undefined && container.store.energy < 2000) {
+                } else if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })) && container.store.energy < 2000) {
                     if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(container);
                     }
@@ -543,7 +543,7 @@ brain.roles.roleCollector = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: (creep.room.name === task.startPoint.roomName ? 10 : 50) });
         } else {
-            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy > creep.carryCapacity })) !== undefined) {
+            if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy > creep.carryCapacity }))) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container);
                 }
@@ -611,7 +611,7 @@ brain.roles.roleRoomBooster = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
         } else {
-            if ((constructionsite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)) !== undefined) {
+            if ((constructionsite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES))) {
                 if (creep.build(constructionsite) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructionsite);
                 }
@@ -634,7 +634,7 @@ brain.roles.roleRoomBooster = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: 50 });
         } else {
-            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY)) !== undefined) {
+            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY))) {
                 if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedEnergy);
                 }
