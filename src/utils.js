@@ -6,7 +6,7 @@ global.utils = {
      * Move the creep to avoid traffic jam, caused by inactive creeps standing on roads
      * @param {Creep} creep The creep to move
     */
-    takeRandomStep: function (creep) {
+    takeRandomStep: (creep) => {
         let directions = [TOP, TOP_LEFT, TOP_RIGHT, BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, LEFT, RIGHT];
         let randomDirection = _.random(0, 7);
         let isCurrentTileRoad = creep.pos.lookFor(LOOK_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_ROAD });
@@ -20,7 +20,7 @@ global.utils = {
      * Move the creep in a direction to avoid standing on the edge, thereby causing pos stutter
      * @param {Creep} creep The creep to move
     */
-    avoidRoomEdge: function (creep) {
+    avoidRoomEdge: (creep) => {
         if (creep.pos.x == 0) {
             creep.move(RIGHT);
         } else if (creep.pos.x == 49) {
