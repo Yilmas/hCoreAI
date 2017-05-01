@@ -118,3 +118,5 @@ global.getBodyCost = function (theBody) {
 config.WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing'];
 
 config.SIGN_MESSAGE = "[Ypsilon Pact] Sector Claimed, unauthorized claims may result in war declarations!";
+
+config.TERMINAL_MINIMUM_ENERGY = 100000;
