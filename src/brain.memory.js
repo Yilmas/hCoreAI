@@ -233,7 +233,7 @@ brain.memory = {
                     let sourceId = source.id;
                     let pos = source.pos;
 
-                //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
+                    //let availableSpots = utils.getTerrainAroundRoomPos('plain', new RoomPosition(pos.x, pos.y, roomName)).length;
 
                     room.memory.sources[sourceId] = {};
 
