@@ -1,7 +1,11 @@
+// load configs
 require('config');
 require('utils');
 
-// load configs
+// load prototypes
+require('prototypes__creep');
+
+// load memory
 require('brain.memory');
 
 require('brain.memory.manager');
