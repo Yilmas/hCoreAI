@@ -28,21 +28,20 @@ brain.special.creepSpawner = function () {
                         if (!claim.task.hasReserver) {
                             // Spawn reserver for mine by parent room
 
-                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' claimer (reserve) for claim ' + claimName);
+                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' reserver for claim ' + claimName);
 
                             let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
                             let endPoint = new RoomPosition(25, 25, claimName); // Set endPoint to target claimName
 
-                            if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleClaimer.id), roles.roleClaimer.id + uniqueNameId) == OK) {
-                                spawn.createCreep(config.getBodyParts(roomName, roles.roleClaimer.id),
-                                    roles.roleClaimer.id + uniqueNameId,
+                            if (spawn.canCreateCreep(config.getBodyParts(roomName, 'reserver'), 'reserver' + uniqueNameId) == OK) {
+                                spawn.createCreep(config.getBodyParts(roomName, 'reserver'),
+                                    'reserver' + uniqueNameId,
                                     {
                                         task: {
-                                            role: roles.roleClaimer.id,
+                                            role: 'reserver',
                                             hasResource: false,
                                             startPoint: startPoint,
-                                            endPoint: endPoint,
-                                            claim: false
+                                            endPoint: endPoint
                                         }
                                     });
                                 //break;
@@ -111,19 +110,18 @@ brain.special.creepSpawner = function () {
 
                         if (!claim.task.isClaimed && !claim.task.hasClaimer) {
                             // Spawn claimer to claim outpost
-                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' claimer (claim controller in ' + claimName + ')');
+                            config.log(3, 'debug scope: Room: ' + spawn.room.name + ' claimer for claim ' + claimName);
 
                             let startPoint = new RoomPosition(25, 25, claim.parentRoom); // Set startPoint to parent room
                             let endPoint = new RoomPosition(25, 25, claimName); // Set endPoint to target claimName
 
-                            if (spawn.canCreateCreep([CLAIM, MOVE, MOVE, MOVE], roles.roleClaimer.id + uniqueNameId) == OK) {
-                                spawn.createCreep([CLAIM, MOVE, MOVE, MOVE], roles.roleClaimer.id + uniqueNameId, {
+                            if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleClaimer.id), roles.roleClaimer.id + uniqueNameId) == OK) {
+                                spawn.createCreep(config.getBodyParts(roomName, roles.roleClaimer.id), roles.roleClaimer.id + uniqueNameId, {
                                     task: {
                                         role: roles.roleClaimer.id,
                                         hasResource: false,
                                         startPoint: startPoint,
-                                        endPoint: endPoint,
-                                        claim: true
+                                        endPoint: endPoint
                                     }
                                 });
                                 break;
