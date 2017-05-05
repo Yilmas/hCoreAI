@@ -546,20 +546,6 @@ brain.memory = {
             }
         }
 
-        if (!Memory.squads['E28S86']) {
-            Memory.squads['E28S86'] = {
-                squadBase: 'E29S85',
-                squadType: 'defend', //attack, defend
-                squadHasSpawned: false,
-                attacking: false,
-                squadSize: 1,
-                attackers: 1,
-                healers: 0,
-                squadMembers: {
-                }
-            }
-        }
-
         if (!Memory.squads['E29S86']) {
             Memory.squads['E29S86'] = {
                 squadBase: 'E28S86',
@@ -573,6 +559,34 @@ brain.memory = {
                 }
             }
         }
+
+        if (!Memory.squads['E27S82']) {
+            Memory.squads['E27S82'] = {
+                squadBase: 'E27S83',
+                squadType: 'defend', //attack, defend
+                squadHasSpawned: false,
+                attacking: false,
+                squadSize: 1,
+                attackers: 1,
+                healers: 0,
+                squadMembers: {
+                }
+            }
+        }
+
+        //if (!Memory.squads['E22S85']) {
+        //    Memory.squads['E22S85'] = {
+        //        squadBase: 'E22S84',
+        //        squadType: 'attack', //attack, defend
+        //        squadHasSpawned: false,
+        //        attacking: false,
+        //        squadSize: 1,
+        //        attackers: 1,
+        //        healers: 0,
+        //        squadMembers: {
+        //        }
+        //    }
+        //}
 
         //if (!Memory.squads['targetRoom']) {
         //    Memory.squads['targetRoom'] = {
@@ -634,7 +648,7 @@ brain.memory = {
             let claim = Memory.claimList[claimName];
             if (claim.roomType == 'Mine') {
                 claim.task.collectorCount = _.sum(Game.creeps, (c) => c.memory.task.role == 'collector' && c.memory.task.startPoint.roomName == claimName);
-                claim.task.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role == 'claimer' && c.memory.task.endPoint.roomName == claimName) == 1;
+                claim.task.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role == 'reserver' && c.memory.task.endPoint.roomName == claimName) > 0;
 
                 if (Memory.rooms[claimName]) {
                     Memory.rooms[claimName].roles.roleProspector.amountOfProspectors = _.sum(Game.creeps, (c) => c.memory.task.role == 'prospector' && !isNullOrUndefined(Game.getObjectById(c.memory.task.endPoint.id)) && Game.getObjectById(c.memory.task.endPoint.id).room.name == claimName);
