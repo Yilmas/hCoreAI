@@ -25,8 +25,8 @@ global.config.log = function (level, message) {
 
 global.config.operationSize = function (roomName) {
     let room = Game.rooms[roomName];
-
-    if (room.find(FIND_CREEPS, { filter: (c) => c.my == true }).length < 4) {
+    
+    if (_.sum(Game.creeps, (c) => c.room.name == roomName) < 4) {
         // Initiate reboot process
         config.log(1, 'Room: ' + roomName + ' Running reboot process of operations');
         return 'small';
