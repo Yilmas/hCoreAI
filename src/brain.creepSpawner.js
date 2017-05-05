@@ -1,5 +1,4 @@
 brain.creepSpawner = function () {
-
     //start spawning
     for (let roomName in Game.rooms) {
 
@@ -125,9 +124,9 @@ brain.creepSpawner = function () {
                 // Defined startpoint by what should exist at a given controller level
                 if (controller.level >= 3 && controller.level <= 5) {
                     // Use container > storage > link
-                    let link = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK });
+                    let link = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                     let storage = spawn.room.storage;
-                    let container = controller.pos.findInRange(FIND_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_CONTAINER });
+                    let container = controller.pos.findInRange(FIND_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
 
 
                     if (!isNullOrUndefined(storage)) {
@@ -142,7 +141,7 @@ brain.creepSpawner = function () {
 
                 } else if (spawn.room.controller.level >= 6) {
                     // Use link
-                    startPoint = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK });
+                    startPoint = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                 }
 
                 if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleUpgrader.id), roles.roleUpgrader.id + uniqueNameID) === OK) {
@@ -203,7 +202,7 @@ brain.creepSpawner = function () {
                 }
                 if (!isNullOrUndefined(link)) {
                     // Set endpoint to the link
-                    endPoint = startPoint.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK });
+                    endPoint = spawn.room.storage.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                 }
 
                 if (endPoint) {
@@ -225,7 +224,7 @@ brain.creepSpawner = function () {
                 config.log(3, 'debug scope: Room: ' + roomName + ' miner');
 
                 let startPoint = mineral; // set startPoint to the mineral
-                let endPoint = mineral.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER }); // Set endPoint to nearby container
+                let endPoint = mineral.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]; // Set endPoint to nearby container
 
                 if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleMiner.id), roles.roleMiner.id + uniqueNameID) === OK) {
                     spawn.createCreep(config.getBodyParts(roomName, roles.roleMiner.id), roles.roleMiner.id + uniqueNameID, {
@@ -323,15 +322,17 @@ brain.creepSpawner = function () {
                     break;
                 }
             }
-            else if (false && _.sum(Game.creeps, (c) => c.memory.task.role === 'specialCreep') < 1) {
+            else if (spawn.room.name === 'XXX' && _.sum(Game.creeps, (c) => c.room.name === 'XXX' && c.memory.task.role === 'specialCreep') < 1) {
                 // Spawn Special Creep
                 config.log(3, 'debug scope: Room: ' + roomName + ' specialCreep');
+
+                let body = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
                 let startPoint = undefined;
                 let endPoint = undefined;
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'specialCreep' + uniqueNameID) === OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, roles.roleCollector.id), 'specialCreep' + uniqueNameID, {
+                if (spawn.canCreateCreep(body, 'specialCreep' + uniqueNameID) === OK) {
+                    spawn.createCreep(body, 'specialCreep' + uniqueNameID, {
                         name: 'specialCreep' + uniqueNameID,
                         task: {
                             role: 'specialCreep',
