@@ -235,8 +235,8 @@ brain.special.creepSpawner = function () {
 
                             if (startPoint && endPoint) {
 
-                                if (spawn.canCreateCreep(config.getBodyParts(roomName, roles.roleAttacker.id), squad.squadType + uniqueNameId) == OK) {
-                                    spawn.createCreep(config.getBodyParts(roomName, roles.roleAttacker.id), squad.squadType + uniqueNameId, {
+                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'defender'), squad.squadType + uniqueNameId) === OK) {
+                                    spawn.createCreep(config.getBodyParts(roomName, 'defender'), squad.squadType + uniqueNameId, {
                                         task: {
                                             role: roles.roleAttacker.id,
                                             hasResource: false,
