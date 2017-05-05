@@ -1,69 +1,49 @@
-brain.spawner.manager = () => {
+brain.spawn.manager = () => {
     let configSpawn = brain.spawn.config;
 
     for (let roomName in Game.rooms) {
         const room = Game.rooms[roomName];
         let cityMem = Memory.empire.cities[roomName];
+        let cityName = roomName;
+        let roles = cityMem.roles;
 
         if (cityMem === undefined) continue;
 
         for (let spawn in room.find(FIND_MY_SPAWNS, { filter: (s) => !s.spawning })) {
 
-            let uniqueId = Math.floor((Math.random() * 1000) + 1);
             let startPoint = undefined;
             let endPoint = undefined;
 
-            let buildNext = configSpawn.buildNext(roomName);
-
-            // Base
-            if (buildNext === 'harvester') {
+            if (configSpawn.sourcesHasHarvesters(cityMem.sources)) {
                 // Spawn Harvester
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Harvester');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Harvester');
 
                 // Set startPoint to source
-                let source = _.filter(cityMem.sources, (s) => !s.hasHarvester);
+                const source = _.filter(cityMem.sources, (s) => !s.hasHarvester)[0];
                 if (source) {
-                    startPoint = Game.getObjectById(source[0]);
+                    startPoint = source;
 
                     if (!startPoint) {
                         continue;
                     }
                 }
 
-                // Set endPoint to container
-                endPoint = startPoint.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                // Set endPoint to container if available
+                endPoint = Game.getObjectById(startPoint).pos.findInRange(FIND_STRUCTURES, 1, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'harvester'), 'harvester' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'harvester'), 'harvester' + uniqueId, {
-                        task: {
-                            role: 'harvester',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'harvester', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'distributor') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleDistributor) && configSpawn.sourcesHasContainerOrLink(cityMem.sources)) {
                 // Spawn Distributor
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Distributor');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Distributor');
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'distributor'), 'distributor' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'distributor'), 'distributor' + uniqueId, {
-                        task: {
-                            role: 'distributor',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'distributor', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'carrier') {
+            } else if (configSpawn.sourcesHasCarriers(cityMem.sources)) {
                 // Spawn Carrier
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Carrier');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Carrier');
 
                 // Set startPoint to Container
                 for (let source in cityMem.sources) {
@@ -75,37 +55,19 @@ brain.spawner.manager = () => {
                     }
                 }
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'carrier'), 'carrier' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'carrier'), 'carrier' + uniqueId, {
-                        task: {
-                            role: 'carrier',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'carrier', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'builder') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleBuilder)) {
                 // Spawn Builder
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Builder');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Builder');
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'builder'), 'builder' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'builder'), 'builder' + uniqueId, {
-                        task: {
-                            role: 'builder',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'builder', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'upgrader') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleUpgrader)) {
                 // Spawn Upgrader
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Upgrader');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Upgrader');
 
                 let controller = spawn.room.controller;
 
@@ -127,49 +89,31 @@ brain.spawner.manager = () => {
                     startPoint = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                 }
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'upgrader'), 'upgrader' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'upgrader'), 'upgrader' + uniqueId, {
-                        task: {
-                            role: 'upgrader',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'upgrader', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'bridge') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleBridge) && configSpawn.controllerHasLinkOrContainer(room.controller)) {
                 // Spawn Bridge
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Bridge');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Bridge');
 
                 // Set endPoint to Link > Container
-                let storageLink = startPoint.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
+                let storageLink = room.controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                 if (storageLink !== undefined) {
                     endPoint = storageLink;
                 } else {
-                    endPoint = spawn.room.controller.pos.findInRange(FIND_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                    endPoint = room.controller.pos.findInRange(FIND_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
                     if (endPoint === undefined) continue;
                 }
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'bridge'), 'bridge' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'bridge'), 'bridge' + uniqueId, {
-                        task: {
-                            role: 'bridge',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'bridge', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'miner') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleMiner) && configSpawn.extractorAndContainerExist(room)) {
                 // Spawn Miner
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Miner');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Miner');
 
                 // Set startPoint to Mineral Deposit
-                let extractor = spawn.room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR });
+                let extractor = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR });
                 if (!isNullOrUndefined(extractor)) {
                     startPoint = extractor[0].pos.findInRange(FIND_MINERALS, 1)[0];
                 }
@@ -177,21 +121,12 @@ brain.spawner.manager = () => {
                 // Set endPoint to Container
                 endPoint = startPoint.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'miner'), 'miner' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'miner'), 'miner' + uniqueId, {
-                        task: {
-                            role: 'miner',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'miner', startPoint, endPoint) === OK) {
                     continue;
                 }
-
-            } else if (buildNext === 'mineralCollector') {
-                // Spawn MineralCollector
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning MineralCollector');
+            } else if (configSpawn.checkRoleMinToCount(roles.roleMineralCollector) && configSpawn.extractorAndContainerExist(room) && configSpawn.mineralContainerHasResources(room)) {
+                // Spawn Mineral Collector
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Mineral Collector');
 
                 // Set startPoint to Mineral Container
                 let extractor = spawn.room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR });
@@ -199,272 +134,150 @@ brain.spawner.manager = () => {
                     startPoint = extractor[0].pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
                 }
 
-                if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'mineralCollector'), 'mineralCollector' + uniqueId) === OK) {
-                    spawn.createCreep(configSpawn.getBodyParts(roomName, 'mineralCollector'), 'mineralCollector' + uniqueId, {
-                        task: {
-                            role: 'mineralCollector',
-                            hasResources: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
+                if (brain.spawn.createCreep(spawn, roomName, 'mineralCollector', startPoint, endPoint) === OK) {
                     continue;
                 }
-            } else if (buildNext === 'laborant') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleLaborant) && configSpawn.labsExist(room) && configSpawn.reactionsIsActive(room)) {
                 // Spawn Laborant
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning laborant');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Laborant');
 
-                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'laborant'), 'laborant' + uniqueId) === OK) {
-                    spawn.createCreep(config.getBodyParts(roomName, 'laborant'), 'laborant' + uniqueId, {
-                        task: {
-                            role: 'laborant',
-                            hasResource: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
-                    break;
+                if (brain.spawn.createCreep(spawn, roomName, 'laborant', startPoint, endPoint) === OK) {
+                    continue;
                 }
-            } else if (buildNext === 'pillager') {
-                // Spawn Pillager
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning pillager');
-
-                startPoint = spawn.room.storage; // Needed, do not remove this!!!
-
-                //if (roomName == 'E27S83') {
-                //    endPoint = new RoomPosition(25, 25, 'E27S81');
-                //}
-
-                if (endPoint) {
-                    if (spawn.canCreateCreep(config.getBodyParts(roomName, 'pillager'), 'pillager' + uniqueId) === OK) {
-                        spawn.createCreep(config.getBodyParts(roomName, 'pillager'), 'pillager' + uniqueId, {
-                            task: {
-                                role: 'pillager',
-                                hasResource: false,
-                                startPoint: startPoint,
-                                endPoint: endPoint
-                            }
-                        });
-                        break;
-                    }
-                }
-            } else if (buildNext === 'scout') {
-                // Spawn Scout Creep
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning scout');
-
-                //let endPoint = new RoomPosition(25, 25, scoutRoom.targetRoom);
-
-                if (spawn.canCreateCreep([MOVE], 'scout' + uniqueId) === OK) {
-                    spawn.createCreep([MOVE], 'scout' + uniqueId, {
-                        task: {
-                            role: 'scout',
-                            hasResource: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
-                    break;
-                }
-            } else if (buildNext === 'specialCreep') {
+            } else if (configSpawn.checkRoleMinToCount(roles.roleSpecialCreep) && configSpawn.specialCreepRequired(room)) {
                 // Spawn Special Creep
-                config.log(3, '[DEBUG] Room: ' + roomName + ' spawning special creep');
+                config.log(3, '[Spawn] Room: ' + roomName + ' spawn Special Creep');
 
-                if (spawn.canCreateCreep([], 'specialCreep' + uniqueId) === OK) {
-                    spawn.createCreep([], 'specialCreep' + uniqueId, {
-                        task: {
-                            role: 'specialCreep',
-                            hasResource: false,
-                            startPoint: startPoint,
-                            endPoint: endPoint
-                        }
-                    });
-                    break;
+                if (brain.spawn.createCreep(spawn, roomName, 'specialCreep', startPoint, endPoint) === OK) {
+                    continue;
                 }
-            } else if (buildNext === 'city') {
-                let newCities = _.filter(Memory.empire.cities, (c) => c.parentRoom === roomName);
-                for (let newCityName in newCities) {
-                    let newCityMem = Memory.empire.cities[newCityName];
-                    let newCityBuildNext = configSpawn.buildOutpostNext(newCityName);
+            } else if (configSpawn.checkInterCityCreeps(cityName)) {
+                // Inter City Creeps
+                for (let city in _.filter(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName)) {
+                    if (!city.isClaimed && !city.hasClaimer) {
+                        // Spawn Claimer
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn Claimer');
 
-                    if (newCityBuildNext) {
-                        if (newCityBuildNext === 'claimer') {
-                            // Spawn Claimer
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning claimer for new city '+newCityName);
+                        startPoint = new RoomPosition(25, 25, roomName); // Set startPoint to parent room
+                        endPoint = new RoomPosition(25, 25, city); // Set endPoint to target claimName
 
-                            let startPoint = new RoomPosition(25, 25, roomName); // Set startPoint to parent room
-                            let endPoint = new RoomPosition(25, 25, newCityName); // Set endPoint to target claimName
+                        if (brain.spawn.createCreep(spawn, roomName, 'claimer', startPoint, endPoint) === OK) {
+                            break;
+                        }
+                    } else if (city.useInterCityBoost && !city.hasInterCityBoost) {
+                        // Spawn InterCity Boost
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn InterCity Boost');
 
-                            if (spawn.canCreateCreep(config.getBodyParts(roomName, 'claimer'), 'claimer' + uniqueId) === OK) {
-                                spawn.createCreep(config.getBodyParts(roomName, 'claimer'), 'claimer' + uniqueId, {
-                                    task: {
-                                        role: 'claimer',
-                                        hasResource: false,
-                                        startPoint: startPoint,
-                                        endPoint: endPoint
-                                    }
-                                });
+                        startPoint = new RoomPosition(25, 25, city);
+                        endPoint = undefined;
+
+                        for (let source in city.sources) {
+                            if (!source.hasHarvester) {
+                                endPoint = Game.getObjectById(source);
+                                break;
+                            } else {
+                                continue;
+                            }
+                        }
+
+                        if (startPoint && endPoint) {
+                            if (brain.spawn.createCreep(spawn, roomName, 'interCityBoost', startPoint, endPoint) === OK) {
                                 break;
                             }
-                        } else if (newCityBuildNext === 'prospector') {
-                            // Spawn prospector to create the spawn in the outpost
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning prospector for new city '+newCityName);
+                        }
+                    } else if (city.useInterCityTransport && !city.hasInterCityTransport) {
+                        // Spawn InterCity Transport
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn InterCity Transport');
 
-                            let startPoint = new RoomPosition(25, 25, newCityName); // Set startPoint to target room
-                            let endPoint = undefined;
+                        startPoint = new RoomPosition(25, 25, roomName); // homeRoom - pickup energy
+                        endPoint = new RoomPosition(25, 25, city); // endRoom - deliver energy
 
-                            for (let source in newCityMem.sources) {
-                                if (!source.hasHarvester) {
-                                    endPoint = Game.getObjectById(source);
-                                    break;
-                                } else {
-                                    continue;
-                                }
-                            }
-
-                            if (startPoint && endPoint) {
-                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'prospector'), 'prospector' + uniqueId) === OK) {
-                                    spawn.createCreep(config.getBodyParts(roomName, 'prospector'), 'prospector' + uniqueId, {
-                                        task: {
-                                            role: roles.roleProspector.id,
-                                            hasResource: false,
-                                            startPoint: startPoint,
-                                            endPoint: endPoint
-                                        }
-                                    });
-                                    break;
-                                }
-                            }
-                        } else if (newCityBuildNext === 'roomBooster') {
-                            // Spawn room booster if claim requires it
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning roomBooster for new city '+newCityName);
-
-                            let startPoint = new RoomPosition(25, 25, roomName);
-                            let endPoint = undefined;
-
-                            for (let source in newCityMem.sources) {
-                                if (!source.hasHarvester) {
-                                    endPoint = Game.getObjectById(source);
-                                    break;
-                                } else {
-                                    continue;
-                                }
-                            }
-
-                            if (startPoint && endPoint) {
-                                if (spawn.canCreateCreep(config.getBodyParts(roomName, 'roomBooster'), 'roomBooster' + uniqueId) === OK) {
-                                    spawn.createCreep(config.getBodyParts(roomName, 'roomBooster'), 'roomBooster' + uniqueId, {
-                                        task: {
-                                            role: 'roomBooster',
-                                            hasResource: false,
-                                            startPoint: startPoint,
-                                            endPoint: endPoint
-                                        }
-                                    });
-                                    break;
-                                }
-                            }
-                        } else if (newCityBuildNext === 'interRoomTransport') {
-                            // Spawn interRoomTransport if claim requires it
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning interRoomTransport');
-
-                            let startPoint = new RoomPosition(25, 25, roomName); // homeRoom - pickup energy
-                            let endPoint = new RoomPosition(25, 25, newCityName); // endRoom - deliver energy
-
-                            if (spawn.canCreateCreep(config.getBodyParts(roomName, 'interRoomTransport'), 'interRoomTransport' + uniqueId) === OK) {
-                                spawn.createCreep(config.getBodyParts(roomName, 'interRoomTransport'), 'interRoomTransport' + uniqueId, {
-                                    task: {
-                                        role: 'interRoomTransport',
-                                        hasResource: false,
-                                        startPoint: startPoint,
-                                        endPoint: endPoint
-                                    }
-                                });
-                                break;
-                            }
+                        if (brain.spawn.createCreep(spawn, roomName, 'interCityTransport', startPoint, endPoint) === OK) {
+                            break;
                         }
                     }
                 }
-            } else if (buildNext === 'district') {
 
+                continue;
+            } else if (configSpawn.checkCityDistrictsForSpawnable(cityMem)) {
+                // Manage Districts
                 for (let districtName in cityMem.districts) {
-                    let districtMem = cityMem.districts[districtName];
-                    let districtBuildNext = configSpawn.buildMineNext(districtName);
+                    let district = cityMem.districts[districtName];
 
-                    if (districtBuildNext) {
-                        if (districtBuildNext === 'reserver') {
-                            // Spawn Reserver
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Reserver');
+                    if (!district.hasReserver) {
+                        // Spawn Reserver
+                        // TODO: Add district.startReserverAtTick (tick at 5000, minus 3000 ticks) Update startReserverAtTick once the controller reaches 4999+ reservationTicks
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn Reserver');
 
-                            startPoint = new RoomPosition(25, 25, roomName);
-                            endPoint = new RoomPosition(25, 25, districtName);
+                        startPoint = new RoomPosition(25, 25, roomName);
+                        endPoint = new RoomPosition(25, 25, districtName);
 
-                            if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'reserver'), 'reserver' + uniqueId) === OK) {
-                                spawn.createCreep(configSpawn.getBodyParts(roomName, 'reserver'), 'reserver' + uniqueId, {
-                                    task: {
-                                        role: 'reserver',
-                                        hasResources: false,
-                                        startPoint: startPoint,
-                                        endPoint: endPoint
-                                    }
-                                });
-                                continue;
-                            }
-
-                        } else if (districtBuildNext === 'prospector') {
-                            // Spawn Prospector
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Prospector');
-
-                            startPoint = new RoomPosition(25, 25, districtName);
-
-                            // Set endPoint to source
-                            for (let source in districtMem.sources) {
-                                if (!source.hasHarvester) {
-                                    endPoint = Game.getObjectById(source);
-                                    break;
-                                } else {
-                                    continue;
-                                }
-                            }
-
-                            if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'prospector'), 'prospector' + uniqueId) === OK) {
-                                spawn.createCreep(configSpawn.getBodyParts(roomName, 'prospector'), 'prospector' + uniqueId, {
-                                    task: {
-                                        role: 'prospector',
-                                        hasResources: false,
-                                        startPoint: startPoint,
-                                        endPoint: endPoint
-                                    }
-                                });
-                                continue;
-                            }
-
-
-                        } else if (districtBuildNext === 'collector') {
-                            // Spawn Collector
-                            config.log(3, '[DEBUG] Room: ' + roomName + ' spawning Collector');
-
-                            startPoint = new RoomPosition(25, 25, districtName);
-                            endPoint = new RoomPosition(25, 25, roomName);
-
-                            if (spawn.canCreateCreep(configSpawn.getBodyParts(roomName, 'collector'), 'collector' + uniqueId) === OK) {
-                                spawn.createCreep(configSpawn.getBodyParts(roomName, 'collector'), 'collector' + uniqueId, {
-                                    task: {
-                                        role: 'collector',
-                                        hasResources: false,
-                                        startPoint: startPoint,
-                                        endPoint: endPoint
-                                    }
-                                });
-                                continue;
-                            }
-
+                        if (brain.spawn.createCreep(spawn, roomName, 'reserver', startPoint, endPoint) === OK) {
+                            break;
                         }
-                    } else {
-                        continue;
-                    }
+                    } else if (configSpawn.sourcesHasHarvesters(district.sources)) {
+                        // Spawn Prospector
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn Prospector');
 
+                        startPoint = new RoomPosition(25, 25, districtName);
+
+                        // Set endPoint to source
+                        for (let source in district.sources) {
+                            if (!source.hasHarvester) {
+                                endPoint = Game.getObjectById(source);
+                                break;
+                            } else {
+                                continue;
+                            }
+                        }
+                        if (brain.spawn.createCreep(spawn, roomName, 'prospector', startPoint, endPoint) === OK) {
+                            break;
+                        }
+                    } else if (configSpawn.sourcesHasCarriers(district.sources)) {
+                        // Spawn Collector
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn Collector');
+
+                        startPoint = new RoomPosition(25, 25, districtName);
+                        endPoint = new RoomPosition(25, 25, roomName);
+
+                        if (brain.spawn.createCreep(spawn, roomName, 'collector', startPoint, endPoint) === OK) {
+                            break;
+                        }
+                    } else if (district.useDefender && !district.hasDefender) {
+                        // Spawn Defender
+                        config.log(3, '[Spawn] Room: ' + roomName + ' spawn Defender');
+
+                        startPoint = Game.flags[districtName]; // Set startPoint to flag for rendevour
+
+                        if (startPoint) {
+                            if (brain.spawn.createCreep(spawn, roomName, 'defender', startPoint, endPoint) === OK) {
+                                break;
+                            }
+                        }
+                    }
                 }
+
+                continue;
+            } else if (false) {
+                // Manage squads
+                // TODO: Create a new squad system
             }
         }
+    }
+}
+
+brain.spawn.createCreep = (spawn, roomName, role, startPoint, endPoint) => {
+    let uniqueId = Math.floor((Math.random() * 1000) + 1);
+    if ((isCreationPossible = spawn.canCreateCreep(brain.spawn.config.getBodyParts(roomName, role), role + uniqueId)) === OK) {
+        return spawn.createCreep(brain.spawn.config.getBodyParts(roomName, role), role + uniqueId, {
+                task: {
+                    role: role,
+                    hasResource: false,
+                    startPoint: startPoint,
+                    endPoint: endPoint
+                }
+            });
+    } else {
+        return isCreationPossible;
     }
 }
