@@ -27,7 +27,7 @@ brain.memory.refresh = () => {
 
         // Update isClaimed
         city.isClaimed = Game.rooms[cityName].controller.my;
-        city.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === cityName) === 1;
+        city.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === cityName) > 0;
 
         // Update Roles
         city.roles.roleDistributor.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'distributor' && c.room.name === cityName);
@@ -39,17 +39,30 @@ brain.memory.refresh = () => {
         city.roles.roleLaborant.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'laborant' && c.room.name === cityName);
         city.roles.roleSpecial.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'special' && c.room.name === cityName);
 
+        // Update Inter City Creeps
+        if (city.useInterCityBoost) {
+            city.hasInterCityBoost = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityBoost' && c.memory.task.endPoint.roomName === cityName);
+        } else {
+            city.hasInterCityBoost = false;
+        }
+
+        if (city.useInterCityTransport) {
+            city.useInterCityTransport = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityTransport' && c.memory.task.endPoint.roomName === cityName);
+        } else {
+            city.useInterCityTransport = false;
+        }
+
         // Update city sources
         if (city.sources) {
             for (let sourceName in city.sources) {
                 let source = city.sources[sourceName];
 
                 // check if source has harvester
-                source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'harvester' && c.memory.task.startPoint.id === sourceName) === 1;
+                source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'harvester' && c.memory.task.startPoint.id === sourceName) > 0;
 
                 // check if source has carrier
                 let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
-                source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'carrier' && c.memory.task.startPoint.id === sourceContainer) === 1;
+                source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'carrier' && c.memory.task.startPoint.id === sourceContainer) > 0;
             }
         }
 
@@ -59,10 +72,15 @@ brain.memory.refresh = () => {
             if (!Game.rooms[districtName]) continue;
 
             // check if a reserver has districtname as endpoint (RoomPosition)
-            district.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === districtName) === 1;
+            district.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role === 'reserver' && c.memory.task.endPoint.roomName === districtName) > 0;
 
             // check if a defender has districtname as endpoint (Flag)
-            district.hasDefender = _.sum(Game.creeps, (c) => c.memory.task.role === 'attacker' && c.memory.task.endPoint.roomName === districtName) === 1;
+            if (district.useDefender) {
+                district.hasDefender = _.sum(Game.creeps, (c) => c.memory.task.role === 'defender' && c.memory.task.endPoint.roomName === districtName) > 0;
+            } else {
+                district.hasDefender = false;
+            }
+            
 
             // Update district sources
             if (district.sources) {
@@ -70,11 +88,11 @@ brain.memory.refresh = () => {
                     let source = district.sources[sourceName];
 
                     // check if source has prospector
-                    source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'prospector' && c.memory.task.endPoint.id === sourceName) === 1;
+                    source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'prospector' && c.memory.task.endPoint.id === sourceName) > 0;
 
                     // check if source has collector
                     let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
-                    source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'collector' && c.memory.task.startPoint.id === sourceContainer) === 1;
+                    source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'collector' && c.memory.task.startPoint.id === sourceContainer) > 0;
                 }
             }
         }
@@ -129,7 +147,6 @@ brain.memory.setupMemory = () => {
 }
 
 brain.memory.injection = () => {
-
 }
 
 global.utils.createCity = (targetRoom, parentRoom) => { brain.memory.createCity(targetRoom, parentRoom); }
@@ -179,7 +196,11 @@ brain.memory.createCity = (targetRoom, parentRoom) => {
             },
             districts: {},
             reactions: {},
-            defenseLevel: 0
+            defenseLevel: 0,
+            useInterCityBoost: false,
+            hasInterCityBoost: false,
+            useInterCityTransport: false,
+            hasInterCityTransport: false
         }
 
     } else {
@@ -203,6 +224,7 @@ brain.memory.createDistrict = (targetRoom, districtType, cityRoom) => {
             startReserverAt: 0, // Current tick + 3000, signals when the next reserver should start spawning, updates when reservation.ticksToEnd === 5000
             hasReserver: false,
             hasDefender: false,
+            useDefender: false,
             type: districtType
         }
     } else {
