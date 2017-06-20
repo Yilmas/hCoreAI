@@ -35,12 +35,12 @@ var main = function () {
 
 
     // Lab Manager
-    try {
-        brain.labManager.start();
-    }
-    catch (ex) {
-        console.log('<font color=red>[Error] Lab Manager: ' + ex + '</font>');
-    }
+    //try {
+    //    brain.labManager.start();
+    //}
+    //catch (ex) {
+    //    console.log('<font color=red>[Error] Lab Manager: ' + ex + '</font>');
+    //}
 
 
     // Visualizer
