@@ -1,3 +1,5 @@
+brain.memory = {};
+
 brain.memory.manager = () => {
     brain.memory.setupMemory();
     brain.memory.injection();
