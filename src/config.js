@@ -25,7 +25,7 @@ global.config.log = function (level, message) {
 
 global.config.operationSize = function (roomName) {
     let room = Game.rooms[roomName];
-    
+
     if (_.sum(Game.creeps, (c) => c.room.name == roomName) < 4) {
         // Initiate reboot process
         config.log(1, 'Room: ' + roomName + ' Running reboot process of operations');
@@ -63,19 +63,17 @@ config.wallOrRampartTargetHitPoints = roomName => {
     case 2:
         return 15000;
     case 3:
-        return 20000;
-    case 4:
         return 25000;
-    case 5:
+    case 4:
         return 50000;
+    case 5:
+        return 100000;
     case 6:
-        return 75000;
+        return 250000;
     case 7:
-        if (roomName == 'E27S83' || roomName == 'E26S83') return 500000;
-        else return 100000;
+        return 500000;
     case 8:
-        if (roomName == 'E27S83' || roomName == 'E26S83') return 750000;
-        else return 250000;
+        return 750000;
     }
 
     // TODO: Use the following values once the code is implemented and has updated across all rooms
@@ -115,8 +113,9 @@ global.getBodyCost = function (theBody) {
     return cost;
 }
 
-config.WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing'];
+config.WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing', 'admon'];
 
 config.SIGN_MESSAGE = "[Ypsilon Pact] Sector Claimed, unauthorized claims may result in war declarations!";
 
 config.TERMINAL_MINIMUM_ENERGY = 100000;
+config.MAX_MINERAL_IN_ROOM = 50000;

@@ -1,8 +1,8 @@
-Creep.prototype.takeRandomStep = function() {
+Creep.prototype.takeRandomStep = function () {
     utils.takeRandomStep(this);
 }
 
-Creep.prototype.avoidRoomEdge = function() {
+Creep.prototype.avoidRoomEdge = function () {
     utils.avoidRoomEdge(this);
 }
 

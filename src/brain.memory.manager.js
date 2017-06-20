@@ -2,9 +2,7 @@ brain.memory.manager = () => {
     brain.memory.setupMemory();
     brain.memory.injection();
 
-    if (Game.time % 2 === 0) {
-        brain.memory.refresh();
-    }
+    brain.memory.refresh();
 }
 
 brain.memory.refresh = () => {
@@ -23,11 +21,14 @@ brain.memory.refresh = () => {
     // Update cities
     for (let cityName in empire.cities) {
         let city = empire.cities[cityName];
-        if (!Game.rooms[cityName]) continue;
 
+        // Update hasClaimer
+        city.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === cityName) > 0;
+
+        if (!Game.rooms[cityName]) continue;
         // Update isClaimed
         city.isClaimed = Game.rooms[cityName].controller.my;
-        city.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === cityName) > 0;
+
 
         // Update Roles
         city.roles.roleDistributor.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'distributor' && c.room.name === cityName);
@@ -37,19 +38,22 @@ brain.memory.refresh = () => {
         city.roles.roleMiner.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'miner' && c.room.name === cityName);
         city.roles.roleMineralCollector.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'mineralCollector' && c.room.name === cityName);
         city.roles.roleLaborant.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'laborant' && c.room.name === cityName);
-        city.roles.roleSpecial.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'special' && c.room.name === cityName);
+        city.roles.roleSpecial.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'specialCreep' && c.memory.task.startPoint.roomName === cityName);
 
         // Update Inter City Creeps
         if (city.useInterCityBoost) {
-            city.hasInterCityBoost = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityBoost' && c.memory.task.endPoint.roomName === cityName);
+            let countBoost = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityBoost' && c.memory.task.startPoint.roomName === cityName);
+
+            city.hasInterCityBoost = countBoost >= 2;
         } else {
             city.hasInterCityBoost = false;
         }
 
         if (city.useInterCityTransport) {
-            city.useInterCityTransport = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityTransport' && c.memory.task.endPoint.roomName === cityName);
+            let countTransport = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityTransport' && c.memory.task.endPoint.roomName === cityName);
+            city.hasInterCityTransport = countTransport >= 2;
         } else {
-            city.useInterCityTransport = false;
+            city.hasInterCityTransport = false;
         }
 
         // Update city sources
@@ -58,29 +62,32 @@ brain.memory.refresh = () => {
                 let source = city.sources[sourceName];
 
                 // check if source has harvester
-                source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'harvester' && c.memory.task.startPoint.id === sourceName) > 0;
+                source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'harvester' && c.memory.task.startPoint === sourceName) > 0;
 
                 // check if source has carrier
-                let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
-                source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'carrier' && c.memory.task.startPoint.id === sourceContainer) > 0;
+                let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                if (sourceContainer) {
+                    source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'carrier' && c.memory.task.startPoint.id === sourceContainer.id) > 0;
+                } else {
+                    source.hasCarrier = false;
+                }
+
             }
         }
 
         // Update districts
         for (let districtName in city.districts) {
             let district = city.districts[districtName];
-            if (!Game.rooms[districtName]) continue;
 
             // check if a reserver has districtname as endpoint (RoomPosition)
             district.hasReserver = _.sum(Game.creeps, (c) => c.memory.task.role === 'reserver' && c.memory.task.endPoint.roomName === districtName) > 0;
 
             // check if a defender has districtname as endpoint (Flag)
             if (district.useDefender) {
-                district.hasDefender = _.sum(Game.creeps, (c) => c.memory.task.role === 'defender' && c.memory.task.endPoint.roomName === districtName) > 0;
+                district.hasDefender = _.sum(Game.creeps, (c) => c.memory.task.role === 'defender' && c.memory.task.startPoint.pos.roomName === districtName) > 0;
             } else {
                 district.hasDefender = false;
             }
-            
 
             // Update district sources
             if (district.sources) {
@@ -88,11 +95,17 @@ brain.memory.refresh = () => {
                     let source = district.sources[sourceName];
 
                     // check if source has prospector
-                    source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'prospector' && c.memory.task.endPoint.id === sourceName) > 0;
+                    source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'prospector' && c.memory.task.endPoint === sourceName) > 0;
 
                     // check if source has collector
+                    if (!Game.getObjectById(sourceName)) continue;
                     let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_CONTAINER })[0];
-                    source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'collector' && c.memory.task.startPoint.id === sourceContainer) > 0;
+                    if (sourceContainer) {
+                        source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'collector' && c.memory.task.startPoint === sourceContainer.id) > 0;
+                    } else {
+                        source.hasCarrier = false;
+                    }
+
                 }
             }
         }
@@ -119,7 +132,9 @@ brain.memory.setupMemory = () => {
             if (!city.sources) {
                 city.sources = {};
                 for (let source of Game.rooms[cityName].find(FIND_SOURCES)) {
-                    city.sources[source.id] = {
+                    let sourceId = source.id;
+                    city.sources[sourceId] = {};
+                    city.sources[sourceId] = {
                         hasHarvester: false,
                         hasCarrier: false
                     }
@@ -134,7 +149,9 @@ brain.memory.setupMemory = () => {
                     if (!district.sources) {
                         district.sources = {};
                         for (let source of Game.rooms[districtName].find(FIND_SOURCES)) {
-                            district.sources[source.id] = {
+                            let sourceId = source.id;
+                            district.sources[sourceId] = {};
+                            district.sources[sourceId] = {
                                 hasHarvester: false,
                                 hasCarrier: false
                             }
@@ -157,6 +174,7 @@ brain.memory.createCity = (targetRoom, parentRoom) => {
         config.log(3, '[Memory CreateCity] Setup new city: ' + targetRoom);
 
         Memory.empire.cities[targetRoom] = {
+            cityName: targetRoom,
             parentRoom: parentRoom,
             isClaimed: false,
             hasClaimer: false,
@@ -224,7 +242,7 @@ brain.memory.createDistrict = (targetRoom, districtType, cityRoom) => {
             startReserverAt: 0, // Current tick + 3000, signals when the next reserver should start spawning, updates when reservation.ticksToEnd === 5000
             hasReserver: false,
             hasDefender: false,
-            useDefender: false,
+            useDefender: true,
             type: districtType
         }
     } else {

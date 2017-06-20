@@ -9,17 +9,9 @@ var main = function () {
 
     // Memory
     try {
-        brain.memory.prepareMemory();
-    }
-    catch (ex) {
-        console.log('<font color=red>Memory.prePareMemory: ' + ex + '</font>');
-    }
-
-    try {
-        brain.memory.refreshMemory();
-    }
-    catch (ex) {
-        console.log('<font color=red>Memory.refreshMemory: ' + ex + '</font>');
+        brain.memory.manager();
+    } catch (ex) {
+        console.log('<font color=red>[Error] Memory Manager: ' + ex.stack + '</font>');
     }
 
     // Role Managers
@@ -27,16 +19,10 @@ var main = function () {
 
     // Spawners
     try {
-        brain.special.creepSpawner();
+        brain.spawn.manager();
     }
     catch (ex) {
-        console.log('<font color=red>Special.CreepSpawner: ' + ex + '</font>');
-    }
-    try {
-        brain.creepSpawner();
-    }
-    catch (ex) {
-        console.log('<font color=red>CreepSpawner: ' + ex + '</font>');
+        console.log('<font color=red>[Error] Brain.Spawn.Manager: ' + ex.stack + '</font>');
     }
 
     // Structures
@@ -44,7 +30,7 @@ var main = function () {
         brain.structureManager();
     }
     catch (ex) {
-        console.log('<font color=red>StructureManager: ' + ex + '</font>');
+        console.log('<font color=red>[Error] StructureManager: ' + ex + '</font>');
     }
 
 
@@ -53,24 +39,17 @@ var main = function () {
         brain.labManager.start();
     }
     catch (ex) {
-        console.log('<font color=red>Lab Manager: ' + ex + '</font>');
+        console.log('<font color=red>[Error] Lab Manager: ' + ex + '</font>');
     }
 
 
     // Visualizer
-    try {
-        visualizer.startRoomVisuals();
-    } catch (ex) {
-        console.log('<font color=red>Visualizer: ' + ex + '</font>');
-    }
+    //try {
+    //    visualizer.startRoomVisuals();
+    //} catch (ex) {
+    //    console.log('<font color=red>[Error] Visualizer: ' + ex + '</font>');
+    //}
 
-
-    // Debug New Memory Module
-    try {
-        brain.memory.manager();
-    } catch (ex) {
-        console.log('<font color=red>Memory Manager: ' + ex + '</font>');
-    }
 };
 
 module.exports.loop = function () {

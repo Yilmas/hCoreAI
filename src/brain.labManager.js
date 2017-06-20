@@ -4,7 +4,7 @@ brain.labManager.start = function () {
     brain.memory.setupReaction();
 
     // TODO: Loop creeps that are of role == laborant
-    for (let creep of _.filter(Game.creeps, (c) => c.memory.task.role == 'laborant')) {
+    for (let creep of _.filter(Game.creeps, (c) => c.memory.task.role === 'laborant')) {
         let task = creep.memory.task;
 
         if (!task.focusReaction) {
@@ -20,7 +20,7 @@ brain.labManager.start = function () {
 
             if (reaction.emptyFacilities && task.focusReaction == reaction.longName) {
                 // Check if facility is indeed empty, if it is set isActive to false
-                if (labInput1.mineralAmount == 0 && labInput2.mineralAmount == 0 && labOutput.mineralAmount == 0) {
+                if (labInput1.mineralAmount === 0 && labInput2.mineralAmount === 0 && labOutput.mineralAmount === 0) {
                     reaction.emptyFacilities = false;
                     reaction.isActive = false;
                     task.focusReaction = '';
@@ -30,15 +30,15 @@ brain.labManager.start = function () {
                         // pickup resources
 
                         if (labInput1.mineralAmount > 0) {
-                            if (creep.withdraw(labInput1, labInput1.mineralType) == ERR_NOT_IN_RANGE) {
+                            if (creep.withdraw(labInput1, labInput1.mineralType) === ERR_NOT_IN_RANGE) {
                                 creep.moveTo(labInput1);
                             }
                         } else if (labInput2.mineralAmount > 0) {
-                            if (creep.withdraw(labInput2, labInput2.mineralType) == ERR_NOT_IN_RANGE) {
+                            if (creep.withdraw(labInput2, labInput2.mineralType) === ERR_NOT_IN_RANGE) {
                                 creep.moveTo(labInput2);
                             }
                         } else if (labOutput.mineralAmount > 0) {
-                            if (creep.withdraw(labOutput, labOutput.mineralType) == ERR_NOT_IN_RANGE) {
+                            if (creep.withdraw(labOutput, labOutput.mineralType) === ERR_NOT_IN_RANGE) {
                                 creep.moveTo(labOutput);
                             }
                         }
@@ -48,11 +48,11 @@ brain.labManager.start = function () {
 
                         let mineralType = undefined;
                         for (let item in creep.carry) {
-                            if (item != RESOURCE_ENERGY)
+                            if (item !== RESOURCE_ENERGY)
                                 mineralType = item;
                         }
 
-                        if (creep.transfer(creep.room.terminal, mineralType) == ERR_NOT_IN_RANGE) {
+                        if (creep.transfer(creep.room.terminal, mineralType) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(creep.room.terminal);
                         }
                     }
@@ -62,40 +62,40 @@ brain.labManager.start = function () {
 
                 let mineralType = undefined;
                 for (let item in creep.carry) {
-                    if (item != RESOURCE_ENERGY)
+                    if (item !== RESOURCE_ENERGY)
                         mineralType = item;
                 }
 
-                if (creep.carryCapacity <= (labInput1.mineralCapacity - labInput1.mineralAmount) && mineralType == labInput1.mineralType) {
+                if (creep.carryCapacity <= (labInput1.mineralCapacity - labInput1.mineralAmount) && mineralType === labInput1.mineralType) {
                     // Fill labInput1 with minerals
                     if (!task.hasResource) {
                         // pickup resources
-                        if (creep.withdraw(creep.room.terminal, labInput1.mineralType) == ERR_NOT_IN_RANGE) {
+                        if (creep.withdraw(creep.room.terminal, labInput1.mineralType) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(creep.room.terminal);
                         }
                     } else if (task.hasResource) {
                         // dropoff resources
-                        if (creep.transfer(labInput1, labInput1.mineralType) == ERR_NOT_IN_RANGE) {
+                        if (creep.transfer(labInput1, labInput1.mineralType) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(labInput1);
                         }
                     }
                     break; // avoid doing more than one reaction per creep
-                } else if (creep.carryCapacity <= (labInput2.mineralCapacity - labInput2.mineralAmount) && mineralType == labInput2.mineralType) {
+                } else if (creep.carryCapacity <= (labInput2.mineralCapacity - labInput2.mineralAmount) && mineralType === labInput2.mineralType) {
                     // Fill labInput2 with minerals
                     if (!task.hasResource) {
                         // pickup resources
-                        if (creep.withdraw(creep.room.terminal, labInput2.mineralType) == ERR_NOT_IN_RANGE) {
+                        if (creep.withdraw(creep.room.terminal, labInput2.mineralType) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(creep.room.terminal);
                         }
                     } else if (task.hasResource) {
                         // dropoff resources
-                        if (creep.transfer(labInput2, labInput2.mineralType) == ERR_NOT_IN_RANGE) {
+                        if (creep.transfer(labInput2, labInput2.mineralType) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(labInput2);
                         }
                     }
                     break; // avoid doing more than one reaction per creep
-                } else if (labOutput.mineralAmount == labOutput.mineralCapacity || reaction.emptyResultLab) {
-                    if (labOutput.mineralAmount == 0 && reaction.emptyResultLab && _.sum(creep.carry) == 0) {
+                } else if (labOutput.mineralAmount === labOutput.mineralCapacity || reaction.emptyResultLab) {
+                    if (labOutput.mineralAmount === 0 && reaction.emptyResultLab && _.sum(creep.carry) === 0) {
                         // Stop emptying result lab
                         reaction.emptyResultLab = false;
                         continue; // continue to next reaction(s) doing more than one reaction
@@ -103,12 +103,12 @@ brain.labManager.start = function () {
                         // Empty result lab
                         if (!task.hasResource) {
                             // pickup resources
-                            if (creep.withdraw(labOutput, labOutput.mineralType) == ERR_NOT_IN_RANGE) {
+                            if (creep.withdraw(labOutput, labOutput.mineralType) === ERR_NOT_IN_RANGE) {
                                 creep.moveTo(labOutput);
                             }
                         } else if (task.hasResource) {
                             // dropoff resources
-                            if (creep.transfer(creep.room.terminal, mineralType) == ERR_NOT_IN_RANGE) {
+                            if (creep.transfer(creep.room.terminal, mineralType) === ERR_NOT_IN_RANGE) {
                                 creep.moveTo(creep.room.terminal);
                             }
                         }
@@ -141,7 +141,7 @@ brain.labManager.runReactions = roomName => {
                 reaction.isRunning = true;
 
                 //config.log(3, '[Lab] Room: ' + roomName + ' | Reaction: Running');
-                if (outputLab.runReaction(labInput1, labInput2) == ERR_NOT_ENOUGH_RESOURCES) {
+                if (outputLab.runReaction(labInput1, labInput2) === ERR_NOT_ENOUGH_RESOURCES) {
                     reaction.isRunning = false;
                 }
             } else {
@@ -202,7 +202,7 @@ global.brain.labManager.stopReaction = (roomName, reactionName) => {
     let room = Game.rooms[roomName];
 
     for (let reaction in room.memory.reactions) {
-        if (reaction.longName == reactionName) {
+        if (reaction.longName === reactionName) {
             // Set reaction to empty
             reaction.emptyFacilities = true;
 

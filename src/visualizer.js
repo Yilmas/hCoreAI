@@ -1,5 +1,5 @@
 visualizer = {};
 
 visualizer.startRoomVisuals = () => {
-    
+
 }

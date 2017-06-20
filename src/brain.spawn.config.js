@@ -44,13 +44,15 @@ config.findOperationLevel = (operationLevel, room, role) => {
 };
 
 config.isEnergyCostPlausible = (room, cost) => {
+    let roomRoles = Memory.empire.cities[room.name].roles;
+
     let energyAvailableInRoom = room.energyAvailable;
     let storedEnergyAvailable = _.sum(room.find(FIND_STRUCTURES, { filter: s => s.structureType === STRUCTURE_CONTAINER }), c => c.store[RESOURCE_ENERGY]);
-    if (!isNullOrUndefined(room.storage)) {
+    if (!isNullOrUndefined(room.storage) && roomRoles.roleDistributor.count > 0) {
         storedEnergyAvailable = storedEnergyAvailable + room.storage.store[RESOURCE_ENERGY];
     }
 
-    return energyAvailableInRoom >= cost || (storedEnergyAvailable >= cost && room.memory.roles.roleDistributor.amountOfDistributors > 0);
+    return energyAvailableInRoom >= cost || (storedEnergyAvailable >= cost && roomRoles.roleDistributor.count > 0);
 };
 
 config.roleBodyParts = (role, level) => {
@@ -93,6 +95,8 @@ config.roleBodyParts = (role, level) => {
         return config.partsForHealer(level);
     case 'defender':
         return config.partsForDefender(level);
+    case 'specialCreep':
+        return config.partsForSpecialCreep(level);
     }
 };
 
@@ -115,7 +119,8 @@ config.partsForDistributor = level => {
 config.partsForUpgrader = level => {
     if (level >= 1 && level <= 2) return [WORK, WORK, CARRY, MOVE];
     if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
-    if (level >= 5) return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level >= 5 && level <= 6) return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level >= 7 && level <= 8) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY];
 };
 
 // Builder
@@ -136,8 +141,8 @@ config.partsForCarrier = level => {
 // Bridge
 config.partsForBridge = level => {
     if (level <= 2) return undefined;
-    if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
-    if (level >= 5) return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+    if (level >= 3 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Claimer
@@ -226,7 +231,26 @@ config.partsForHealer = level => {
 // Defender
 config.partsForDefender = level => {
     if (level <= 3) return undefined;
-    if (level >= 4) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL];
+    if (level >= 4 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, HEAL];
+    if (level >= 6) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL];
+}
+
+// Special Creep
+config.partsForSpecialCreep = level => {
+    if (level >= 1 && level <= 6) return [WORK, WORK, CARRY, MOVE];
+    if (level >= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+
+}
+
+brain.spawn.config.spawnEmergencyDistributor = roomName => {
+    let roles = Memory.empire.cities[roomName].roles;
+    let room = Game.rooms[roomName];
+
+    if (roles.roleDistributor.count === 0 && ((room.storage && room.storage.store.energy > 0) || (room.terminal && room.terminal.store.energy > 0))) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 brain.spawn.config.checkRoleMinToCount = role => {
@@ -236,26 +260,62 @@ brain.spawn.config.checkRoleMinToCount = role => {
 }
 
 brain.spawn.config.sourcesHasHarvesters = sources => {
-    return _.all(sources, 'hasHarvester', false);
+    return _.all(sources, 'hasHarvester', true);
 }
 
 brain.spawn.config.sourcesHasCarriers = sources => {
-    return _.all(sources, 'hasCarrier', false);
+    return _.all(sources, 'hasCarrier', true);
+}
+
+brain.spawn.config.sourceHasLink = sources => {
+    for (let source in sources) {
+        let link = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 3, { filter: (c) => c.structureType === STRUCTURE_LINK })[0];
+        if (link) {
+            return true;
+        }
+    }
+}
+
+brain.spawn.config.sourcesHasContainer = sources => {
+    for (let source in sources) {
+        let link = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 3, { filter: (c) => c.structureType === STRUCTURE_CONTAINER })[0];
+        if (link) {
+            return true;
+        }
+    }
 }
 
 brain.spawn.config.sourcesHasContainerOrLink = sources => {
-    return _.sum(sources, (s) => Game.getObjectById(s).pos.findInRange(FIND_STRUCTURES, 1, { filter: (c) => c.structureType === STRUCTURE_CONTAINER || c.structureType === STRUCTURE_LINK })) > 0;
+    for (let source in sources) {
+        let containerOrLink = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 3, { filter: (c) => c.structureType === STRUCTURE_CONTAINER || c.structureType === STRUCTURE_LINK })[0];
+        if (containerOrLink) {
+            return true;
+        }
+    }
 }
 
 brain.spawn.config.controllerHasLinkOrContainer = controller => {
-    return controller.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_LINK }).length > 0;
+    return controller.pos.findInRange(FIND_STRUCTURES, 4, { filter: (s) => s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_LINK }).length > 0;
 }
 
 brain.spawn.config.extractorAndContainerExist = room => {
     if (room.controller.level >= 6) {
         let extractor = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR })[0];
+
         if (extractor) {
-            return extractor.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER }).length > 0;
+            let mineral = extractor.pos.findClosestByRange(FIND_MINERALS);
+            let mineralType = mineral.mineralType;
+
+            let mineralAmountInStorage = room.storage.store[mineralType] === undefined ? 0 : room.storage.store[mineralType];
+            let mineralAmountInTerminal = room.terminal.store[mineralType] === undefined ? 0 : room.terminal.store[mineralType];
+
+            if (mineralAmountInStorage + mineralAmountInTerminal > config.MAX_MINERAL_IN_ROOM) {
+                return false;
+            }
+
+            if (mineral.mineralAmount > 0) {
+                return extractor.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER }).length > 0;
+            }
         }
     }
 
@@ -266,9 +326,12 @@ brain.spawn.config.mineralContainerHasResources = room => {
     if (room.controller.level >= 6) {
         let extractor = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR })[0];
         if (extractor) {
-            let container = extractor.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
-            if (container) {
-                return _.sum(container.store) > 0;
+            let mineral = extractor.pos.findClosestByRange(FIND_MINERALS);
+            if (mineral.mineralAmount > 0) {
+                let container = extractor.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                if (container) {
+                    return _.sum(container.store) > 1500;
+                }
             }
         }
     }
@@ -285,24 +348,31 @@ brain.spawn.config.labsExist = room => {
 }
 
 brain.spawn.config.reactionsIsActive = room => {
-    if (room.controller.level >= 6 && Memory.empire.cities[room].reactions) {
-        return _.any(Memory.empire.cities[room].reactions, 'isActive', true);
+    if (room.controller.level >= 6 && Memory.empire.cities[room.name].reactions) {
+        return _.any(Memory.empire.cities[room.name].reactions, 'isActive', true);
     }
 
     return false;
 }
 
 brain.spawn.config.specialCreepRequired = room => {
-    let city = Memory.empire.cities[room];
+    let city = Memory.empire.cities[room.name];
     if (city && city.specialCreepRequired) return true;
 
     return false;
 }
 
 brain.spawn.config.checkInterCityCreeps = cityName => {
-    if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && !c.isClaimed && !c.hasClaimer) > 0) return true;
-    if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && c.useInterCityBoost && !c.hasInterCityBoost) > 0) return true;
-    if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && c.useInterCityTransport && !c.hasInterCityTransport) > 0) return true;
+    if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && !c.isClaimed && !c.hasClaimer) > 0) {
+        //config.log(3, 'city is not claimed, and lacks claimer');
+        return true;
+    } else if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && c.useInterCityBoost && !c.hasInterCityBoost) > 0) {
+        //config.log(3, 'city needs a booster, and has no booster');
+        return true;
+    } else if (_.sum(Memory.empire.cities, (c) => c.parentRoom && c.parentRoom === cityName && c.useInterCityTransport && !c.hasInterCityTransport) > 0) {
+        //config.log(3, 'city needs a transport, and has no transport');
+        return true;
+    }
 }
 
 brain.spawn.config.checkCityDistrictsForSpawnable = cityMem => {

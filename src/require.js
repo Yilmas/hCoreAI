@@ -12,6 +12,7 @@ require('brain.memory.manager');
 
 // load brain modules
 require('brain.spawn.config');
+require('brain.spawn.manager');
 require('brain.creepSpawner');
 
 require('brain.roles');
