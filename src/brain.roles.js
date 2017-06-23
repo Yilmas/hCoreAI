@@ -405,7 +405,16 @@ brain.roles.roleBridge = (creep, task) => {
 brain.roles.roleWallBuilder = (creep, task) => {
     let storage = creep.room.storage;
     let terminal = creep.room.terminal;
-    let endPoint = Game.getObjectById(task.endPoint.id); // repair selected wall or rampart
+    let endPoint;
+
+    if (Game.getObjectById(task.endPoint).hits >= 3000000 || task.endPoint === undefined) {
+        let allWallsAndRamps = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART });
+        let orderedWallsAndRamps = _.sortBy(allWallsAndRamps, 'hits')[0];
+
+        endPoint = orderedWallsAndRamps.id; // Select lowest wall or rampart.
+    } else {
+        endPoint = Game.getObjectById(task.endPoint); // repair selected wall or rampart
+    }
 
     if (task.hasResource) {
         if (creep.repair(endPoint) === ERR_NOT_IN_RANGE) {
@@ -420,7 +429,7 @@ brain.roles.roleWallBuilder = (creep, task) => {
         }
 
         if (energyDepot) {
-            if (creep.withdraw(energyDepot) === ERR_NOT_IN_RANGE) {
+            if (creep.withdraw(energyDepot, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(energyDepot);
             }
         }

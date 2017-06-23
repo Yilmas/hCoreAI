@@ -152,11 +152,6 @@ brain.spawn.manager = () => {
 
             startPoint = new RoomPosition(25, 25, room.name);
 
-            let allWallsAndRamps = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART });
-            let orderedWallsAndRamps = _.sortBy(allWallsAndRamps, 'hits')[0];
-
-            endPoint = orderedWallsAndRamps.id; // Select lowest wall or rampart.
-
             if (brain.spawn.createCreep(spawn, roomName, 'wallBuilder', startPoint, endPoint) === OK) {
                 continue;
             }
