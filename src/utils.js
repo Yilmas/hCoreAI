@@ -131,7 +131,7 @@ global.utils = {
         let city = Memory.empire.cities[cityName];
         city.useWallBuilder = !city.useWallBuilder;
 
-        config.log(3, '[UTILS] Room: ' + cityName + ' WallBuilder state set to: ' + city.useWallBuilder);
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' WallBuilder state set to: ' + city.useWallBuilder + '</font>');
     },
     
     /**
@@ -142,7 +142,7 @@ global.utils = {
         let city = Memory.empire.cities[cityName];
         city.useInterCityBoost = !city.useInterCityBoost;
 
-        config.log(3, '[UTILS] Room: ' + cityName + ' InterCityBoost state set to: ' + city.useInterCityBoost);
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' InterCityBoost state set to: ' + city.useInterCityBoost + '</font>');
     },
 
     /**
@@ -153,6 +153,6 @@ global.utils = {
         let city = Memory.empire.cities[cityName];
         city.useInterCityTransport = !city.useInterCityTransport;
 
-        config.log(3, '[UTILS] Room: ' + cityName + ' InterCityTransport state set to: ' + city.useInterCityTransport);
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' InterCityTransport state set to: ' + city.useInterCityTransport + '</font>');
     }
 }
