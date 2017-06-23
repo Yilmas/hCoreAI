@@ -42,6 +42,12 @@ brain.memory.refresh = () => {
         city.roles.roleLaborant.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'laborant' && c.room.name === cityName);
         city.roles.roleSpecial.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'specialCreep' && c.memory.task.startPoint.roomName === cityName);
 
+        // Update Wall Builder
+        if (city.useWallBuilder) {
+            let countWallBuilders = _.sum(Game.creeps, (c) => c.memory.task.role === 'wallBuilder' && c.memory.task.startPoint.roomName === cityName);
+            city.hasWallBuilder = countWallBuilders >= 2;
+        }
+
         // Update Inter City Creeps
         if (city.useInterCityBoost) {
             let countBoost = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityBoost' && c.memory.task.startPoint.roomName === cityName);
@@ -217,6 +223,8 @@ brain.memory.createCity = (targetRoom, parentRoom) => {
             districts: {},
             reactions: {},
             defenseLevel: 0,
+            useWallBuilder: false,
+            hasWallBuilder: false,
             useInterCityBoost: false,
             hasInterCityBoost: false,
             useInterCityTransport: false,

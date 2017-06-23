@@ -111,8 +111,48 @@ global.utils = {
             return 5000;
         }
     },
-
+    
+    /**
+     * Send minerals from one room to another, does not need to be your own rooms
+     * @param {string} fromRoom Where are you sending it from, ie. the location of the minerals.
+     * @param {string} toRoom What room should the minerals be sent to ?
+     * @param {RESOURCE_*} resourceType What mineral type should be sent ?
+     * @param {int} amount What quantity should be sent ?
+    */
     sendMinerals: function (fromRoom, toRoom, resourceType, amount) {
-        return Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
+        Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
+    },
+
+    /**
+     * Change the wall builder state between on and off
+     * @param {string} cityName What city should the state be changed on ?
+    */
+    setUseWallBuilder: function(cityName) {
+        let city = Memory.empire.cities[cityName];
+        city.useWallBuilder = !city.useWallBuilder;
+
+        config.log(3, '[UTILS] Room: ' + cityName + ' WallBuilder state set to: ' + city.useWallBuilder);
+    },
+    
+    /**
+     * Change the intercity boost state between on and off
+     * @param {string} cityName What city should the state be changed on ?
+    */
+    setUseInterCityBoost: function(cityName) {
+        let city = Memory.empire.cities[cityName];
+        city.useInterCityBoost = !city.useInterCityBoost;
+
+        config.log(3, '[UTILS] Room: ' + cityName + ' InterCityBoost state set to: ' + city.useInterCityBoost);
+    },
+
+    /**
+     * Change the intercity transport state between on and off
+     * @param {string} cityName What city should the state be changed on ?
+    */
+    setUseInterCityTransport: function(cityName) {
+        let city = Memory.empire.cities[cityName];
+        city.useInterCityTransport = !city.useInterCityTransport;
+
+        config.log(3, '[UTILS] Room: ' + cityName + ' InterCityTransport state set to: ' + city.useInterCityTransport);
     }
 }

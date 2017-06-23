@@ -73,28 +73,9 @@ config.wallOrRampartTargetHitPoints = roomName => {
     case 7:
         return 500000;
     case 8:
+        if (roomName === 'E27S83' || roomName === 'E26S83') return 1500000;
         return 750000;
     }
-
-    // TODO: Use the following values once the code is implemented and has updated across all rooms
-    //switch (room.controller.level) {
-    //    case 1:
-    //        return 10000;
-    //    case 2:
-    //        return 15000;
-    //    case 3:
-    //        return 20000;
-    //    case 4:
-    //        return 50000;
-    //    case 5:
-    //        return 75000;
-    //    case 6:
-    //        return 100000;
-    //    case 7:
-    //        return 300000;
-    //    case 8:
-    //        return 500000;
-    //}
 }
 
 global.isNullOrUndefined = function (theObject) {
@@ -113,7 +94,7 @@ global.getBodyCost = function (theBody) {
     return cost;
 }
 
-config.WHITE_LIST = ['Parthon', 'Lolzor', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'poppahorse', 'cazantyl', 'Yilmas', 'bobfrommarketing', 'admon'];
+config.WHITE_LIST = ['Parthon', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'cazantyl', 'Yilmas', 'admon'];
 
 config.SIGN_MESSAGE = "[Ypsilon Pact] Sector Claimed, unauthorized claims may result in war declarations!";
 

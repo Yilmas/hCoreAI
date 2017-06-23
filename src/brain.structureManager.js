@@ -11,7 +11,7 @@ brain.structureManager = function () {
 
         if (hostiles.length) {
             var userName = hostiles[0].owner.username;
-            if (!_.contains(config.WHITE_LIST, userName) && userName != 'Drxx') {
+            if (!_.contains(config.WHITE_LIST, userName)) {
                 let hostileHealer;
 
                 for (var hostile in hostiles) {
@@ -41,15 +41,15 @@ brain.structureManager = function () {
             for (let tower of towers) {
                 if (tower.energy > 800) {
                     let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < 100000 && s.structureType != STRUCTURE_ROAD && s.structureType != STRUCTURE_RAMPART && s.structureType != STRUCTURE_WALL
+                        filter: (s) => s.hits < s.hitsMax && s.hits < 100000 && s.structureType !== STRUCTURE_ROAD && s.structureType !== STRUCTURE_RAMPART && s.structureType !== STRUCTURE_WALL
                     });
 
                     let closestDamagedRampart = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_RAMPART
+                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType === STRUCTURE_RAMPART
                     });
 
                     let closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType == STRUCTURE_WALL
+                        filter: (s) => s.hits < s.hitsMax && s.hits < config.wallOrRampartTargetHitPoints(tower.room.name) && s.structureType === STRUCTURE_WALL
                     });
 
                     if (!isNullOrUndefined(closestDamagedStructure)) {
@@ -70,12 +70,12 @@ brain.structureManager = function () {
         // Script for managing links
         if (room.storage) {
 
-            let link = room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
+            let link = room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_LINK });
 
 
             if (link) {
-                let storageLink = room.storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
-                let controllerLink = room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK });
+                let storageLink = room.storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_LINK });
+                let controllerLink = room.controller.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_LINK });
 
                 if (storageLink && controllerLink) {
                     // only transfer energy if maximum efficient can be reached, and the receiver is empty.
@@ -87,7 +87,7 @@ brain.structureManager = function () {
                 if (room.controller.level >= 6) {
                     // Code to start deliver harvested resources to controller link then base link
                     for (let source of room.find(FIND_SOURCES)) {
-                        let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType == STRUCTURE_LINK })[0];
+                        let sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
                         if (sourceLink) {
                             if (controllerLink.energy < 600) {
                                 sourceLink.transferEnergy(controllerLink);

@@ -22,6 +22,7 @@ brain.roles.manager = function () {
             if (task.role === 'upgrader') roles.roleUpgrader(creep, task);
             if (task.role === 'builder') roles.roleBuilder(creep, task);
             if (task.role === 'bridge') roles.roleBridge(creep, task);
+            if (task.role === 'wallBuilder') roles.roleWallBuilder(creep, task);
             if (task.role === 'miner') roles.roleMiner(creep, task);
             if (task.role === 'mineralCollector') roles.roleMineralCollector(creep, task);
             if (task.role === 'pillager') roles.rolePillager(creep, task);
@@ -392,6 +393,35 @@ brain.roles.roleBridge = (creep, task) => {
                         creep.moveTo(storage);
                     }
                 }
+            }
+        }
+    }
+}
+
+/****************************/
+/******* WALL BUILDER *******/
+/****************************/
+
+brain.roles.roleWallBuilder = (creep, task) => {
+    let storage = creep.room.storage;
+    let terminal = creep.room.terminal;
+    let endPoint = Game.getObjectById(task.endPoint.id); // repair selected wall or rampart
+
+    if (task.hasResource) {
+        if (creep.repair(endPoint) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(endPoint);
+        }
+    } else if (!task.hasResource) {
+        let energyDepot = undefined;
+        if (terminal && terminal.store.energy > config.TERMINAL_MINIMUM_ENERGY) {
+            energyDepot = terminal;
+        } else if (storage && storage.store.energy > 20000) {
+            energyDepot = storage;
+        }
+
+        if (energyDepot) {
+            if (creep.withdraw(energyDepot) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(energyDepot);
             }
         }
     }
