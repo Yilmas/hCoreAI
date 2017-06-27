@@ -412,6 +412,7 @@ brain.roles.roleWallBuilder = (creep, task) => {
         let orderedWallsAndRamps = _.sortBy(allWallsAndRamps, 'hits')[0];
 
         endPoint = orderedWallsAndRamps.id; // Select lowest wall or rampart.
+        task.endPoint = endPoint;
     } else {
         endPoint = Game.getObjectById(task.endPoint); // repair selected wall or rampart
     }
@@ -954,56 +955,24 @@ brain.roles.roleDefender = (creep, task) => {
 
 brain.roles.roleSpecialCreep = (creep, task) => {
 
-    if (creep.room.name === 'E28S86' || creep.room.name === 'E27S86') {
+    if (task.startPoint.roomName === 'E28S88') {
+        let homeRoom = 'E28S88';
+        let endRoom = 'E29S93';
+
         if (task.hasResource) {
-            if (creep.room.name !== task.startPoint.roomName) {
-                creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: 50 });
+            if (creep.room.name !== endRoom) {
+                creep.moveTo(new RoomPosition(25, 25, endRoom), { reusePath: 50 });
             } else {
-                let mineralType = undefined;
-
-                for (let item in creep.carry) {
-                    mineralType = item;
-                }
-
-                if (creep.transfer(creep.room.storage, mineralType) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(creep.room.storage);
+                if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.storage, { reusePath: 10 });
                 }
             }
         } else if (!task.hasResource) {
-            // Pillage room
-            if (creep.room.name !== 'E27S86') {
-                creep.moveTo(new RoomPosition(25, 25, 'E27S86'));
+            if (creep.room.name !== homeRoom) {
+                creep.moveTo(new RoomPosition(25, 25, homeRoom), { reusePath: 50 });
             } else {
-                let structures = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (s) =>
-                        (s.structureType === STRUCTURE_TOWER && s.energy > 0) ||
-                        (s.structureType === STRUCTURE_EXTENSION && s.energy > 0) ||
-                        (s.structureType === STRUCTURE_LINK && s.energy > 0) ||
-                        (s.structureType === STRUCTURE_CONTAINER && _.sum(s.store) > 0) ||
-                        (s.structureType === STRUCTURE_STORAGE && _.sum(s.store) > 0) ||
-                        (s.structureType === STRUCTURE_TERMINAL && _.sum(s.store) > 0)
-                });
-
-                if (structures) {
-                    if (_.sum(creep.carry) < creep.carryCapacity) {
-                        let mineralType = RESOURCE_ENERGY;
-
-                        if (structures.store) {
-                            for (let item in structures.store) {
-                                mineralType = item;
-                            }
-                        }
-
-                        if (creep.withdraw(structures, mineralType) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(structures);
-                        }
-                    } else {
-                        if (Game.time % 10 === 0) {
-                            config.log(3, '[Pillage] Room: ' + creep.room.name + ' Creep: ' + creep.name + ' stole ' + _.sum(creep.carry) + ' of ' + mineralType);
-                        }
-                    }
-                } else {
-                    config.log(3, '[Pillage] Room: ' + creep.room.name + ' I am no longer needed');
+                if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.storage, { reusePath: 10 });
                 }
             }
         }
