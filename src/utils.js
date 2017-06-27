@@ -120,7 +120,7 @@ global.utils = {
      * @param {int} amount What quantity should be sent ?
     */
     sendMinerals: function (fromRoom, toRoom, resourceType, amount) {
-        Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
+        return Game.rooms[fromRoom].terminal.send(resourceType, amount, toRoom);
     },
 
     /**
