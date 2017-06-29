@@ -309,7 +309,8 @@ global.brain.spawn.createCreep = (test, roomName, role, startPoint, endPoint) =>
                 role: role,
                 hasResource: false,
                 startPoint: startPoint,
-                endPoint: endPoint
+                endPoint: endPoint,
+                target: ''
             }
         });
     } else {
