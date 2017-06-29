@@ -978,4 +978,52 @@ brain.roles.roleSpecialCreep = (creep, task) => {
         }
     }
 
+    if (task.startPoint.roomName === '27S83' || task.startPoint.roomName === 'E26S83') {
+        let endPoint = Game.getObjectById(task.endPoint);
+
+        if (task.hasResource) {
+            
+            let mineralType = undefined;
+
+            for (let item in creep.carry) {
+                mineralType = item;
+            }
+
+            if (mineralType === RESOURCE_ENERGY && endPoint.energy === endPoint.energyCapacity) {
+                // Unload Energy into terminal
+                if (creep.transfer(creep.room.terminal, mineralType) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.terminal);
+                }
+            } else if (mineralType === RESOURCE_GHODIUM && endPoint.ghodium === endPoint.ghodiumCapacity) {
+                // Unload Ghodium into terminal
+                if (creep.transfer(creep.room.terminal, mineralType) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.terminal);
+                }
+            } else {
+                if (creep.transfer(endPoint, mineralType) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(endPoint, { reusePath: 3 });
+                }
+            }
+            
+        } else if (!task.hasResource) {
+            if (endPoint.energy < endPoint.energyCapacity) {
+                // Load Energy
+                if (creep.room.storage.store.energy > 0) {
+                    if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.storage);
+                    }
+                } else {
+                    if (creep.withdraw(creep.room.terminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.terminal);
+                    }
+                }
+            } else if (endPoint.ghodium < endPoint.ghodiumCapacity) {
+                // Load Ghodium
+                if (creep.withdraw(creep.room.terminal, RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.terminal);
+                }
+            }
+        }
+    }
+
 }

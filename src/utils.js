@@ -124,6 +124,21 @@ global.utils = {
     },
 
     /**
+     * Change the special creep required state between on and off
+     * @param {string} cityName The name of the city that the specialCreepRequired should change state
+    */
+    setSpecialCreepRequired: function (cityName) {
+        let memCity = Memory.empire.cities[cityName];
+        if (memCity && (memCity.specialCreepRequired === undefined || memCity.specialCreepRequired === false)) {
+            memCity.specialCreepRequired = true;
+        } else {
+            memCity.specialCreepRequired = false;
+        }
+
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' SpecialCreep state set to: ' + memCity.specialCreepRequired + '</font>');
+    },
+
+    /**
      * Change the wall builder state between on and off
      * @param {string} cityName What city should the state be changed on ?
     */
@@ -154,5 +169,48 @@ global.utils = {
         city.useInterCityTransport = !city.useInterCityTransport;
 
         config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' InterCityTransport state set to: ' + city.useInterCityTransport + '</font>');
+    },
+
+    /**
+     * Launch nuke at room name
+     * @param {string} fromCity What city launch the nuke ?
+     * @param {RoomPosition} toRoomPos Where should the nuke land ?
+    */
+    launchNuke: function (fromCity, toRoomPos) {
+        let cityToLaunchFrom = Game.rooms[fromCity];
+
+        if (cityToLaunchFrom) {
+            let nukeSilo = cityToLaunchFrom.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_NUKER })[0];
+
+            if (nukeSilo) {
+                if (nukeSilo.energy === nukeSilo.energyCapacity && nukeSilo.ghodium === nukeSilo.ghodiumCapacity) {
+                    // Ready to Launch, testing destination is not our own.
+                    let targetRoom = Game.rooms[toRoomPos.roomName];
+                    if (targetRoom && targetRoom.controller.owner.my) {
+                        // target is FRIENDLY, abort launch.
+                        config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: ABORT!! Targeting friendly city!!!</font>');
+                    } else {
+                        // Launch nuke!
+                        let launch = nukeSilo.launchNuke(toRoomPos);
+                        if (launch === OK) {
+                            config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' launching a nuke to hit: ' + toRoomPos + '</font>');
+                        } else {
+                            config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: ' + launch + '</font>');
+                        }
+                        
+                    }
+
+                } else {
+                    // Silo is not fueled
+                    config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: silo is not fueled</font>');
+                }
+            } else {
+                // No silo found
+                config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: connection to silo not possible</font>');
+            }
+        } else {
+            // No such room
+            config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: launch city does not exist</font>');
+        }
     }
 }
