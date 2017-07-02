@@ -304,7 +304,7 @@ brain.spawn.config.controllerHasLinkOrContainer = controller => {
 }
 
 brain.spawn.config.extractorAndContainerExist = room => {
-    if (room.controller.level >= 6) {
+    if (room.controller.level >= 6 && room.storage && room.terminal) {
         let extractor = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR })[0];
 
         if (extractor) {
@@ -328,7 +328,7 @@ brain.spawn.config.extractorAndContainerExist = room => {
 }
 
 brain.spawn.config.mineralContainerHasResources = room => {
-    if (room.controller.level >= 6) {
+    if (room.controller.level >= 6 && room.storage && room.terminal) {
         let extractor = room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_EXTRACTOR })[0];
         if (extractor) {
             let mineral = extractor.pos.findClosestByRange(FIND_MINERALS);

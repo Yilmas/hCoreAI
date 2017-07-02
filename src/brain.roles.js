@@ -76,8 +76,27 @@ brain.roles.roleHarvester = (creep, task) => {
             // Distributors exists, start filling container
 
             if ((sourceLink = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_LINK })[0]) !== undefined) {
-                if (creep.transfer(sourceLink, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sourceLink);
+                if (!creep.room.storage && sourceLink.energy === 800) {
+                    // War torn room, engage auto failsafe
+                    let spawnOrExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                        filter: (s) =>
+                            (s.structureType === STRUCTURE_EXTENSION && s.energy < s.energyCapacity) ||
+                            (s.structureType === STRUCTURE_SPAWN && s.energy < s.energyCapacity)
+                    });
+
+                    if (spawnOrExtension) {
+                        if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(spawnOrExtension);
+                        }
+                    } else if ((constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES))) {
+                        if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(constructionSite);
+                        }
+                    }
+                } else {
+                    if (creep.transfer(sourceLink, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(sourceLink);
+                    }
                 }
             } else if ((container = creep.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]) !== undefined) {
                 if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
@@ -978,8 +997,8 @@ brain.roles.roleSpecialCreep = (creep, task) => {
         }
     }
 
-    if (task.startPoint.roomName === '27S83' || task.startPoint.roomName === 'E26S83') {
-        let endPoint = Game.getObjectById(task.endPoint);
+    if (task.startPoint.roomName === 'E27S83' || task.startPoint.roomName === 'E26S83') {
+        let endPoint = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_NUKER });
 
         if (task.hasResource) {
             
