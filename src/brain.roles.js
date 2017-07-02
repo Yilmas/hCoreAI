@@ -264,6 +264,7 @@ brain.roles.roleUpgrader = (creep, task) => {
 
 brain.roles.roleBuilder = (creep, task) => {
     let storage = creep.room.storage;
+    let terminal = creep.room.terminal;
 
     let droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: (s) => s.resourceType === RESOURCE_ENERGY });
     if (droppedEnergy) {
@@ -294,6 +295,10 @@ brain.roles.roleBuilder = (creep, task) => {
         if (storage && storage.store.energy > creep.room.energyCapacityAvailable) {
             if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
+            }
+        } else if (terminal && terminal.store.energy > config.TERMINAL_MINIMUM_ENERGY) {
+            if (creep.withdraw(terminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal);
             }
         } else if ((container = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store.energy > 200 }))) {
             if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
