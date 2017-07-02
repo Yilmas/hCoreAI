@@ -299,8 +299,12 @@ brain.spawn.config.sourcesHasContainerOrLink = sources => {
     }
 }
 
-brain.spawn.config.controllerHasLinkOrContainer = controller => {
-    return controller.pos.findInRange(FIND_STRUCTURES, 4, { filter: (s) => s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_LINK }).length > 0;
+brain.spawn.config.storageLinkExist = room => {
+    return room.storage.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK }).length > 0;
+}
+
+brain.spawn.config.controllerHasLinkOrContainer = room => {
+    return room.controller.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_LINK }).length > 0;
 }
 
 brain.spawn.config.extractorAndContainerExist = room => {

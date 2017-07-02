@@ -94,7 +94,7 @@ brain.spawn.manager = () => {
             if (brain.spawn.createCreep(spawn, roomName, 'upgrader', startPoint, endPoint) === OK) {
                 continue;
             }
-        } else if (room.storage && configSpawn.checkRoleMinToCount(roles.roleBridge) && configSpawn.controllerHasLinkOrContainer(room.controller)) {
+        } else if (room.storage && configSpawn.checkRoleMinToCount(roles.roleBridge) && configSpawn.storageLinkExist(room) && configSpawn.controllerHasLinkOrContainer(room)) {
             // Spawn Bridge
             config.log(3, '[Spawn] Room: ' + roomName + ' spawn Bridge');
 
