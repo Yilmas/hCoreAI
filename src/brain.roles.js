@@ -49,6 +49,7 @@ brain.roles.manager = function () {
 
 brain.roles.roleHarvester = (creep, task) => {
     let roomRoles = Memory.empire.cities[creep.room.name].roles;
+    let sourceObject = Game.getObjectById(task.startPoint);
 
     if (task.hasResource) {
         if (roomRoles.roleDistributor.count === 0) {
@@ -67,7 +68,7 @@ brain.roles.roleHarvester = (creep, task) => {
                 if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructionSite);
                 }
-            } else if ((container = creep.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]) !== undefined) {
+            } else if ((container = sourceObject.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]) !== undefined) {
                 if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container);
                 }
@@ -75,7 +76,7 @@ brain.roles.roleHarvester = (creep, task) => {
         } else {
             // Distributors exists, start filling container
 
-            if ((sourceLink = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_LINK })[0]) !== undefined) {
+            if ((sourceLink = sourceObject.pos.findInRange(FIND_MY_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_LINK })[0]) !== undefined) {
                 if (!creep.room.storage && sourceLink.energy === 800) {
                     // War torn room, engage auto failsafe
                     let spawnOrExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
@@ -98,7 +99,7 @@ brain.roles.roleHarvester = (creep, task) => {
                         creep.moveTo(sourceLink);
                     }
                 }
-            } else if ((container = creep.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]) !== undefined) {
+            } else if ((container = sourceObject.pos.findInRange(FIND_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0]) !== undefined) {
                 if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container);
                 }
@@ -119,8 +120,8 @@ brain.roles.roleHarvester = (creep, task) => {
             }
         }
 
-        if (creep.harvest(Game.getObjectById(task.startPoint)) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(Game.getObjectById(task.startPoint), { reusePath: 20 });
+        if (creep.harvest(sourceObject) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(sourceObject, { reusePath: 20 });
         }
     }
 }
@@ -201,7 +202,7 @@ brain.roles.roleDistributor = (creep, task) => {
                 if (creep.withdraw(baseLink, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(baseLink);
                 }
-            } else if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (e) =>  e.mineralType === RESOURCE_ENERGY && e.amount >= 200 }))) {
+            } else if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (e) =>  e.resourceType === RESOURCE_ENERGY && e.amount >= 200 }))) {
                 if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedEnergy);
                 }
@@ -272,7 +273,7 @@ brain.roles.roleUpgrader = (creep, task) => {
 brain.roles.roleBuilder = (creep, task) => {
     let storage = creep.room.storage;
 
-    let droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: (s) => s.mineralType === RESOURCE_ENERGY });
+    let droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: (s) => s.resourceType === RESOURCE_ENERGY });
     if (droppedEnergy) {
         creep.pickup(droppedEnergy, RESOURCE_ENERGY);
     }
@@ -625,7 +626,7 @@ brain.roles.roleProspector = (creep, task) => {
 brain.roles.roleCollector = (creep, task) => {
     let startPoint = Game.getObjectById(task.startPoint);
 
-    let droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: (s) => s.mineralType === RESOURCE_ENERGY });
+    let droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: (s) => s.resourceType === RESOURCE_ENERGY });
     if (droppedEnergy) {
         creep.pickup(droppedEnergy, RESOURCE_ENERGY);
     }
@@ -751,7 +752,7 @@ brain.roles.roleInterCityBoost = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: 50 });
         } else {
-            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) => d.mineralType === RESOURCE_ENERGY }))) {
+            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) => d.resourceType === RESOURCE_ENERGY && d.amount > creep.carryCapacity/2 }))) {
                 if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedEnergy);
                 }
