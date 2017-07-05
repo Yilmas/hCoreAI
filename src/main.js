@@ -52,7 +52,7 @@ var main = function () {
 
     // Stats - Grafana
     try {
-        brain.memory.stats();
+        brain.memory.stats.manager();
     } catch (ex) {
         console.log('<font color=red>[Error] Stats-Grafana: ' + ex.stack + '</font>');
     }
