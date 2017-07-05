@@ -30,7 +30,7 @@ var main = function () {
         brain.structureManager();
     }
     catch (ex) {
-        console.log('<font color=red>[Error] StructureManager: ' + ex + '</font>');
+        console.log('<font color=red>[Error] StructureManager: ' + ex.stack + '</font>');
     }
 
 
@@ -39,16 +39,23 @@ var main = function () {
     //    brain.labManager.start();
     //}
     //catch (ex) {
-    //    console.log('<font color=red>[Error] Lab Manager: ' + ex + '</font>');
+    //    console.log('<font color=red>[Error] Lab Manager: ' + ex.stack + '</font>');
     //}
 
 
     // Visualizer
-    //try {
-    //    visualizer.startRoomVisuals();
-    //} catch (ex) {
-    //    console.log('<font color=red>[Error] Visualizer: ' + ex + '</font>');
-    //}
+    try {
+        visualizer.startRoomVisuals();
+    } catch (ex) {
+        console.log('<font color=red>[Error] Visualizer: ' + ex.stack + '</font>');
+    }
+
+    // Stats - Grafana
+    try {
+        brain.memory.stats();
+    } catch (ex) {
+        console.log('<font color=red>[Error] Stats-Grafana: ' + ex.stack + '</font>');
+    }
 
 };
 
