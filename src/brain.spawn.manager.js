@@ -75,8 +75,8 @@ brain.spawn.manager = () => {
 
             // Set startPoint to Link > Container > Storage
             if (controller.level >= 3 && controller.level <= 5) {
-                let link = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
-                let container = controller.pos.findInRange(FIND_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                let link = controller.pos.findInRange(FIND_MY_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
+                let container = controller.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
 
                 if (!isNullOrUndefined(spawn.room.storage)) {
                     startPoint = spawn.room.storage;
@@ -88,7 +88,7 @@ brain.spawn.manager = () => {
                     startPoint = link;
                 }
             } else if (controller.level >= 6) {
-                startPoint = controller.pos.findInRange(FIND_MY_STRUCTURES, 5, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
+                startPoint = controller.pos.findInRange(FIND_MY_STRUCTURES, 2, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
             }
 
             if (brain.spawn.createCreep(spawn, roomName, 'upgrader', startPoint, endPoint) === OK) {
