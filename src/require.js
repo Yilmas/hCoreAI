@@ -8,6 +8,7 @@ require('prototypes__creep');
 // load memory
 
 require('brain.memory.manager');
+require('brain.memory.stats');
 
 // load brain modules
 require('brain.spawn.config');

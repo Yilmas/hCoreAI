@@ -1,7 +1,7 @@
 brain.memory.stats = () => {
 	if (Memory.stats == undefined) {
-        Memory.stats = {}
-    }
+	    Memory.stats = {};
+	}
 
     var rooms = Game.rooms;
     var spawns = Game.spawns;
