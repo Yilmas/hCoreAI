@@ -111,7 +111,7 @@ global.utils = {
             return 5000;
         }
     },
-    
+
     /**
      * Send minerals from one room to another, does not need to be your own rooms
      * @param {string} fromRoom Where are you sending it from, ie. the location of the minerals.
@@ -142,18 +142,18 @@ global.utils = {
      * Change the wall builder state between on and off
      * @param {string} cityName What city should the state be changed on ?
     */
-    setUseWallBuilder: function(cityName) {
+    setUseWallBuilder: function (cityName) {
         let city = Memory.empire.cities[cityName];
         city.useWallBuilder = !city.useWallBuilder;
 
         config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' WallBuilder state set to: ' + city.useWallBuilder + '</font>');
     },
-    
+
     /**
      * Change the intercity boost state between on and off
      * @param {string} cityName What city should the state be changed on ?
     */
-    setUseInterCityBoost: function(cityName) {
+    setUseInterCityBoost: function (cityName) {
         let city = Memory.empire.cities[cityName];
         city.useInterCityBoost = !city.useInterCityBoost;
 
@@ -164,7 +164,7 @@ global.utils = {
      * Change the intercity transport state between on and off
      * @param {string} cityName What city should the state be changed on ?
     */
-    setUseInterCityTransport: function(cityName) {
+    setUseInterCityTransport: function (cityName) {
         let city = Memory.empire.cities[cityName];
         city.useInterCityTransport = !city.useInterCityTransport;
 
@@ -197,7 +197,7 @@ global.utils = {
                         } else {
                             config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: ' + launch + '</font>');
                         }
-                        
+
                     }
 
                 } else {

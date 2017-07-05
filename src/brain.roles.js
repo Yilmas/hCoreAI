@@ -725,21 +725,17 @@ brain.roles.roleInterCityBoost = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName));
         } else {
-            let repairSite = creep.room.find(FIND_STRUCTURES, {
-                filter: (s) =>
-                    (s.structureType === STRUCTURE_WALL && s.hits < s.hitsMax && s.hits < targetHits) ||
-                    (s.structureType === STRUCTURE_RAMPART && s.hits < s.hitsMax && s.hits < targetHits)
+            let repairSite = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => (s.structureType === STRUCTURE_ROAD && s.hits < s.hitsMax)
             });
 
             if ((constructionsite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES))) {
                 if (creep.build(constructionsite) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructionsite);
                 }
-            } else if (repairSite.length) {
-                if ((orderedRepairSite = _.sortBy(repairSite, 'hits')[0]) !== undefined) {
-                    if (creep.repair(orderedRepairSite) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(orderedRepairSite);
-                    }
+            } else if (repairSite) {
+                if (creep.repair(repairSite) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(repairSite);
                 }
             } else if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
@@ -749,7 +745,7 @@ brain.roles.roleInterCityBoost = (creep, task) => {
         if (creep.room.name !== task.startPoint.roomName) {
             creep.moveTo(new RoomPosition(25, 25, task.startPoint.roomName), { reusePath: 50 });
         } else {
-            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) => d.resourceType === RESOURCE_ENERGY && d.amount > creep.carryCapacity/2 }))) {
+            if ((droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) => d.resourceType === RESOURCE_ENERGY && d.amount > creep.carryCapacity / 2 }))) {
                 if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedEnergy);
                 }
@@ -999,11 +995,24 @@ brain.roles.roleSpecialCreep = (creep, task) => {
         }
     }
 
-    if (task.startPoint.roomName === 'E27S83' || task.startPoint.roomName === 'E26S83') {
+    if (task.startPoint.roomName === 'E26S83') {
+        if (task.hasResource) {
+            if (creep.transfer(creep.room.terminal, RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.terminal);
+            }
+        } else if (!task.hasResource) {
+            if (creep.withdraw(creep.room.storage, RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.storage);
+            }
+        }
+    }
+
+    let nuke = false;
+    if (nuke) {
         let endPoint = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_NUKER });
 
         if (task.hasResource) {
-            
+
             let mineralType = undefined;
 
             for (let item in creep.carry) {
@@ -1025,7 +1034,7 @@ brain.roles.roleSpecialCreep = (creep, task) => {
                     creep.moveTo(endPoint, { reusePath: 3 });
                 }
             }
-            
+
         } else if (!task.hasResource) {
             if (endPoint.energy < endPoint.energyCapacity) {
                 // Load Energy
