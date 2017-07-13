@@ -228,7 +228,8 @@ brain.memory.createCity = (targetRoom, parentRoom) => {
             useInterCityBoost: false,
             hasInterCityBoost: false,
             useInterCityTransport: false,
-            hasInterCityTransport: false
+            hasInterCityTransport: false,
+            bridgePosition: undefined
         }
 
     } else {
