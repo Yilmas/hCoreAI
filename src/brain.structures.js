@@ -50,7 +50,7 @@ brain.structures.towers = (city, towers) => {
 
                 if (closestDamagedStructure) {
                     tower.repair(closestDamagedStructure);
-                } else if (room.storage && room.storage.store.energy > 20000) {
+                } else if (city.storage && city.storage.store.energy > 20000) {
                     if (closestDamagedRampart) {
                         tower.repair(closestDamagedRampart);
                     } else if (closestDamagedWall) {
