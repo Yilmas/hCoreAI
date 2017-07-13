@@ -16,7 +16,7 @@ require('brain.spawn.manager');
 
 require('brain.roles');
 
-require('brain.structureManager');
+require('brain.structures');
 
 require('brain.labManager');
 

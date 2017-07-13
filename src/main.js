@@ -11,7 +11,7 @@ var main = function () {
     try {
         brain.memory.manager();
     } catch (ex) {
-        console.log('<font color=red>[Error] Memory Manager: ' + ex.stack + '</font>');
+        console.log('<font color=red>[Error]</font> <font color=yellow>Memory Manager: </font><font color=red>' + ex.stack + '</font>');
     }
 
     // Role Managers
@@ -22,15 +22,15 @@ var main = function () {
         brain.spawn.manager();
     }
     catch (ex) {
-        console.log('<font color=red>[Error] Brain.Spawn.Manager: ' + ex.stack + '</font>');
+        console.log('<font color=red>[Error]</font> <font color=yellow>Spawn Manager: </font><font color=red>' + ex.stack + '</font>');
     }
 
     // Structures
     try {
-        brain.structureManager();
+        brain.structures.manager();
     }
     catch (ex) {
-        console.log('<font color=red>[Error] StructureManager: ' + ex.stack + '</font>');
+        console.log('<font color=red>[Error]</font> <font color=yellow>Structure Manager: </font><font color=red>' + ex.stack + '</font>');
     }
 
 
@@ -47,14 +47,14 @@ var main = function () {
     try {
         visualizer.startRoomVisuals();
     } catch (ex) {
-        console.log('<font color=red>[Error] Visualizer: ' + ex.stack + '</font>');
+        console.log('<font color=red>[Error]</font> <font color=yellow>Visualizer: </font><font color=red>' + ex.stack + '</font>');
     }
 
     // Stats - Grafana
     try {
         brain.memory.stats.manager();
     } catch (ex) {
-        console.log('<font color=red>[Error] Stats-Grafana: ' + ex.stack + '</font>');
+        console.log('<font color=red>[Error]</font> <font color=yellow>Stats Grafana: </font><font color=red>' + ex.stack + '</font>');
     }
 
 };
