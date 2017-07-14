@@ -43,7 +43,7 @@ brain.roles.manager = function () {
                 if (task.role === 'specialCreep') roles.roleSpecialCreep(creep, task);
             }
             catch (ex) {
-                console.log('<font color=red>[Error]</font> <font color=yellow> [Role Manager] Creep: </font><font color=red>' + creepName + '</font><font color=red> Error: ' + ex.stack + '</font>');
+                console.log('<font color=red>[Error]</font> <font color=yellow> [Role Manager] Creep: </font><font color=red>' + creepMem + '</font><font color=red> Error: ' + ex.stack + '</font>');
             }
         }
     }
