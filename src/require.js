@@ -15,6 +15,7 @@ require('brain.spawn.config');
 require('brain.spawn.manager');
 
 require('brain.roles');
+require('brain.roles.task');
 
 require('brain.structures');
 

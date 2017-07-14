@@ -3,6 +3,7 @@
 /// <reference path="brain.memory.manager.js" />
 /// <reference path="brain.memory.stats.js" />
 /// <reference path="brain.roles.js" />
+/// <reference path="brain.roles.task.js" />
 /// <reference path="brain.spawn.config.js" />
 /// <reference path="brain.spawn.manager.js" />
 /// <reference path="brain.structures.js" />
