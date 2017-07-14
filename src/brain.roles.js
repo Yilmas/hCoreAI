@@ -530,7 +530,7 @@ brain.roles.roleMineralCollector = (creep, task) => {
                 break;
             }
         } else {
-            if ((creep.pos.x !== container.pos.x || creep.pos.y !== container.pos.y) && !container.lookFor(LOOK_CREEPS).length) {
+            if ((creep.pos.x !== container.pos.x || creep.pos.y !== container.pos.y) && !container.pos.lookFor(LOOK_CREEPS).length) {
                 creep.moveTo(container);
             } else {
                 if (creep.withdraw(container, mineralType) === ERR_NOT_IN_RANGE) {
