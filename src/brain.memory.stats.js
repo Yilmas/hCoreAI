@@ -1,6 +1,9 @@
 brain.memory.stats = {};
+
 brain.memory.stats.manager = () => {
     brain.memory.stats.default();
+    brain.memory.stats.gclImport();
+    brain.memory.stats.cpuImport();
 
     if (Game.time % 3 === 0) {
         brain.memory.stats.storedResources();
@@ -8,54 +11,53 @@ brain.memory.stats.manager = () => {
 }
 
 brain.memory.stats.default = () => {
-    if (Memory.stats == undefined) {
+    if (!Memory.stats) {
         Memory.stats = {};
     }
 
-    var rooms = Game.rooms;
-    for (let roomKey in rooms) {
-        let room = Game.rooms[roomKey];
-        var isMyRoom = (room.controller ? room.controller.my : 0);
-        if (isMyRoom) {
-            //Memory.stats['room.' + room.name + '.myRoom'] = 1;
-            //Memory.stats['room.' + room.name + '.energyAvailable'] = room.energyAvailable;
-            //Memory.stats['room.' + room.name + '.energyCapacityAvailable'] = room.energyCapacityAvailable;
-            Memory.stats['room.' + room.name + '.controllerProgress'] = room.controller.progress;
-            //Memory.stats['room.' + room.name + '.controllerProgressTotal'] = room.controller.progressTotal;
-            //var stored = 0;
-            //var storedTotal = 0;
-
-            //if (room.storage) {
-            //    stored = room.storage.store[RESOURCE_ENERGY];
-            //    storedTotal = room.storage.storeCapacity[RESOURCE_ENERGY];
-            //} else {
-            //    stored = 0;
-            //    storedTotal = 0;
-            //}
-
-            //Memory.stats['room.' + room.name + '.storedEnergy'] = stored;
-        }
-        //else {
-        //    Memory.stats['room.' + room.name + '.myRoom'] = undefined;
-        //}
+    if (!Memory.stats.rooms) {
+        Memory.stats.rooms = {};
     }
 
+    for (let cityName in Game.rooms) {
+        let city = Game.rooms[cityName];
+        if (city.controller.my) {
+            Memory.stats.rooms[cityName] = {
+                controllerProgress: city.controller.progress,
+                controllerProgressTotal: city.controller.progressTotal
+            }
+        }
+    }
+}
 
-    Memory.stats['gcl.progress'] = Game.gcl.progress;
-    Memory.stats['gcl.progressTotal'] = Game.gcl.progressTotal;
-    Memory.stats['gcl.level'] = Game.gcl.level;
+brain.memory.stats.gclImport = () => {
+    if (!Memory.stats.gcl) {
+        Memory.stats.gcl = {
+            progress: 0,
+            progressTotal: 0,
+            level: 0
+        };
+    }
 
-    //Memory.stats['cpu.CreepManagers'] = creepManagement
-    //Memory.stats['cpu.Towers'] = towersRunning
-    //Memory.stats['cpu.Links'] = linksRunning
-    //Memory.stats['cpu.SetupRoles'] = roleSetup
-    //Memory.stats['cpu.Creeps'] = functionsExecutedFromCreeps
-    //Memory.stats['cpu.SumProfiling'] = sumOfProfiller
-    //Memory.stats['cpu.Start'] = startOfMain
-    Memory.stats['cpu.bucket'] = Game.cpu.bucket;
-    Memory.stats['cpu.limit'] = Game.cpu.limit;
-    Memory.stats['cpu.stats'] = Game.cpu.getUsed() - Memory.stats['cpu.getUsed'];
-    Memory.stats['cpu.getUsed'] = Game.cpu.getUsed();
+    Memory.stats.gcl.progress = Game.gcl.progress;
+    Memory.stats.gcl.progressTotal = Game.gcl.progressTotal;
+    Memory.stats.gcl.level = Game.gcl.level;
+}
+
+brain.memory.stats.cpuImport = () => {
+    if (!Memory.stats.cpu) {
+        Memory.stats.cpu = {
+            bucket: 0,
+            limit: 0,
+            stats: 0,
+            getUsed: 0
+        }
+    }
+
+    Memory.stats.cpu.bucket = Game.cpu.bucket;
+    Memory.stats.cpu.limit = Game.cpu.limit;
+    Memory.stats.cpu.stats = Game.cpu.getUsed() - Memory.stats.cpu.getUsed;
+    Memory.stats.cpu.getUsed = Game.cpu.getUsed();
 }
 
 brain.memory.stats.storedResources = () => {
