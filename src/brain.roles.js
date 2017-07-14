@@ -6,8 +6,8 @@ brain.roles.manager = function () {
     for (let creepMem in Memory.creeps) {
         if (!Game.creeps[creepMem]) {
             //Decommision unused creeps
-            delete Memory.creeps[name];
-            config.log(2, '<font color=grey>[Memory] Clearing non-existing creep memory: ' + name + '</font>');
+            delete Memory.creeps[creepMem];
+            config.log(2, '<font color=grey>[Memory] Clearing non-existing creep memory: ' + creepMem + '</font>');
         } else {
 
             let creep = Game.creeps[creepMem];
