@@ -23,11 +23,11 @@ brain.structures.towers = (city, towers) => {
 
     if (hostiles.length && !_.contains(config.WHITE_LIST, hostiles[0].owner.username)) {
 
-        let hostileHealers = _.filter(hostiles, function(hostile) {
+        let hostileHealers = _.filter(hostiles, function (hostile) {
             return _.some(hostile.body, { 'type': 'heal' });
         });
 
-        if (hostileHealers) {
+        if (hostileHealers.length) {
             towers.forEach(tower => tower.attack(hostileHealers[0]));
         } else {
             towers.forEach(tower => tower.attack(hostiles[0]));
@@ -65,9 +65,9 @@ brain.structures.towers = (city, towers) => {
 brain.structures.links = (city, links) => {
     // Script for managing links
     if (city.storage) {
-        let storageLink = city.storage.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK }[0]);
-        let controllerLink = city.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK }[0]);
-        
+        let storageLink = city.storage.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
+        let controllerLink = city.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK })[0];
+
         if (storageLink && controllerLink) {
             if (city.controller.level >= 6) {
                 if (storageLink.energy > 200 && controllerLink.energy < 400) {
@@ -84,8 +84,7 @@ brain.structures.links = (city, links) => {
                         }
                     }
                 }
-            }
-            if (storageLink.energy > 600 && controllerLink.energy < 400) {
+            } else if (storageLink.energy > 600 && controllerLink.energy < 400) {
                 storageLink.transferEnergy(controllerLink);
             }
         }
@@ -93,5 +92,5 @@ brain.structures.links = (city, links) => {
 }
 
 brain.structures.labs = (city, labs) => {
-    
+
 }
