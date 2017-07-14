@@ -10,14 +10,6 @@ brain.memory.manager = () => {
 brain.memory.refresh = () => {
     config.log(1, '[Memory] Refresh memory');
 
-    //Decommision unused creeps
-    for (let name in Memory.creeps) {
-        if (!Game.creeps[name]) {
-            delete Memory.creeps[name];
-            config.log(2, '<font color=grey>[Memory] Clearing non-existing creep memory: ' + name + '</font>');
-        }
-    }
-
     var empire = Memory.empire;
 
     // Update cities
