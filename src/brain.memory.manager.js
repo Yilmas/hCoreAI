@@ -19,9 +19,11 @@ brain.memory.refresh = () => {
         // Update hasClaimer
         city.hasClaimer = _.sum(Game.creeps, (c) => c.memory.task.role === 'claimer' && c.memory.task.endPoint.roomName === cityName) > 0;
 
-        if (!Game.rooms[cityName]) continue;
+
         // Update isClaimed
-        city.isClaimed = Game.rooms[cityName].controller.my;
+        city.isClaimed = Game.rooms[cityName] !== undefined;
+
+        if (!Game.rooms[cityName]) continue;
 
 
         // Update Roles
@@ -32,15 +34,41 @@ brain.memory.refresh = () => {
         city.roles.roleMiner.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'miner' && c.room.name === cityName);
         city.roles.roleMineralCollector.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'mineralCollector' && c.room.name === cityName);
         city.roles.roleLaborant.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'laborant' && c.room.name === cityName);
+        city.roles.roleCityDefender.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'cityDefender' && c.room.name === cityName);
         city.roles.roleSpecial.count = _.sum(Game.creeps, (c) => c.memory.task.role === 'specialCreep' && c.memory.task.startPoint.roomName === cityName);
+
+        // City Defense Level
+        let hostiles = Game.rooms[cityName].find(FIND_HOSTILE_CREEPS, { filter: (s) => s.owner && !_.contains(config.WHITE_LIST, s.owner.username) });
+        if (hostiles.length && city.defenseLevel === 0) {
+            let invaders = hostiles.filter(s => s.owner.username === 'Invader');
+
+            if (invaders.length > 0 && invaders.length === hostiles.length) {
+                city.defenseLevel = 1;
+            } else {
+                city.defenseLevel = 2;
+            }
+
+            console.log('<font color=red>[WARNING]</font><font color=yellow> Room: ' + cityName + ' </font><font color=green>[Defense]</font> <font color=red>Hostile creeps detected.</font> Count: <font color=red>' + hostiles.length + ' </font><font color=yellow>Setting defense level to:</font> ' + city.defenseLevel);
+        } else if (city.defenseLevel > 0 && hostiles.length === 0) {
+            city.defenseLevel = 0;
+            console.log('<font color=red>[NOTE] Room: ' + cityName + '</font> <font color=yellow> [Defense] Hostile creeps is dead or gone</font><font color=green>, setting defense level to 0</font>');
+        }
 
         // Update Wall Builder
         if (city.useWallBuilder) {
             let countWallBuilders = _.sum(Game.creeps, (c) => c.memory.task.role === 'wallBuilder' && c.memory.task.startPoint.roomName === cityName);
-            city.hasWallBuilder = countWallBuilders >= 2;
+            city.hasWallBuilder = countWallBuilders > 0;
+        }
+        // Check if Wall Builder should be active
+        if (Game.rooms[cityName].storage) {
+            if (Game.rooms[cityName].storage.store.energy > 450000 && !city.useWallBuilder && Game.rooms[cityName].controller.level >= 6) {
+                utils.setUseWallBuilder(cityName);
+            } else if (Game.rooms[cityName].storage.store.energy < 250000 && city.useWallBuilder) {
+                utils.setUseWallBuilder(cityName);
+            }
         }
 
-        // Update Inter City Creeps
+        // Update Inter City Boost
         if (city.useInterCityBoost) {
             let countBoost = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityBoost' && c.memory.task.startPoint.roomName === cityName);
 
@@ -49,6 +77,17 @@ brain.memory.refresh = () => {
             city.hasInterCityBoost = false;
         }
 
+        // Does the city still require a booster ?
+        if (city.useInterCityBoost && Game.rooms[cityName]) {
+            let cityRoom = Game.rooms[cityName];
+
+            if (cityRoom.storage) {
+                city.useInterCityBoost = false;
+                config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' AUTO InterCityBoost state set to: ' + city.useInterCityBoost + '</font>');
+            }
+        }
+
+        // Update Inter City Transports
         if (city.useInterCityTransport) {
             let countTransport = _.sum(Game.creeps, (c) => c.memory.task.role === 'interCityTransport' && c.memory.task.endPoint.roomName === cityName);
             city.hasInterCityTransport = countTransport >= 2;
@@ -57,7 +96,7 @@ brain.memory.refresh = () => {
         }
 
         // Update city sources
-        if (city.sources) {
+        if (Game.rooms[cityName] && city.sources) {
             for (let sourceName in city.sources) {
                 let source = city.sources[sourceName];
 
@@ -65,7 +104,7 @@ brain.memory.refresh = () => {
                 source.hasHarvester = _.sum(Game.creeps, (c) => c.memory.task.role === 'harvester' && c.memory.task.startPoint === sourceName) > 0;
 
                 // check if source has carrier
-                let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                let sourceContainer = Game.getObjectById(sourceName).pos.findInRange(FIND_STRUCTURES, 1, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
                 if (sourceContainer) {
                     source.hasCarrier = _.sum(Game.creeps, (c) => c.memory.task.role === 'carrier' && c.memory.task.startPoint.id === sourceContainer.id) > 0;
                 } else {
@@ -164,6 +203,126 @@ brain.memory.setupMemory = () => {
 }
 
 brain.memory.injection = () => {
+
+    if (!Memory.empire.cities.E3S34.reactions['UL']) {
+        Memory.empire.cities.E3S34.reactions['UL'] = {
+            lab1: {
+                id: '599e904bafd4b93f04943eb1',
+                resourceType: RESOURCE_UTRIUM
+            },
+            lab2: {
+                id: '599df96a2663cc13e5c0d7c6',
+                resourceType: RESOURCE_LEMERGIUM
+            },
+            resultLab: {
+                id: '599dfdda3f6f242a7e6452e9',
+                resourceType: RESOURCE_UTRIUM_LEMERGITE
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.E1S34.reactions['OH']) {
+        Memory.empire.cities.E1S34.reactions['OH'] = {
+            lab1: {
+                id: '599df3ace5da4b795e321baf',
+                resourceType: RESOURCE_OXYGEN
+            },
+            lab2: {
+                id: '599dff1762db007986423bfd',
+                resourceType: RESOURCE_HYDROGEN
+            },
+            resultLab: {
+                id: '599e06d3a5079c33a8555049',
+                resourceType: RESOURCE_HYDROXIDE
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.E1S32.reactions['ZK']) {
+        Memory.empire.cities.E1S32.reactions['ZK'] = {
+            lab1: {
+                id: '599df214c9dfe914812b89af',
+                resourceType: RESOURCE_ZYNTHIUM
+            },
+            lab2: {
+                id: '599e06f0aecd6463d148a6cf',
+                resourceType: RESOURCE_KEANIUM
+            },
+            resultLab: {
+                id: '599dfe59aee382140203bcc8',
+                resourceType: RESOURCE_ZYNTHIUM_KEANITE
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.W1S34.reactions['G']) {
+        Memory.empire.cities.W1S34.reactions['G'] = {
+            lab1: {
+                id: '599df3764d56f8015dd77f12',
+                resourceType: RESOURCE_ZYNTHIUM_KEANITE
+            },
+            lab2: {
+                id: '599e086320221b5f480e47aa',
+                resourceType: RESOURCE_UTRIUM_LEMERGITE
+            },
+            resultLab: {
+                id: '599dfdffe16f781412f00e67',
+                resourceType: RESOURCE_GHODIUM
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.E5S38.reactions['GH']) {
+        Memory.empire.cities.E5S38.reactions['GH'] = {
+            lab1: {
+                id: '599df4df62db00798642370e',
+                resourceType: RESOURCE_GHODIUM
+            },
+            lab2: {
+                id: '599e08f0dafda433a75b4375',
+                resourceType: RESOURCE_HYDROGEN
+            },
+            resultLab: {
+                id: '599e01f001a1993373f0bdf6',
+                resourceType: RESOURCE_GHODIUM_HYDRIDE
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.E8S37.reactions['GH2O']) {
+        Memory.empire.cities.E8S37.reactions['GH2O'] = {
+            lab1: {
+                id: '59a40de52da716085209b091',
+                resourceType: RESOURCE_GHODIUM_HYDRIDE
+            },
+            lab2: {
+                id: '59a421ebd99750224f037d80',
+                resourceType: RESOURCE_HYDROXIDE
+            },
+            resultLab: {
+                id: '59a418365245a745758ae7b1',
+                resourceType: RESOURCE_GHODIUM_ACID
+            }
+        }
+    }
+
+    if (!Memory.empire.cities.E3S39.reactions['XGH2O']) {
+        Memory.empire.cities.E3S39.reactions['XGH2O'] = {
+            lab1: {
+                id: '599df4fb0ad6af33a9025c34',
+                resourceType: RESOURCE_GHODIUM_ACID
+            },
+            lab2: {
+                id: '599dfded562d2379b7c26dea',
+                resourceType: RESOURCE_CATALYST
+            },
+            resultLab: {
+                id: '599e06b2e9b1e04aa6bf31a4',
+                resourceType: RESOURCE_CATALYZED_GHODIUM_ACID
+            }
+        }
+    }
+
 }
 
 global.utils.createCity = (targetRoom, parentRoom) => { brain.memory.createCity(targetRoom, parentRoom); }
@@ -204,6 +363,10 @@ brain.memory.createCity = (targetRoom, parentRoom) => {
                     count: 0
                 },
                 roleLaborant: {
+                    min: 1,
+                    count: 0
+                },
+                roleCityDefender: {
                     min: 1,
                     count: 0
                 },

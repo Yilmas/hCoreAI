@@ -58,23 +58,22 @@ config.wallOrRampartTargetHitPoints = roomName => {
     let room = Game.rooms[roomName];
 
     switch (room.controller.level) {
-    case 1:
-        return 10000;
-    case 2:
-        return 15000;
-    case 3:
-        return 25000;
-    case 4:
-        return 50000;
-    case 5:
-        return 100000;
-    case 6:
-        return 250000;
-    case 7:
-        return 500000;
-    case 8:
-        if (roomName === 'E27S83' || roomName === 'E26S83') return 1500000;
-        return 750000;
+        case 1:
+            return 10000;
+        case 2:
+            return 15000;
+        case 3:
+            return 25000;
+        case 4:
+            return 50000;
+        case 5:
+            return 100000;
+        case 6:
+            return 250000;
+        case 7:
+            return 500000;
+        case 8:
+            return 750000;
     }
 }
 
@@ -94,9 +93,34 @@ global.getBodyCost = function (theBody) {
     return cost;
 }
 
-config.WHITE_LIST = ['Parthon', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'cazantyl', 'Yilmas', 'admon'];
+global.getTerminalEnergyMin = room => {
+    if (room.storage && room.terminal) {
+        let energy = room.storage.store.energy + room.terminal.store.energy;
+
+        if (room.name === 'E2S37') return 50000;
+
+        if (energy < 30000) {
+            return 0;
+        } else if (energy < 50000) {
+            return 20000;
+        } else if (energy < 150000) {
+            return 50000;
+        } else if (energy < 300000) {
+            return 75000;
+        } else if (energy < 500000) {
+            return 100000;
+        } else if (energy < 750000) {
+            return 150000;
+        } else if (energy < 1000000) {
+            return 200000;
+        }
+    }
+    return 20000;
+}
+
+config.WHITE_LIST = ['Parthon', 'Vlahn', 'Baj', 'Zeekner', 'Regnare', 'DoctorPC', 'NobodysNightmare', 'cazantyl', 'admon', 'weaves', 'Laeros', 'InvisioBlack', 'W4rl0ck', 'Komir', 'likeafox'];
 
 config.SIGN_MESSAGE = "[Ypsilon Pact] Sector Claimed, unauthorized claims may result in war declarations!";
 
-config.TERMINAL_MINIMUM_ENERGY = 100000;
+config.TERMINAL_MINIMUM_ENERGY = 20000;
 config.MAX_MINERAL_IN_ROOM = 50000;

@@ -9,10 +9,13 @@ global.utils = {
     takeRandomStep: (creep) => {
         let directions = [TOP, TOP_LEFT, TOP_RIGHT, BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, LEFT, RIGHT];
         let randomDirection = _.random(0, 7);
-        let isCurrentTileRoad = creep.pos.lookFor(LOOK_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_ROAD });
+        let isCurrentTileRoad = creep.pos.lookFor(LOOK_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_ROAD });
         if (isCurrentTileRoad[0]) {
-            config.log(1, 'Creep: ' + creep.name + ' in room: ' + creep.room.name + ' avoiding traffic jam!');
-            creep.move(directions[randomDirection]);
+
+            if (creep.move(directions[randomDirection]) !== OK) {
+                let bridgePosition = Memory.empire.cities[creep.room.name].bridgePosition;
+                creep.moveTo(bridgePosition);
+            }
         }
     },
 
@@ -71,44 +74,44 @@ global.utils = {
 
     getRepairQuota: function (type) {
         switch (type) {
-        case STRUCTURE_CONTAINER:
-            // max 250.000
-            return 100000;
-        case STRUCTURE_EXTRACTOR:
-        case STRUCTURE_LAB:
-        case STRUCTURE_OBSERVER:
-            // max 500
-            return 500;
-        case STRUCTURE_TOWER:
-        case STRUCTURE_TERMINAL:
-        case STRUCTURE_EXTENSION:
-            // max 3.000
-            return 3000;
-        case STRUCTURE_LINK:
-        case STRUCTURE_NUKER:
-            // max 1.000
-            return 1000;
-        case STRUCTURE_POWER_BANK:
-            // max 2.000.000
-            return 200000;
-        case STRUCTURE_POWER_SPAWN:
-            // max 5.000
-            return 5000;
-        case STRUCTURE_RAMPART:
-            // max defined by controller level
-            return 50.000;
-        case STRUCTURE_ROAD:
-            // max 5.000
-            return 5000;
-        case STRUCTURE_STORAGE:
-            // max 10.000
-            return 10000;
-        case STRUCTURE_WALL:
-            // max 300.000.000
-            return 50000;
-        default:
-            // If I have forgotton a structure, or a new one is added
-            return 5000;
+            case STRUCTURE_CONTAINER:
+                // max 250.000
+                return 100000;
+            case STRUCTURE_EXTRACTOR:
+            case STRUCTURE_LAB:
+            case STRUCTURE_OBSERVER:
+                // max 500
+                return 500;
+            case STRUCTURE_TOWER:
+            case STRUCTURE_TERMINAL:
+            case STRUCTURE_EXTENSION:
+                // max 3.000
+                return 3000;
+            case STRUCTURE_LINK:
+            case STRUCTURE_NUKER:
+                // max 1.000
+                return 1000;
+            case STRUCTURE_POWER_BANK:
+                // max 2.000.000
+                return 200000;
+            case STRUCTURE_POWER_SPAWN:
+                // max 5.000
+                return 5000;
+            case STRUCTURE_RAMPART:
+                // max defined by controller level
+                return 50.000;
+            case STRUCTURE_ROAD:
+                // max 5.000
+                return 5000;
+            case STRUCTURE_STORAGE:
+                // max 10.000
+                return 10000;
+            case STRUCTURE_WALL:
+                // max 300.000.000
+                return 50000;
+            default:
+                // If I have forgotton a structure, or a new one is added
+                return 5000;
         }
     },
 
@@ -171,6 +174,14 @@ global.utils = {
         config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' InterCityTransport state set to: ' + city.useInterCityTransport + '</font>');
     },
 
+    setRoleMin: function (cityName, role, count) {
+        let city = Memory.empire.cities[cityName];
+        let oldCount = city.roles[role].min;
+        city.roles[role].min = count;
+
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' Role: ' + role + ' minimum set to: ' + count + ', old minimum: ' + oldCount + '</font>');
+    },
+
     /**
      * Launch nuke at room name
      * @param {string} fromCity What city launch the nuke ?
@@ -211,6 +222,25 @@ global.utils = {
         } else {
             // No such room
             config.log(3, '<font color=green>[UTILS]</font> <font color=yellow>NUKE ALERT</font> <font color=green>- Room: ' + fromCity + ' failed to launch nuke on: ' + toRoomPos + ' | </font><font color=red> error code: launch city does not exist</font>');
+        }
+    },
+
+    /**
+     * Set Bridge Position for city
+     * @param {string} cityName What city do you want to edit ?
+     * @param {RoomPosition} pos What is the new bridge position ?
+    */
+    setBridgePosition: function (cityName, pos) {
+        Memory.empire.cities[cityName].bridgePosition = pos;
+        config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' BridgePosition set to: </font><font color=yellow>[' + pos.x + '].[' + pos.y + '] (' + pos.roomName + ')</font>');
+    },
+
+    getBridgePosition: function (cityName) {
+        let pos = Memory.empire.cities[cityName].bridgePosition;
+        if (!pos) {
+            config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' BridgePosition is: </font><font color=red>not set</font>');
+        } else {
+            config.log(3, '<font color=green>[UTILS] Room: ' + cityName + ' BridgePosition is: </font><font color=yellow>[' + pos.x + '].[' + pos.y + '] (' + pos.roomName + ')</font>');
         }
     }
 }

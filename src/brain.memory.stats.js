@@ -21,7 +21,7 @@ brain.memory.stats.default = () => {
 
     for (let cityName in Game.rooms) {
         let city = Game.rooms[cityName];
-        if (city.controller.my) {
+        if (city.controller && city.controller.my) {
             Memory.stats.rooms[cityName] = {
                 controllerProgress: city.controller.progress,
                 controllerProgressTotal: city.controller.progressTotal

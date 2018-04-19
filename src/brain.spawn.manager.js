@@ -36,6 +36,19 @@ brain.spawn.manager = () => {
             if (brain.spawn.createCreep(spawn, roomName, 'harvester', startPoint, endPoint) === OK) {
                 continue;
             }
+        } else if (configSpawn.spawnCityDefender(room)) {
+            // Spawn City Defender
+            config.log(3, '[Spawn] Room: ' + roomName + ' spawn City Defender');
+
+            if (cityMem.bridgePosition) {
+                startPoint = cityMem.bridgePosition;
+            } else {
+                startPoint = spawn.pos;
+            }
+
+            if (brain.spawn.createCreep(spawn, roomName, 'cityDefender', startPoint, endPoint) === OK) {
+                continue;
+            }
         } else if (configSpawn.checkRoleMinToCount(roles.roleDistributor) && configSpawn.sourcesHasContainerOrLink(cityMem.sources)) {
             // Spawn Distributor
             config.log(3, '[Spawn] Room: ' + roomName + ' spawn Distributor');
@@ -43,14 +56,14 @@ brain.spawn.manager = () => {
             if (brain.spawn.createCreep(spawn, roomName, 'distributor', startPoint, endPoint) === OK) {
                 continue;
             }
-        } else if (!configSpawn.sourcesHasCarriers(cityMem.sources) && configSpawn.sourcesHasContainer(cityMem.sources) && room.storage && !configSpawn.sourceHasLink(cityMem.sources)) {
+        } else if (!configSpawn.sourcesHasCarriers(cityMem.sources) && configSpawn.sourcesHasContainer(cityMem.sources) && room.controller.level >= 3 && !configSpawn.sourceHasLink(cityMem.sources)) {
             // Spawn Carrier
             config.log(3, '[Spawn] Room: ' + roomName + ' spawn Carrier');
 
             // Set startPoint to Container
             for (let source in cityMem.sources) {
                 if (!cityMem.sources[source].hasCarrier) {
-                    startPoint = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
+                    startPoint = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 1, { filter: (s) => s.structureType === STRUCTURE_CONTAINER })[0];
                     break;
                 } else {
                     continue;
@@ -60,7 +73,7 @@ brain.spawn.manager = () => {
             if (brain.spawn.createCreep(spawn, roomName, 'carrier', startPoint, endPoint) === OK) {
                 continue;
             }
-        } else if (configSpawn.checkRoleMinToCount(roles.roleBuilder)) {
+        } else if (spawn.room.controller.level > 1 && configSpawn.checkRoleMinToCount(roles.roleBuilder)) {
             // Spawn Builder
             config.log(3, '[Spawn] Room: ' + roomName + ' spawn Builder');
 
@@ -139,14 +152,16 @@ brain.spawn.manager = () => {
             if (brain.spawn.createCreep(spawn, roomName, 'mineralCollector', startPoint, endPoint) === OK) {
                 continue;
             }
-        } else if (configSpawn.checkRoleMinToCount(roles.roleLaborant) && configSpawn.labsExist(room) && configSpawn.reactionsIsActive(room)) {
-            // Spawn Laborant
-            config.log(3, '[Spawn] Room: ' + roomName + ' spawn Laborant');
-
-            if (brain.spawn.createCreep(spawn, roomName, 'laborant', startPoint, endPoint) === OK) {
-                continue;
-            }
-        } else if (configSpawn.spawnWallBuilder(room)) {
+        }
+        //else if (configSpawn.checkRoleMinToCount(roles.roleLaborant) && configSpawn.labsExist(room) && configSpawn.reactionsIsActive(room)) {
+        //    // Spawn Laborant
+        //    config.log(3, '[Spawn] Room: ' + roomName + ' spawn Laborant');
+        //
+        //    if (brain.spawn.createCreep(spawn, roomName, 'laborant', startPoint, endPoint) === OK) {
+        //        continue;
+        //    }
+        //}
+        else if (configSpawn.spawnWallBuilder(room)) {
             // Spawn Wall Builder
             config.log(3, '[Spawn] Room: ' + roomName + ' spawn Wall Builder');
 
@@ -219,7 +234,7 @@ brain.spawn.manager = () => {
         } else if (configSpawn.checkCityDistrictsForSpawnable(cityMem)) {
             // Manage Districts
             for (let districtName in cityMem.districts) {
-                //if(districtName !== 'E28S83' && districtName !== 'E27S84' && districtName !== 'E29S84' && districtName !== 'E26S82' && districtName !== 'E25S81' && districtName !== 'E29S86' && districtName !== 'E25S83') continue;
+
                 startPoint = undefined;
                 endPoint = undefined;
 
@@ -236,9 +251,8 @@ brain.spawn.manager = () => {
                             break;
                         }
                     }
-                } else if (!district.hasReserver) {
+                } else if (!district.hasReserver && district.startReserverAt < Game.time) {
                     // Spawn Reserver
-                    // TODO: Add district.startReserverAtTick (tick at 5000, minus 3000 ticks) Update startReserverAtTick once the controller reaches 4999+ reservationTicks
                     config.log(3, '[Spawn] Room: ' + roomName + ' spawn Reserver');
 
                     startPoint = new RoomPosition(25, 25, roomName);
@@ -301,13 +315,14 @@ brain.spawn.manager = () => {
     }
 }
 
-global.brain.spawn.createCreep = (test, roomName, role, startPoint, endPoint) => {
+global.brain.spawn.createCreep = (spawner, roomName, role, startPoint, endPoint) => {
     let uniqueId = Math.floor((Math.random() * 1000) + 1);
-    if ((isCreationPossible = test.canCreateCreep(config.getBodyParts(roomName, role), role + uniqueId)) === OK) {
-        return test.createCreep(config.getBodyParts(roomName, role), role + uniqueId, {
+    if ((isCreationPossible = spawner.canCreateCreep(config.getBodyParts(roomName, role), role + uniqueId)) === OK) {
+        return spawner.createCreep(config.getBodyParts(roomName, role), role + uniqueId, {
             task: {
                 role: role,
                 hasResource: false,
+                homeCity: spawner.room.name,
                 startPoint: startPoint,
                 endPoint: endPoint,
                 target: ''

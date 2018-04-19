@@ -57,48 +57,50 @@ config.isEnergyCostPlausible = (room, cost) => {
 
 config.roleBodyParts = (role, level) => {
     switch (role) {
-    case 'harvester':
-        return config.partsForHarvester(level);
-    case 'distributor':
-        return config.partsForDistributor(level);
-    case 'upgrader':
-        return config.partsForUpgrader(level);
-    case 'builder':
-        return config.partsForBuilder(level);
-    case 'carrier':
-        return config.partsForCarrier(level);
-    case 'bridge':
-        return config.partsForBridge(level);
-    case 'wallBuilder':
-        return config.partsForWallBuilder(level);
-    case 'claimer':
-        return config.partsForClaimer(level);
-    case 'reserver':
-        return config.partsForReserver(level);
-    case 'prospector':
-        return config.partsForProspector(level);
-    case 'collector':
-        return config.partsForCollector(level);
-    case 'interCityBoost':
-        return config.partsForInterCityBoost(level);
-    case 'interCityTransport':
-        return config.partsForInterCityTransport(level);
-    case 'miner':
-        return config.partsForMiner(level);
-    case 'mineralCollector':
-        return config.partsForMineralCollector(level);
-    case 'laborant':
-        return config.partsForLaborant(level);
-    case 'pillager':
-        return config.partsForPillager(level);
-    case 'attacker':
-        return config.partsForAttacker(level);
-    case 'healer':
-        return config.partsForHealer(level);
-    case 'defender':
-        return config.partsForDefender(level);
-    case 'specialCreep':
-        return config.partsForSpecialCreep(level);
+        case 'harvester':
+            return config.partsForHarvester(level);
+        case 'distributor':
+            return config.partsForDistributor(level);
+        case 'upgrader':
+            return config.partsForUpgrader(level);
+        case 'builder':
+            return config.partsForBuilder(level);
+        case 'carrier':
+            return config.partsForCarrier(level);
+        case 'bridge':
+            return config.partsForBridge(level);
+        case 'wallBuilder':
+            return config.partsForWallBuilder(level);
+        case 'claimer':
+            return config.partsForClaimer(level);
+        case 'reserver':
+            return config.partsForReserver(level);
+        case 'prospector':
+            return config.partsForProspector(level);
+        case 'collector':
+            return config.partsForCollector(level);
+        case 'interCityBoost':
+            return config.partsForInterCityBoost(level);
+        case 'interCityTransport':
+            return config.partsForInterCityTransport(level);
+        case 'miner':
+            return config.partsForMiner(level);
+        case 'mineralCollector':
+            return config.partsForMineralCollector(level);
+        case 'laborant':
+            return config.partsForLaborant(level);
+        case 'pillager':
+            return config.partsForPillager(level);
+        case 'attacker':
+            return config.partsForAttacker(level);
+        case 'healer':
+            return config.partsForHealer(level);
+        case 'defender':
+            return config.partsForDefender(level);
+        case 'specialCreep':
+            return config.partsForSpecialCreep(level);
+        case 'cityDefender':
+            return config.partsForCityDefender(level);
     }
 };
 
@@ -111,15 +113,14 @@ config.partsForHarvester = level => {
 
 // Distributor
 config.partsForDistributor = level => {
-    if (level === 1) return undefined;
-    if (level === 2) return [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
+    if (level <= 2) return [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
     if (level >= 3 && level <= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level >= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Upgrader
 config.partsForUpgrader = level => {
-    if (level >= 1 && level <= 2) return [WORK, WORK, CARRY, MOVE];
+    if (level >= 1 && level <= 2) return [WORK, CARRY, MOVE];
     if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
     if (level >= 5 && level <= 6) return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
     if (level >= 7 && level <= 8) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY];
@@ -127,7 +128,7 @@ config.partsForUpgrader = level => {
 
 // Builder
 config.partsForBuilder = level => {
-    if (level >= 1 && level <= 2) return [WORK, CARRY, CARRY, MOVE, MOVE];
+    if (level >= 1 && level <= 2) return [WORK, CARRY, MOVE];
     if (level >= 3 && level <= 4) return [WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
     if (level === 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
@@ -136,27 +137,30 @@ config.partsForBuilder = level => {
 // Carrier
 config.partsForCarrier = level => {
     if (level <= 2) return undefined;
-    if (level >= 3 && level <= 4) return [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
-    if (level >= 5) return [MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level === 3) return [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
 };
 
 // Bridge
 config.partsForBridge = level => {
     if (level <= 2) return undefined;
-    if (level >= 3 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level === 3) return [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 4 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
 
 // Wall Builder
 config.partsForWallBuilder = level => {
-    if (level <= 7) return undefined;
+    if (level < 5) return undefined;
+    if (level === 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level >= 6 && level <= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level === 8)
         return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 }
 
 // Claimer
 config.partsForClaimer = level => {
-    if (level <= 3) return undefined;
+    if (level <= 3) return [MOVE, MOVE, CLAIM];
     if (level >= 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, CLAIM];
 };
 
@@ -168,7 +172,7 @@ config.partsForReserver = level => {
 
 // InterCity Boost
 config.partsForInterCityBoost = level => {
-    if (level <= 5) return undefined;
+    if (level <= 5) return [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
     if (level === 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level >= 7)
         return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
@@ -189,7 +193,8 @@ config.partsForProspector = level => {
 // Collector
 config.partsForCollector = level => {
     if (level <= 3) return undefined;
-    if (level >= 4 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level === 4) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (level === 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level === 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     if (level >= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 };
@@ -197,7 +202,7 @@ config.partsForCollector = level => {
 // Miner
 config.partsForMiner = level => {
     if (level <= 5) return undefined;
-    if (level >= 6) return [MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY];
+    if (level >= 6) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY];
 }
 
 // Mineral Collector
@@ -240,10 +245,20 @@ config.partsForDefender = level => {
     if (level >= 6) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL];
 }
 
+// City Defender
+config.partsForCityDefender = level => {
+    if (level <= 3) return undefined;
+    if (level >= 4 && level <= 5) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, HEAL];
+    if (level >= 6) return [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL];
+}
+
 // Special Creep
 config.partsForSpecialCreep = level => {
-    if (level >= 1 && level <= 6) return [WORK, WORK, CARRY, MOVE];
-    if (level >= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    //return [MOVE];
+    return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, HEAL];
+    //return [MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK];
+    //if (level >= 1 && level <= 6) return [WORK, WORK, CARRY, MOVE];
+    //if (level >= 7) return [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
 }
 
@@ -256,6 +271,17 @@ brain.spawn.config.spawnEmergencyDistributor = roomName => {
     } else {
         return false;
     }
+}
+
+brain.spawn.config.spawnCityDefender = room => {
+    let city = Memory.empire.cities[room.name];
+    let configSpawn = brain.spawn.config;
+
+    if (city.defenseLevel > 1 && configSpawn.checkRoleMinToCount(city.roles.roleCityDefender) && !configSpawn.spawnEmergencyDistributor(room.name)) {
+        return true;
+    }
+
+    return false;
 }
 
 brain.spawn.config.checkRoleMinToCount = role => {
@@ -282,12 +308,16 @@ brain.spawn.config.sourceHasLink = sources => {
 }
 
 brain.spawn.config.sourcesHasContainer = sources => {
+
     for (let source in sources) {
+        if (!Game.getObjectById(source)) return false;
+
         let link = Game.getObjectById(source).pos.findInRange(FIND_STRUCTURES, 3, { filter: (c) => c.structureType === STRUCTURE_CONTAINER })[0];
-        if (link) {
-            return true;
+        if (!link) {
+            return false;
         }
     }
+    return true;
 }
 
 brain.spawn.config.sourcesHasContainerOrLink = sources => {
@@ -300,7 +330,12 @@ brain.spawn.config.sourcesHasContainerOrLink = sources => {
 }
 
 brain.spawn.config.storageLinkExist = room => {
-    return room.storage.pos.findInRange(FIND_STRUCTURES, 3, { filter: (s) => s.structureType === STRUCTURE_LINK }).length > 0;
+    if (room.controller.level >= 5) {
+        return room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType === STRUCTURE_LINK }).length > 1;
+    } else {
+        return true;
+    }
+
 }
 
 brain.spawn.config.controllerHasLinkOrContainer = room => {
